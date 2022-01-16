@@ -3,14 +3,25 @@ import { StyleSheet, TouchableOpacity, Image, View, Text, Platform, PermissionsA
 import { Button, Checkbox } from 'react-native-paper';
 import { GiftedChat, Bubble, MessageText, Send, Actions} from 'react-native-gifted-chat'
 import DocumentPicker  from 'react-native-document-picker';
+import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
 import firestore from '@react-native-firebase/firestore';
-import storage, {getStorage, ref, uploadBytesResumable, getDownloadURL} from '@react-native-firebase/storage'
+import storage, {getStorage, ref, uploadBytesResumable, getDownloadURL} from '@react-native-firebase/storage';
+var RNFS = require('react-native-fs');
 export default function ChatScreen({navigation,route}) {
   
 
   const [messages, setMessages] = useState([]);
   const [checked, setChecked] = useState(false);
+
+  function getRandomString(length) {
+    var randomChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    for ( var i = 0; i < length; i++ ) {
+        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return result;
+}
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -29,6 +40,7 @@ export default function ChatScreen({navigation,route}) {
             locked: doc.data().locked,
             file_type: doc.data().file_type,
             file_url: doc.data().file_url,
+            downloaded: doc.data().downloaded
           }))
         );
       });
@@ -44,7 +56,8 @@ export default function ChatScreen({navigation,route}) {
     const locked = checked
     const file_type = "text" 
     const file_url = "none"
-    firestore().collection('chats').add({
+    const downloaded = false
+    firestore().collection('chats').doc(_id).set({
       _id,
       sender_id,
       _rid,
@@ -55,24 +68,65 @@ export default function ChatScreen({navigation,route}) {
       locked,
       file_type,
       file_url,
+      downloaded,
     });
   }, [])
  
-  
-  const ImageMessageText = (props) => {
+  /*
+  function downloadFromFirebase(currentMessage){
+    const { config, fs } = RNFetchBlob
+    let PictureDir = fs.dirs.PictureDir // this is the pictures directory. You can check the available directories in the wiki.
+    let options = {
+      fileCache: true,
+      addAndroidDownloads : {
+        useDownloadManager : true, // setting it to true will use the device's native download manager and will be shown in the notification bar.
+        notification : false,
+        path:  PictureDir + "/me_", // this is the path where your downloaded file will live in
+        description : 'Downloading file'
+      }
+    }
+    config(options).fetch('GET',currentMessage.file_url).then((res) => {
+      // do some magic here
+    })
+  }
+  */
+  function openFile(path){
+    FileViewer.open(path);
+  }
+
+   const FileText = (props) => {
     const { currentMessage } = props;
-    
-    const imageURI = encodeURI(currentMessage.file_url);
-    console.log(imageURI)
+    const { config, fs } = RNFetchBlob
+    if(!currentMessage.downloaded)
+    {
+      firestore().collection('chats').doc(currentMessage._id).update({downloaded:true});
+      let DownloadDir = fs.dirs.DownloadDir // this is the pictures directory. You can check the available directories in the wiki.
+      let options = {
+      fileCache: true,
+      addAndroidDownloads : {
+        useDownloadManager : true, // setting it to true will use the device's native download manager and will be shown in the notification bar.
+        notification : false,
+        path:  DownloadDir + "/" + currentMessage.text, // this is the path where your downloaded file will live in
+        description : 'Downloading file'
+      }
+    }
+      config(options).fetch('GET',currentMessage.file_url).then((res) => {
+        // do some magic here
+      })
+    }
+    let DownloadDir = fs.dirs.DownloadDir
+    const path = DownloadDir + "/" + currentMessage.text;
     return (
-      <TouchableOpacity onPress={()=>{alert("Locked")}}>
-      <Image
-        style={styles.lockedLogo}
-        source={{uri: {imageURI}}}
-      />
+      /*
+      <TouchableOpacity style={styles.button} onPress={()=>{openFile(path)}}>
+      <Text> {currentMessage.text}</Text>
     </TouchableOpacity>
+    */
+   <Button onPress={()=>{openFile(path)}}></Button>
     );  
   }
+  
+ 
 
   const CustomMessageText = (props) => {
     const { currentMessage } = props;
@@ -129,8 +183,9 @@ export default function ChatScreen({navigation,route}) {
   }
 
   function saveFileToDatabase(downloadURL, file){
-    firestore().collection('chats').add({
-      _id: "999",
+    const randomID = getRandomString(8) + "-" +  getRandomString(4) + "-" + getRandomString(4) + "-" + getRandomString(4) + "-" + getRandomString(12);
+    firestore().collection('chats').doc(randomID).set({
+      _id: randomID,
       _rid: route.params.userID,
       createdAt: new Date(),
       locked: checked,
@@ -142,6 +197,7 @@ export default function ChatScreen({navigation,route}) {
       text: file.name,
       file_type: file.type,
       file_url: downloadURL,
+      downloaded: false,
     });
   }
   const renderActions = (props) => {
@@ -202,12 +258,11 @@ export default function ChatScreen({navigation,route}) {
     if (currentMessage.locked && currentMessage.user._id != 1){
       return <CustomMessageText {...props} />
     }
-    /*
-    if(currentMessage.file_type == "image/jpeg"){
-      return <ImageMessageText {...props} />
     
+    if(currentMessage.file_type != "text"){
+      return <FileText {...props}/>
     }
-    */
+    
     return <MessageText {...props} />
   };
 
@@ -244,5 +299,10 @@ const styles = StyleSheet.create({
   lockedLogo: {
     width: 50,
     height: 50,
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
   },
 })
