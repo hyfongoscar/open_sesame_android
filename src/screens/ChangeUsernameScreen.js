@@ -30,25 +30,25 @@ export default function ChangeUsernameScreen({ navigation }) {
     }
     return (
         <View style={styles.container}>
-            {return <View key={user.email || 'email'}>
-                    <Text>{user.name}</Text>
-                    <Text>{user.id}</Text>
-                </View>})}
+                    <View key={user.email || 'email'}>
+                            <Text>{user.name}</Text>
+                            <Text>{user.id}</Text>
+                        </View>
+                    <TextInput
+                        label="NewUserName"
+                        style={styles.input}
+                        value={password}
+                        numberOfLines={1}
+                        secureTextEntry={true}
+                        onChangeText={(newUserName) => setNewUserName(newUserName)}
+                    />
+                    <Button
+                        mode="contained"
+                        style={styles.button}
+                        contentStyle={styles.buttonContainer}
+                        labelStyle={styles.signupButtonLabel}
+                        onPress={ () => {changeName()}}
+                    >Change Username</Button>
         </View>
-        <TextInput
-            label="NewUserName"
-            style={styles.input}
-            value={password}
-            numberOfLines={1}
-            secureTextEntry={true}
-            onChangeText={(newUserName) => setNewUserName(newUserName)}
-        />
-        <Button
-            mode="contained"
-            style={styles.button}
-            contentStyle={styles.buttonContainer}
-            labelStyle={styles.signupButtonLabel}
-            onPress={ () => {changeName()}}
-        >Change Username</Button>
     );
 }
