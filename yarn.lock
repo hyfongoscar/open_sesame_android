@@ -1663,9 +1663,9 @@
     "@types/istanbul-lib-report" "*"
 
 "@types/node@*":
-  version "17.0.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.8.tgz#50d680c8a8a78fe30abe6906453b21ad8ab0ad7b"
-  integrity sha512-YofkM6fGv4gDJq78g4j0mMuGMkZVxZDgtU0JRdx6FgiJDG+0fY0GKVolOV8WqVmEhLCXkQRjwDdKyPxJp/uucg==
+  version "17.0.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.9.tgz#0b7f161afb5b1cc12518d29b2cdc7175d5490628"
+  integrity sha512-5dNBXu/FOER+EXnyah7rn8xlNrfMOQb/qXnw4NQgLkCygKBKhdmF/CA5oXVOKZLBEahw8s2WP9LxIcN/oDDRgQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -2077,6 +2077,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+base-64@0.1.0, base-64@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+  integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
+
 base64-js@^1.1.2, base64-js@^1.2.3, base64-js@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
@@ -2236,9 +2241,9 @@ camelcase@^6.0.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001286:
-  version "1.0.30001299"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001299.tgz#d753bf6444ed401eb503cbbe17aa3e1451b5a68c"
-  integrity sha512-iujN4+x7QzqA2NCSrS5VUy+4gLmRd4xv6vbBBsmfVqTx8bLAD8097euLqQgKxSVLvxjSDcvF1T/i9ocgnUFexw==
+  version "1.0.30001300"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001300.tgz#11ab6c57d3eb6f964cba950401fd00a146786468"
+  integrity sha512-cVjiJHWGcNlJi8TZVKNMnvMid3Z3TTdDHmLDzlOdIiZq138Exvo0G+G0wTdVYolxKb4AYwC+38pxodiInVtJSA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -3147,6 +3152,18 @@ getenv@^1.0.0:
   resolved "https://registry.yarnpkg.com/getenv/-/getenv-1.0.0.tgz#874f2e7544fbca53c7a4738f37de8605c3fcfc31"
   integrity sha512-7yetJWqbS9sbn0vIfliPsFgoXMKn/YMF+Wuiog97x+urnSRRRZ7xB+uVkwGKzRgq9CDFfMQnE9ruL5DHv9c6Xg==
 
+glob@7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
+  integrity sha1-IRuvr0nlJbjNkyYNFKsTYVKz9Xo=
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.2"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
 glob@7.1.6:
   version "7.1.6"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.6.tgz#141f33b81a7c2492e125594307480c46679278a6"
@@ -3185,6 +3202,11 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
+
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
 
 has-flag@^3.0.0:
   version "3.0.0"
@@ -3255,6 +3277,11 @@ hermes-profile-transformer@^0.0.6:
   integrity sha512-cnN7bQUm65UWOy6cbGcCcZ3rpwW8Q/j4OP5aWRhEry4Z2t2aR1cjrbp0BS+KiBN0smvP1caBgAuxutvyvJILzQ==
   dependencies:
     source-map "^0.7.3"
+
+hoist-non-react-statics@^2.3.1:
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
+  integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
 
 hoist-non-react-statics@^3.3.0:
   version "3.3.2"
@@ -5272,6 +5299,36 @@ react-native-communications@^2.2.1:
   resolved "https://registry.yarnpkg.com/react-native-communications/-/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"
   integrity sha1-eIO1ayCgAu63kMET+GFuqGksp5U=
 
+react-native-document-picker@^7.1.3:
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-7.1.3.tgz#789593b2544d3ff385d0d6c5fb1fa2141d456be1"
+  integrity sha512-2T2/mw0+gCJRarbj/WTiKMraNvEGhfx2exRwHhK3irDYCmFh4CD03cpx45TCsELsHhSUYFuHykLv5HDx5TAndQ==
+  dependencies:
+    invariant "^2.2.4"
+
+react-native-file-viewer@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-file-viewer/-/react-native-file-viewer-2.1.5.tgz#cd4544f573108e79002b5c7e1ebfce4371885250"
+  integrity sha512-MGC6sx9jsqHdefhVQ6o0akdsPGpkXgiIbpygb2Sg4g4bh7v6K1cardLV1NwGB9A6u1yICOSDT/MOC//9Ez6EUg==
+
+react-native-fs@^2.18.0:
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.18.0.tgz#987b99cc90518ef26663a8d60e62104694b41c21"
+  integrity sha512-9iQhkUNnN2JNED0in06JwZy88YEVyIGKWz4KLlQYxa5Y2U0U2AZh9FUHtA04oWj+xt2LlHh0LFPCzhmNsAsUDg==
+  dependencies:
+    base-64 "^0.1.0"
+    utf8 "^3.0.0"
+
+react-native-gesture-handler@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.4.0.tgz#115f9b0a8f79ca96334f876a67c0122501ef5081"
+  integrity sha512-dbsDWU1mqNrKjsPs1t2CGnRUaGF7U/GN2JbH1AejkC/Wg6WbzGuxZaCPU9yotlXefZpLNQVemmU1bhMTo4IiWw==
+  dependencies:
+    hammerjs "^2.0.8"
+    hoist-non-react-statics "^2.3.1"
+    invariant "^2.2.4"
+    prop-types "^15.7.2"
+
 react-native-gifted-chat@^0.16.3:
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-0.16.3.tgz#eea98290bfcf72b36d2aaf002edddd90353aa6ec"
@@ -5612,6 +5669,14 @@ rimraf@~2.6.2:
   integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
+
+rn-fetch-blob@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/rn-fetch-blob/-/rn-fetch-blob-0.12.0.tgz#ec610d2f9b3f1065556b58ab9c106eeb256f3cba"
+  integrity sha512-+QnR7AsJ14zqpVVUbzbtAjq0iI8c9tCg49tIoKO2ezjzRunN7YL6zFSFSWZm6d+mE/l9r+OeDM3jmb2tBb2WbA==
+  dependencies:
+    base-64 "0.1.0"
+    glob "7.0.6"
 
 rsvp@^4.8.4:
   version "4.8.5"
@@ -6355,6 +6420,11 @@ use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+
+utf8@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
+  integrity sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==
 
 util-deprecate@~1.0.1:
   version "1.0.2"

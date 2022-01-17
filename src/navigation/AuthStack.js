@@ -8,7 +8,6 @@ import MessageScreen from '../screens/MessageScreen';
 import VoiceEnrollScreen from '../screens/VoiceEnrollScreen'
 import VoiceRecordingScreen from '../screens/VoiceRecordingScreen'
 import VoiceVerificationScreen from '../screens/VoiceVerificationScreen'
-import LogoutScreen from '../screens/LogoutScreen'
 import ChangeUsernameScreen from '../screens/ChangeUsernameScreen'
 
 
@@ -30,7 +29,6 @@ export default function AuthStack() {
         <Stack.Screen name="VoiceVerification" component={VoiceVerificationScreen} />
         <Stack.Screen name="Chat" component={ChatScreen}/>
         <Stack.Screen name="Message" component={MessageScreen}/>
-        <Stack.Screen name="Logout" component={LogoutScreen}/>
         <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
       </Stack.Navigator>
   );
