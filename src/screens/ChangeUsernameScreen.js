@@ -3,24 +3,17 @@ import { Alert, Dimensions, StyleSheet, View } from 'react-native';
 import { Button, Text, Title, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import auth from '@react-native-firebase/auth';
 
 export default function ChangeUsernameScreen({ navigation }) {
-    const email = auth.currentUser.email
-    const userDocRef = doc(db,"username", email)
-    const [user, setUser] = useState({})
+    const user = auth().currentUser;
+    const [newUserName, setNewUserName] = useState('')
     const userNameCollection = firestore().collection('username');
-
-    useEffect(() => {
-        const getUser = async () => {
-          const snap = await getDoc(userDocRef)
-          setUser({email, ...snap.data()})
-        }
-        getUser()
-      },[])
 
     const changeName = () => {
         userNameCollection
-            .doc(user.email)
+            //.doc(user.email)
+            .doc('samsamho718@gmail.com')
             .update({
                 name: newUserName,
             })
@@ -29,26 +22,15 @@ export default function ChangeUsernameScreen({ navigation }) {
             });
     }
     return (
-        <View style={styles.container}>
-                    <View key={user.email || 'email'}>
-                            <Text>{user.name}</Text>
-                            <Text>{user.id}</Text>
-                        </View>
-                    <TextInput
-                        label="NewUserName"
-                        style={styles.input}
-                        value={password}
-                        numberOfLines={1}
-                        secureTextEntry={true}
-                        onChangeText={(newUserName) => setNewUserName(newUserName)}
-                    />
-                    <Button
-                        mode="contained"
-                        style={styles.button}
-                        contentStyle={styles.buttonContainer}
-                        labelStyle={styles.signupButtonLabel}
-                        onPress={ () => {changeName()}}
-                    >Change Username</Button>
+        <View>
+            <TextInput
+                label="NewUserName"
+                numberOfLines={1}
+                onChangeText={(newUserName) => setNewUserName(newUserName)}
+            />
+            <Button
+                onPress={ () => {changeName()}}
+            >Change Username</Button>
         </View>
     );
 }

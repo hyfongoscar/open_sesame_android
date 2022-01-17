@@ -53,11 +53,12 @@ export default function LoginScreen({ navigation }) {
             contentStyle={styles.buttonContainer}
             labelStyle={styles.loginButtonLabel}
             onPress={() => {
-              // if (email && password)
-              //   handleLogin()
-              // else
-              //   setLoginText("Please enter both email and password!")
-              navigation.navigate('Message')
+               if (email && password)
+                 handleLogin()
+               else
+                 setLoginText("Please enter both email and password!")
+              //navigation.navigate('Message')
+              //navigation.navigate('ChangeUsername')
             }}
         > Login </Button>
         <Text>{ loginText }</Text>
