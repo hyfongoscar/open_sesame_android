@@ -18,9 +18,9 @@ export default function LoginScreen({ navigation }) {
       }
       else {
         switch (errorCode) {
-          case "auth/email-already-in-use":
-            setLoginText("This email is already registered! If you forgot your password, please reset your password in the login page.")
-            break
+          // case "auth/email-already-in-use":
+          //   setLoginText("This email is already registered! If you forgot your password, please reset your password in the login page.")
+          //   break
           default:
             setLoginText("Login failed: " + errorMessage + " (Error Code: " + errorCode + ")")
         }
@@ -57,8 +57,6 @@ export default function LoginScreen({ navigation }) {
                  handleLogin()
                else
                  setLoginText("Please enter both email and password!")
-              //navigation.navigate('Message')
-              //navigation.navigate('ChangeUsername')
             }}
         > Login </Button>
         <Text>{ loginText }</Text>

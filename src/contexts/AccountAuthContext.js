@@ -12,14 +12,14 @@ const AccountAuthContextProvider = ({ children }) => {
       <AccountAuthContext.Provider
           value={{
             user,
-            setUser,
             loading,
             login: async (email, password) => {
               let obj = {}
               await auth()
                 .signInWithEmailAndPassword(email, password)
-                .then(() => {
+                .then(userCredential => {
                   obj.userCredential = userCredential
+                  setUser(userCredential.user)
                 })
                 .catch(error => {
                   obj.errorCode = error.code;
@@ -40,7 +40,7 @@ const AccountAuthContextProvider = ({ children }) => {
               let obj = {}
               await auth()
                 .createUserWithEmailAndPassword(email, password)
-                .then(() => {
+                .then(userCredential => {
                   obj.userCredential = userCredential
                 })
                 .catch(error => {
