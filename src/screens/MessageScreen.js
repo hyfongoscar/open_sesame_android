@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper'
 
@@ -69,8 +69,7 @@ export default function MessageScreen({navigation }) {
             >
           </FlatList>
           <Button
-              mode="text"
-              uppercase={false}
+              mode="contained"
               style={styles.button}
               contentStyle={styles.buttonContainer}
               labelStyle={styles.navButtonText}
@@ -90,6 +89,9 @@ export default function MessageScreen({navigation }) {
 
 
 const styles = StyleSheet.create({
+  button: {
+    marginTop: 10,
+  },
   container: {
     flex: 1, 
     paddingLeft: 20,
