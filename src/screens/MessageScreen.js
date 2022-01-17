@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper'
 
+import { AccountAuthContext } from '../contexts/AccountAuthContext'
+
 
 const Messages = [
   {
@@ -39,6 +41,9 @@ const Messages = [
 ]
 
 export default function MessageScreen({navigation }) {
+
+  const { logout } = useContext(AccountAuthContext)
+
   return (
         <View style={styles.container}>
             <FlatList
@@ -71,6 +76,14 @@ export default function MessageScreen({navigation }) {
               labelStyle={styles.navButtonText}
               onPress={() => navigation.navigate('ChangeUsername')}
           > Change username </Button>
+          
+        <Button
+            mode="contained"
+            onPress={async () => {
+                logout();
+                navigation.navigate('Login');
+            }}
+        >Log out</Button>
         </View>
     );
 };
