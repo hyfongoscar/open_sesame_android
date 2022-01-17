@@ -40,7 +40,8 @@ export default function ChatScreen({navigation,route}) {
             locked: doc.data().locked,
             file_type: doc.data().file_type,
             file_url: doc.data().file_url,
-            downloaded: doc.data().downloaded
+            downloaded: doc.data().downloaded,
+            is_file : doc.data().is_file, 
           }))
         );
       });
@@ -56,7 +57,8 @@ export default function ChatScreen({navigation,route}) {
     const locked = checked
     const file_type = "text" 
     const file_url = "none"
-    const downloaded = false
+    const downloaded = true
+    const is_file= false
     firestore().collection('chats').doc(_id).set({
       _id,
       sender_id,
@@ -69,6 +71,7 @@ export default function ChatScreen({navigation,route}) {
       file_type,
       file_url,
       downloaded,
+      is_file,
     });
   }, [])
  
@@ -117,17 +120,10 @@ export default function ChatScreen({navigation,route}) {
     let DownloadDir = fs.dirs.DownloadDir
     const path = DownloadDir + "/" + currentMessage.text;
     return (
-      /*
-      <TouchableOpacity style={styles.button} onPress={()=>{openFile(path)}}>
-      <Text> {currentMessage.text}</Text>
-    </TouchableOpacity>
-    */
-   <Button onPress={()=>{openFile(path)}}></Button>
+      <MessageText {...props}/>
     );  
   }
   
- 
-
   const CustomMessageText = (props) => {
     const { currentMessage } = props;
     return (
@@ -198,11 +194,13 @@ export default function ChatScreen({navigation,route}) {
       file_type: file.type,
       file_url: downloadURL,
       downloaded: false,
+      is_file: true,
     });
   }
+  
   const renderActions = (props) => {
     return(
-           <Actions
+            <Actions
                 {...props}
                 options={{
                     ['Document']: async (props) => {
@@ -251,15 +249,42 @@ export default function ChatScreen({navigation,route}) {
             />
          )
     }
-    
+       
+  const renderBubble = (props) => {
+    const { currentMessage } = props;
+    if(currentMessage.is_file == true)
+    {
+      const { config, fs } = RNFetchBlob
+      let DownloadDir = fs.dirs.DownloadDir
+      const path = DownloadDir + "/" + currentMessage.text;
+      return(
+        <Bubble
+          {...props}
+          touchableProps={{ disabled: true }} // <= put this in to fix!
+          renderCustomView={() => (
+            <TouchableOpacity onPress={() => openFile(path)}>
+              <View style={{ width: 50, height: 50 }}>
+                <Image
+                  style={styles.lockedLogo}
+                  source={require('../../assets/file.jpeg')}
+                />
+              </View>
+          </TouchableOpacity>
+      )}
+      />
+      )
+    }
+    return <Bubble {...props} />
+  };
+
 
   const renderMessageText = (props) => {
     const { currentMessage } = props;
+  
     if (currentMessage.locked && currentMessage.user._id != 1){
       return <CustomMessageText {...props} />
     }
-    
-    if(currentMessage.file_type != "text"){
+    if(currentMessage.is_file){
       return <FileText {...props}/>
     }
     
@@ -282,7 +307,9 @@ export default function ChatScreen({navigation,route}) {
  
 
   return (
+    
     <GiftedChat
+      renderBubble = {renderBubble}
       renderMessageText = {renderMessageText}
       renderActions = {renderActions}
       renderSend = {renderSend}
@@ -292,6 +319,8 @@ export default function ChatScreen({navigation,route}) {
         _id: 1,
       }}
     />
+  
+
   )
 }
 
