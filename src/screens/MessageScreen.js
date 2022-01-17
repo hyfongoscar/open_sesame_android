@@ -45,46 +45,57 @@ export default function MessageScreen({navigation }) {
   const { logout } = useContext(AccountAuthContext)
 
   return (
-        <View style={styles.container}>
-            <FlatList
-            data ={Messages}
-            keyExtractor={item=>item.id}
-            renderItem={({item}) => (
-            <TouchableOpacity 
+    <View style={styles.container}>
+      <FlatList
+        data ={Messages}
+        keyExtractor={item=>item.id}
+        renderItem={({item}) => (
+          <TouchableOpacity 
             style = {styles.profile}
-            onPress={() => navigation.navigate('Chat', {userName: item.userName, messages: item.message, userID: item.message.user._id})}>
-              <View style={styles.userInfo}>
-                <View style={styles.imgWrapper}>
-                   <Image
-                    style={styles.userImg}
-                    source={item.message.user.avatar}
-                    />
-                </View>
-                <View style={styles.textSection}>
-                  <Text style = {styles.userName}> {item.userName}</Text>
-                </View>
-              </View>   
-            </TouchableOpacity>
-            )}
-            >
-          </FlatList>
-          <Button
-              mode="contained"
-              style={styles.button}
-              contentStyle={styles.buttonContainer}
-              labelStyle={styles.navButtonText}
-              onPress={() => navigation.navigate('ChangeUsername')}
-          > Change username </Button>
+            onPress={() => navigation.navigate('Chat', {userName: item.userName, messages: item.message, userID: item.message.user._id})}
+          >
+            <View style={styles.userInfo}>
+              <View style={styles.imgWrapper}>
+                <Image
+                  style={styles.userImg}
+                  source={item.message.user.avatar}
+                />
+              </View>
+              <View style={styles.textSection}>
+                <Text style = {styles.userName}> {item.userName}</Text>
+              </View>
+            </View>   
+          </TouchableOpacity>
+        )}
+      ></FlatList>
+      <Button
+          mode="contained"
+          style={styles.button}
+          contentStyle={styles.buttonContainer}
+          labelStyle={styles.navButtonText}
+          onPress={() => navigation.navigate('ChangeUsername')}
+      > Change username </Button>
+
+      <Button
+          mode="contained"
+          style={styles.button}
+          contentStyle={styles.buttonContainer}
+          labelStyle={styles.navButtonText}
+          onPress={() => navigation.navigate('VoiceEnroll')}
+      > Enroll Voiceprint </Button>
           
-        <Button
-            mode="contained"
-            onPress={async () => {
-                logout();
-                navigation.navigate('Login');
-            }}
-        >Log out</Button>
-        </View>
-    );
+      <Button
+          mode="contained"
+            style={styles.button}
+            contentStyle={styles.buttonContainer}
+            labelStyle={styles.navButtonText}
+          onPress={async () => {
+              logout();
+              navigation.navigate('Login');
+          }}
+      >Log out</Button>
+    </View>
+  );
 };
 
 
