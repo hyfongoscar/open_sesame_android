@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { Button } from 'react-native-paper'
 
 
 const Messages = [
@@ -62,6 +63,14 @@ export default function MessageScreen({navigation }) {
             )}
             >
           </FlatList>
+          <Button
+              mode="text"
+              uppercase={false}
+              style={styles.button}
+              contentStyle={styles.buttonContainer}
+              labelStyle={styles.navButtonText}
+              onPress={() => navigation.navigate('ChangeUsername')}
+          > Change username </Button>
         </View>
     );
 };
