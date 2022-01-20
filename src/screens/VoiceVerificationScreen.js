@@ -2,11 +2,7 @@ import React, { useContext, useState } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
-import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
-
 export default function VoiceVerificationScreen({ navigation }) {
-  const { recording, recordSecs, recordTime, onStartRecord, onStopRecord } = useContext(VoiceAuthContext)
-
   return (
     <View style={styles.container}>
       <Title style={styles.titleText}>Verify your voiceprint</Title>

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
@@ -7,7 +7,7 @@ import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 
 export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
-  const { recording, onStartRecord, onStopRecord } = useContext(VoiceAuthContext)
+  const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
   const [ recordText, setRecordText ] = useState('')
   const [ randNum, setRandNum ] = useState('')
 
@@ -30,9 +30,6 @@ export default function VoiceEnrollScreen({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.instructions}>Record yourself saying the following numbers:</Text>
         <Text style={styles.titleText}> { randNum } </Text>
-        <Text style={styles.instructions}>Press the button below to start recording your voice.</Text>
-        <Text style={styles.instructions}>Press the button again to stop recording.</Text>
-        <Text style={styles.instructions}>Your voice will be saved in your account.</Text>
         <TouchableOpacity style={styles.recordOverlay} >
           <Button
             mode="contained"
@@ -41,14 +38,36 @@ export default function VoiceEnrollScreen({ route, navigation }) {
             onPress={ async () => {
               if (!recording){
                 onStartRecord()
+                setRecordText("Recording...")
               } else {
                 setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
-                const results = await onStopRecord(option)
-                if (results.success) {
-                  navigation.navigate('Message')
+                
+                if (option === "enroll") {
+                  if (await onStopEnroll())
+                    Alert.alert("Enrollment complete", "Your voice will be saved in your account. You can always enroll again for a different voiceprint", [
+                      { text: "OK", onPress: () => navigation.navigate('Message') }
+                    ]) 
+                }
+                else if (option === "verify") {
+                  const results = await onStopVerify()
+                  if (results.thresholdPassed) {
+                    Alert.alert("Verification success", "You can now view the message.", [
+                      { text: "OK", onPress: () => navigation.navigate('Message') } 
+                      // TODO: after binding the verification with locaked message, set message to unlocked
+                    ]) 
+                  }
+                  else {
+                    Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
+                      { text: "OK", onPress: () => navigation.navigate('Message') } 
+                      // TODO: after binding the verification with locaked message, set message to unlocked
+                    ]) 
+                  }
                 }
                 else 
-                  setRecordText(`Failed to ${option}, please try again`)
+                  Alert.alert(`Failed to ${option}`, "This is probably a problem on our side. Please try again.", [
+                    { text: "OK", onPress: () => setRecordText("") } 
+                    // TODO: after binding the verification with locaked message, set message to unlocked
+                  ]) 
               }
             }}
           >{recording ? "Stop" : "Start"}</Button>

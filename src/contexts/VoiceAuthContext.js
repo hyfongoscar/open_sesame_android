@@ -4,11 +4,10 @@ import AudioRecord from 'react-native-audio-record'
 import storage from '@react-native-firebase/storage';
 
 export const VoiceAuthContext = createContext();
+const THRESHOLD = 10
 
 const VoiceAuthContextProvider = ({ children }) => {
   const [recording, setRecording] = useState(false)
-  const [recordSecs, setRecordSecs] = useState()
-  const [recordTime, setRecordTime] = useState()
 
   // const audioRecorderPlayer = new AudioRecorderPlayer()
   const options = {
@@ -19,52 +18,77 @@ const VoiceAuthContextProvider = ({ children }) => {
     wavFile: 'test.wav'
   };
 
+  const uploadToFirebase = async (file, referenceUrl) => {
+    const reference = storage().ref(referenceUrl);
+    await reference.putFile(file).then(() => {
+      console.log('Audio uploaded to the bucket!');
+    });
+    const url = await reference.getDownloadURL();
+    return url
+  }
+
   const onStartRecord = async () => {
     AudioRecord.init(options);
     AudioRecord.start();
     setRecording(true)
   };
 
-  const onStopRecord = async (option) => {
+  const onStopEnroll = async () => {
     audioFile = await AudioRecord.stop();
-    referenceUrl = `voicedata/user1/${option}.wav`
     setRecording(false)
-    const reference = storage().ref(referenceUrl);
-    await reference.putFile(audioFile).then(() => {
-      console.log('Audio uploaded to the bucket!');
-    });
-    const url = await reference.getDownloadURL();
+    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/user1/enroll.wav`)
 
-    var returnObj = {};
-    console.log(`{"url": ${url}}`)
-    await fetch(`http://35.215.162.230:8080/${option}`, {
+    var success = false
+    await fetch(`http://35.215.162.230:8080/enroll`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: `{"url": "${url}", "user": "oscar"}`
+      body: `{"url": "${downloadUrl}", "user": "oscar"}`
+    }).then(async (response) => {
+      returnResults = await response.json()
+      if (returnResults.url === downloadUrl)
+        success = true
+    }).catch((err) => {
+      console.log(err)
     })
-    .then((response) => {
-      if (response.url === url)
-        returnObj.success = true
-      if (response.score)
-        returnObj.score = response.score
-    })
-    .catch((error) => {
-      returnObj.success = false
-      console.log(error)
-    });
     return success
+  };
+
+  const onStopVerify = async () => {
+    audioFile = await AudioRecord.stop();
+    setRecording(false)
+    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/user1/verify.wav`)
+
+    var returnObj = {
+      networkSuccess: false,
+      thresholdPassed: false
+    }
+    await fetch(`http://35.215.162.230:8080/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: `{"url": "${downloadUrl}", "user": "oscar"}`
+    }).then(async (response) => {
+      const returnResults = await response.json()
+      if (returnResults.url === downloadUrl)
+        returnObj.networkSuccess = true
+      if (parseFloat(returnResults.score) > THRESHOLD)
+        returnObj.thresholdPassed = true
+    }).catch((err) => {
+      console.log(err)
+    })
+    return returnObj
   };
 
   return (
       <VoiceAuthContext.Provider
           value={{
             recording,
-            recordSecs,
-            recordTime,
             onStartRecord,
-            onStopRecord
+            onStopEnroll,
+            onStopVerify
           }}
       >
         {children}
