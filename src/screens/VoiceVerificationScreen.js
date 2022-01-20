@@ -9,18 +9,16 @@ export default function VoiceVerificationScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Title style={styles.titleText}>Authorize your voiceprint</Title>
+      <Title style={styles.titleText}>Verify your voiceprint</Title>
       <Text style={styles.instructions}>Press the button below to start recording your voice.</Text>
       <Text style={styles.instructions}>Press the button again to stop recording.</Text>
-      <Text style={styles.instructions}>Your voice will be compared with your previously registered voiceprint.</Text>
-      <TouchableOpacity style={styles.recordOverlay} >
-        <Button
+      <Text style={styles.instructions}>Your voice will be saved in your account.</Text>
+      <Button
           mode="contained"
-          style={styles.recordButton}
-          labelStyle={styles.recordButtonLabel}
-          onPress={() => recording ? onStopRecord() : onStartRecord()}
-        >{recording ? "Stop" : "Start"}</Button>
-      </TouchableOpacity>
+          onPress={() => navigation.navigate("VoiceRecording", {
+            option: "verify"
+          })}
+        >Start Enrollment</Button>
     </View>
   );
 }

@@ -27,7 +27,7 @@ const VoiceAuthContextProvider = ({ children }) => {
 
   const onStopRecord = async (option) => {
     audioFile = await AudioRecord.stop();
-    referenceUrl = 'voicedata/user1/enroll.wav'
+    referenceUrl = `voicedata/user1/${option}.wav`
     setRecording(false)
     const reference = storage().ref(referenceUrl);
     await reference.putFile(audioFile).then(() => {
@@ -36,24 +36,18 @@ const VoiceAuthContextProvider = ({ children }) => {
     const url = await reference.getDownloadURL();
 
     let result = false;
-    
-    switch(option) {
-      case 'enroll':
-        console.log(`{"url": ${url}}`)
-        await fetch('http://35.215.162.230:8080/enroll', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: `{"url": "${url}"}`
-        }).then((response) => {
-          result = true
-        }).catch((error) => {
-          console.log(error)
-        });
-      case 'verify':
-      default:
-    }
+    console.log(`{"url": ${url}}`)
+    await fetch(`http://35.215.162.230:8080/${option}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: `{"url": "${url}", "user": "oscar"}`
+    }).then((response) => {
+      result = true
+    }).catch((error) => {
+      console.log(error)
+    });
     return result
   };
 

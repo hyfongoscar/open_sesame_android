@@ -30,7 +30,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
       <View style={styles.container}>
-        <Title style={styles.titleText}>Welcome!</Title>
+        <Title style={styles.titleText}>Open Sesame</Title>
         <TextInput
             label="Email"
             style={styles.input}
@@ -68,14 +68,6 @@ export default function LoginScreen({ navigation }) {
             labelStyle={styles.navButtonText}
             onPress={() => navigation.navigate('Signup')}
         > Sign up here </Button>
-        <Button
-            mode="text"
-            uppercase={false}
-            style={styles.button}
-            contentStyle={styles.buttonContainer}
-            labelStyle={styles.navButtonText}
-            onPress={() => navigation.navigate('VoiceVerification')}
-        > Temporary Dev Button (for SV Auth) </Button>
       </View>
   );
 }

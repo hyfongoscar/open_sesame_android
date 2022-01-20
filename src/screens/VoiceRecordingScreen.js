@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
@@ -9,11 +9,27 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
   const { recording, onStartRecord, onStopRecord } = useContext(VoiceAuthContext)
   const [ recordText, setRecordText ] = useState('')
+  const [ randNum, setRandNum ] = useState('')
+
+  useEffect(() => {
+
+    var digits = [0,1,2,3,4,5,6,7,8,9],
+    randNums = [],
+    j = 0;
+
+    // generate non-repeating 6-digit number
+    while (digits.length > 4) {
+      j = Math.floor(Math.random() * (digits.length + 1));
+      randNums.push(digits[j]);
+      digits.splice(j,1);
+    }
+    setRandNum(randNums.join(''))
+  }, [])
 
   return (
       <View style={styles.container}>
         <Text style={styles.instructions}>Record yourself saying the following numbers:</Text>
-        <Text style={styles.titleText}>135790</Text>
+        <Text style={styles.titleText}> { randNum } </Text>
         <Text style={styles.instructions}>Press the button below to start recording your voice.</Text>
         <Text style={styles.instructions}>Press the button again to stop recording.</Text>
         <Text style={styles.instructions}>Your voice will be saved in your account.</Text>
@@ -26,7 +42,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
               if (!recording){
                 onStartRecord()
               } else {
-                setRecordText("Enrolling in process...")
+                setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
                 const success = await onStopRecord(option)
                 if (success)
                   navigation.navigate('Message')
@@ -77,8 +93,8 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff',
   },
   recordText: {
-    fontSize: 22,
-    color: '#add8e6',
+    fontSize: 18,
+    color: '#006400',
   },
   titleText: {
     fontSize: 32,

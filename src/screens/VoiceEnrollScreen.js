@@ -6,8 +6,8 @@ export default function VoiceEnrollScreen({ navigation }) {
   return (
       <View style={styles.container}>
         <Title style={styles.titleText}>Enroll your voiceprint</Title>
-        <Text style={styles.instructions}>Press the button below to start recording your voice.</Text>
-        <Text style={styles.instructions}>Press the button again to stop recording.</Text>
+        <Text style={styles.instructions}>To start using this application, you must first enroll your voiceprint</Text>
+        <Text style={styles.instructions}>Record yourself saying a series of numbers.</Text>
         <Text style={styles.instructions}>Your voice will be saved in your account.</Text>
         <Button
             mode="contained"

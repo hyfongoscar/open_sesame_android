@@ -26,7 +26,7 @@ export default function AuthStack() {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
         <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
-        <Stack.Screen name="VoiceVerification" component={VoiceVerificationScreen} />
+        <Stack.Screen name="VoiceVerify" component={VoiceVerificationScreen} />
         <Stack.Screen name="Chat" component={ChatScreen}/>
         <Stack.Screen name="Message" component={MessageScreen}/>
         <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
