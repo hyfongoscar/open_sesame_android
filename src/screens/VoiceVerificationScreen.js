@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
+// TODO: remove this page completely when verification is binded to a message
+
 export default function VoiceVerificationScreen({ navigation }) {
   return (
     <View style={styles.container}>

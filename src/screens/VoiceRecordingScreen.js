@@ -58,8 +58,8 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                   }
                   else {
                     Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
-                      { text: "OK", onPress: () => navigation.navigate('Message') } 
-                      // TODO: after binding the verification with locaked message, set message to unlocked
+                      { text: "OK", onPress: () => navigation.goBack() } 
+                      // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                     ]) 
                   }
                 }
