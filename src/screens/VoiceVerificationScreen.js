@@ -2,25 +2,21 @@ import React, { useContext, useState } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
-import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+// TODO: remove this page completely when verification is binded to a message
 
 export default function VoiceVerificationScreen({ navigation }) {
-  const { recording, recordSecs, recordTime, onStartRecord, onStopRecord } = useContext(VoiceAuthContext)
-
   return (
     <View style={styles.container}>
-      <Title style={styles.titleText}>Authorize your voiceprint</Title>
+      <Title style={styles.titleText}>Verify your voiceprint</Title>
       <Text style={styles.instructions}>Press the button below to start recording your voice.</Text>
       <Text style={styles.instructions}>Press the button again to stop recording.</Text>
-      <Text style={styles.instructions}>Your voice will be compared with your previously registered voiceprint.</Text>
-      <TouchableOpacity style={styles.recordOverlay} >
-        <Button
+      <Text style={styles.instructions}>Your voice will be saved in your account.</Text>
+      <Button
           mode="contained"
-          style={styles.recordButton}
-          labelStyle={styles.recordButtonLabel}
-          onPress={() => recording ? onStopRecord() : onStartRecord()}
-        >{recording ? "Stop" : "Start"}</Button>
-      </TouchableOpacity>
+          onPress={() => navigation.navigate("VoiceRecording", {
+            option: "verify"
+          })}
+        >Start Enrollment</Button>
     </View>
   );
 }

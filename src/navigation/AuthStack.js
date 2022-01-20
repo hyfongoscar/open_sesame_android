@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react'
 
 import LoginScreen from '../screens/LoginScreen'
@@ -6,9 +6,13 @@ import SignupScreen from '../screens/SignupScreen'
 import ChatScreen from '../screens/ChatScreen';
 import MessageScreen from '../screens/MessageScreen';
 import VoiceEnrollScreen from '../screens/VoiceEnrollScreen'
+import VoiceRecordingScreen from '../screens/VoiceRecordingScreen'
 import VoiceVerificationScreen from '../screens/VoiceVerificationScreen'
+import ChangeUsernameScreen from '../screens/ChangeUsernameScreen'
 
-const Stack = createStackNavigator();
+
+const Stack = createNativeStackNavigator();
+
 const globalScreenOptions = {
   headerStyle: {backgroundColor: "purple"},
   headerTitleStyle: {color: "white"},
@@ -21,9 +25,11 @@ export default function AuthStack() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
-        <Stack.Screen name="VoiceVerification" component={VoiceVerificationScreen} />
+        <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
+        <Stack.Screen name="VoiceVerify" component={VoiceVerificationScreen} />
         <Stack.Screen name="Chat" component={ChatScreen}/>
         <Stack.Screen name="Message" component={MessageScreen}/>
+        <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
       </Stack.Navigator>
   );
 }

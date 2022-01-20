@@ -18,9 +18,9 @@ export default function LoginScreen({ navigation }) {
       }
       else {
         switch (errorCode) {
-          case "auth/email-already-in-use":
-            setLoginText("This email is already registered! If you forgot your password, please reset your password in the login page.")
-            break
+          // case "auth/email-already-in-use":
+          //   setLoginText("This email is already registered! If you forgot your password, please reset your password in the login page.")
+          //   break
           default:
             setLoginText("Login failed: " + errorMessage + " (Error Code: " + errorCode + ")")
         }
@@ -30,7 +30,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
       <View style={styles.container}>
-        <Title style={styles.titleText}>Welcome!</Title>
+        <Title style={styles.titleText}>Open Sesame</Title>
         <TextInput
             label="Email"
             style={styles.input}
@@ -53,11 +53,10 @@ export default function LoginScreen({ navigation }) {
             contentStyle={styles.buttonContainer}
             labelStyle={styles.loginButtonLabel}
             onPress={() => {
-              // if (email && password)
-              //   handleLogin()
-              // else
-              //   setLoginText("Please enter both email and password!")
-              navigation.navigate('Message')
+               if (email && password)
+                 handleLogin()
+               else
+                 setLoginText("Please enter both email and password!")
             }}
         > Login </Button>
         <Text>{ loginText }</Text>
@@ -69,22 +68,6 @@ export default function LoginScreen({ navigation }) {
             labelStyle={styles.navButtonText}
             onPress={() => navigation.navigate('Signup')}
         > Sign up here </Button>
-        <Button
-            mode="text"
-            uppercase={false}
-            style={styles.button}
-            contentStyle={styles.buttonContainer}
-            labelStyle={styles.navButtonText}
-            onPress={() => navigation.navigate('VoiceEnroll')}
-        > Temporary Dev Button (for SV Enroll) </Button>
-        <Button
-            mode="text"
-            uppercase={false}
-            style={styles.button}
-            contentStyle={styles.buttonContainer}
-            labelStyle={styles.navButtonText}
-            onPress={() => navigation.navigate('VoiceVerification')}
-        > Temporary Dev Button (for SV Auth) </Button>
       </View>
   );
 }
