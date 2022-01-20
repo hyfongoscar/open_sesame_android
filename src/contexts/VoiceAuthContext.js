@@ -35,7 +35,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     });
     const url = await reference.getDownloadURL();
 
-    let result = false;
+    var returnObj = {};
     console.log(`{"url": ${url}}`)
     await fetch(`http://35.215.162.230:8080/${option}`, {
       method: "POST",
@@ -43,12 +43,18 @@ const VoiceAuthContextProvider = ({ children }) => {
         "Content-Type": "application/json"
       },
       body: `{"url": "${url}", "user": "oscar"}`
-    }).then((response) => {
-      result = true
-    }).catch((error) => {
+    })
+    .then((response) => {
+      if (response.url === url)
+        returnObj.success = true
+      if (response.score)
+        returnObj.score = response.score
+    })
+    .catch((error) => {
+      returnObj.success = false
       console.log(error)
     });
-    return result
+    return success
   };
 
   return (

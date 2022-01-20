@@ -43,9 +43,10 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 onStartRecord()
               } else {
                 setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
-                const success = await onStopRecord(option)
-                if (success)
+                const results = await onStopRecord(option)
+                if (results.success) {
                   navigation.navigate('Message')
+                }
                 else 
                   setRecordText(`Failed to ${option}, please try again`)
               }
