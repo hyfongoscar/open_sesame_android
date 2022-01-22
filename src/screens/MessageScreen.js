@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-
 
 const Messages = [
   {
@@ -40,9 +39,16 @@ const Messages = [
   },
 ]
 
-export default function MessageScreen({navigation }) {
+export default function MessageScreen({ navigation }) {
 
-  const { logout } = useContext(AccountAuthContext)
+  const { user, logout } = useContext(AccountAuthContext)
+
+  useEffect(() => {
+    if (!user)
+      Alert.alert("Error", "User not found!", [
+        { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
+      ])
+  }, [])
 
   return (
     <View style={styles.container}>

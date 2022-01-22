@@ -1,10 +1,22 @@
-import React, { useContext, useState } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Button, Title } from 'react-native-paper'
+
+import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
 // TODO: remove this page completely when verification is binded to a message
 
 export default function VoiceVerificationScreen({ navigation }) {
+
+  const { user } = useContext(AccountAuthContext)
+
+  useEffect(() => {
+    if (!user)
+      Alert.alert("Error", "User not found!", [
+        { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
+      ])
+  }, [])
+
   return (
     <View style={styles.container}>
       <Title style={styles.titleText}>Verify your voiceprint</Title>

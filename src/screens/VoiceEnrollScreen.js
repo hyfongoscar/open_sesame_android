@@ -1,8 +1,20 @@
-import React, { useContext, useState } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
+import { AccountAuthContext } from '../contexts/AccountAuthContext'
+
 export default function VoiceEnrollScreen({ navigation }) {
+
+  const { user } = useContext(AccountAuthContext)
+
+  useEffect(() => {
+    if (!user)
+      Alert.alert("Error", "User not found!", [
+        { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
+      ])
+  }, [])
+
   return (
       <View style={styles.container}>
         <Title style={styles.titleText}>Enroll your voiceprint</Title>
