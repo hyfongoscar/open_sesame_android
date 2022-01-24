@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useContext, useState } from 'react'
 import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
@@ -14,9 +14,13 @@ import storage from '@react-native-firebase/storage';
 var RNFS = require('react-native-fs');
 var locked = false
 
+import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([])
   const [checked, setChecked] = useState(false)
+
+  const { verified } = useContext(VoiceAuthContext)
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -56,18 +60,6 @@ export default function ChatScreen({ navigation, route }) {
       is_file: false,
     });
   }, [])
-
-  const CustomMessageText = (props) => {
-    const { currentMessage } = props;
-    return (
-      <TouchableOpacity onPress={()=>{alert("Locked")}}>
-        <Image
-          style={styles.largerLogo}
-          source={require('../../assets/lock.jpeg')}
-        />
-      </TouchableOpacity>
-    )
-  }
 
   const uploadFileToFirebase = async (result, file) => {
     const uploadTask = storage().ref(`allFiles/${file.name}`).putString(result, 'base64',{contentType: file.type});
@@ -204,7 +196,7 @@ export default function ChatScreen({ navigation, route }) {
       return(
         <Bubble
           {...props}
-          touchableProps={{ disabled: true }} // <= put this in to fix!
+          touchableProps={{ disabled: true }}
           renderCustomView={() => (
             <TouchableOpacity 
               onPress={ async () => { 
@@ -230,8 +222,13 @@ export default function ChatScreen({ navigation, route }) {
 
   const renderMessageText =  (props) => {
     const { currentMessage } = props;
-    if (currentMessage.locked && currentMessage.user._id != 1){
-      return <CustomMessageText {...props} />
+    if (currentMessage.locked && currentMessage._rid == 1 && !verified){
+      return (
+        <Image
+          style={styles.largerLogo}
+          source={require('../../assets/lock.jpeg')}
+        />
+      )
     }
     return <MessageText {...props} />
   }
@@ -259,9 +256,17 @@ export default function ChatScreen({ navigation, route }) {
       renderMessageText = {renderMessageText}
       renderActions = {renderActions}
       renderSend = {renderSend}
-      messages= {messages}
-      onSend= {messages => onSend(messages)}
-      user={{
+      messages = {messages}
+      onSend = {messages => onSend(messages)}
+      onLongPress = {(context, message) => {
+        if (message._rid == 1 && message.locked) {
+          Alert.alert("Locked!", "Unlock this message with your voiceprint", [
+            { text: "Unlock", onPress: () => navigation.navigate("VoiceRecording", {option: "verify"}) },
+            { text: "Cancel" }
+          ])
+        }
+      }}
+      user = {{
         _id: 1,
       }}
     />

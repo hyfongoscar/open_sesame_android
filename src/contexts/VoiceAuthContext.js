@@ -12,6 +12,7 @@ const VoiceAuthContextProvider = ({ children }) => {
   const { user } = useContext(AccountAuthContext)
 
   const [recording, setRecording] = useState(false)
+  const [verified, setVerified] = useState(false)
 
   const options = {
     sampleRate: 16000,
@@ -54,7 +55,7 @@ const VoiceAuthContextProvider = ({ children }) => {
   };
 
   const onStopEnroll = async () => {
-    audioFile = await AudioRecord.stop();
+    const audioFile = await AudioRecord.stop();
     setRecording(false)
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/enroll.wav`)
 
@@ -76,7 +77,7 @@ const VoiceAuthContextProvider = ({ children }) => {
   }
 
   const onStopVerify = async () => {
-    audioFile = await AudioRecord.stop();
+    const audioFile = await AudioRecord.stop();
     setRecording(false)
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
 
@@ -96,16 +97,23 @@ const VoiceAuthContextProvider = ({ children }) => {
         returnObj.networkSuccess = true
       if (parseFloat(returnResults.score) > THRESHOLD)
         returnObj.thresholdPassed = true
+      if (returnObj.networkSuccess && returnObj.thresholdPassed)
+        setVerified(true)
     }).catch((err) => {
       console.log(err)
     })
     return returnObj
   };
 
+  const verifySpeech = async () => {
+
+  }
+
   return (
       <VoiceAuthContext.Provider
           value={{
             recording,
+            verified,
             onStartRecord,
             onStopEnroll,
             onStopVerify

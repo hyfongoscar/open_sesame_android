@@ -89,14 +89,6 @@ export default function MessageScreen({ navigation }) {
           labelStyle={styles.navButtonText}
           onPress={() => navigation.navigate('VoiceEnroll')}
       > Enroll Voiceprint </Button>
-
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('VoiceVerify')}
-      > Verify Voiceprint </Button>
           
       <Button
           mode="contained"

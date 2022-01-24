@@ -7,7 +7,6 @@ import ChatScreen from '../screens/ChatScreen';
 import MessageScreen from '../screens/MessageScreen';
 import VoiceEnrollScreen from '../screens/VoiceEnrollScreen'
 import VoiceRecordingScreen from '../screens/VoiceRecordingScreen'
-import VoiceVerificationScreen from '../screens/VoiceVerificationScreen'
 import ChangeUsernameScreen from '../screens/ChangeUsernameScreen'
 
 
@@ -26,7 +25,6 @@ export default function AuthStack() {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
         <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
-        <Stack.Screen name="VoiceVerify" component={VoiceVerificationScreen} />
         <Stack.Screen name="Chat" component={ChatScreen}/>
         <Stack.Screen name="Message" component={MessageScreen}/>
         <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>

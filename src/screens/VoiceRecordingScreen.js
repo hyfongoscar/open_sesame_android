@@ -4,7 +4,6 @@ import { Button, Title } from 'react-native-paper'
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 
-
 export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
   const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
@@ -51,23 +50,23 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 else if (option === "verify") {
                   const results = await onStopVerify()
                   if (results.thresholdPassed) {
-                    Alert.alert("Verification success", "You can now view the message.", [
-                      { text: "OK", onPress: () => navigation.navigate('Message') } 
+                    Alert.alert("Verification success", "You can now view the message. Verification will expire after 10 minutes", [
+                      { text: "OK", onPress: () => navigation.goBack() } 
                       // TODO: after binding the verification with locaked message, set message to unlocked
-                    ]) 
+                    ])
                   }
-                  else {
+                  else if (results.networkSuccess){
                     Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
                       // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                     ]) 
                   }
+                  else 
+                    Alert.alert(`Verification failed`, "This is probably a problem on our side. Please try again.", [
+                      { text: "OK", onPress: () => navigation.goBack() } 
+                      // TODO: after binding the verification with locaked message, set message to unlocked
+                    ]) 
                 }
-                else 
-                  Alert.alert(`Failed to ${option}`, "This is probably a problem on our side. Please try again.", [
-                    { text: "OK", onPress: () => setRecordText("") } 
-                    // TODO: after binding the verification with locaked message, set message to unlocked
-                  ]) 
               }
             }}
           >{recording ? "Stop" : "Start"}</Button>
