@@ -8,6 +8,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import firestore from '@react-native-firebase/firestore';
 import storage, {getStorage, ref, uploadBytesResumable, getDownloadURL} from '@react-native-firebase/storage';
 var RNFS = require('react-native-fs');
+var exist = false;
+var check = false;
 export default function ChatScreen({navigation,route}) {
   
 
@@ -40,7 +42,6 @@ export default function ChatScreen({navigation,route}) {
             locked: doc.data().locked,
             file_type: doc.data().file_type,
             file_url: doc.data().file_url,
-            downloaded: doc.data().downloaded,
             is_file : doc.data().is_file, 
           }))
         );
@@ -54,10 +55,9 @@ export default function ChatScreen({navigation,route}) {
     const sender_id_pair = [user._id, route.params.userID]
     const sender_id = user._id
     const _rid = route.params.userID
-    const locked = checked
+    const locked = check
     const file_type = "text" 
     const file_url = "none"
-    const downloaded = true
     const is_file= false
     firestore().collection('chats').doc(_id).set({
       _id,
@@ -70,7 +70,6 @@ export default function ChatScreen({navigation,route}) {
       locked,
       file_type,
       file_url,
-      downloaded,
       is_file,
     });
   }, [])
@@ -93,17 +92,28 @@ export default function ChatScreen({navigation,route}) {
     })
   }
   */
-  function openFile(path){
-    FileViewer.open(path);
-  }
+
+ 
+
 
    const FileText = (props) => {
     const { currentMessage } = props;
     const { config, fs } = RNFetchBlob
-    if(!currentMessage.downloaded)
+    let DownloadDir = fs.dirs.DownloadDir 
+    const path = DownloadDir + "/" + currentMessage.text;
+    useEffect(() => {
+      async function verifyFiles() {
+       // await RNFS.exists(path);
+        checkExist = true;
+        exist = await RNFS.exists(path);
+        console.log(exist)
+      }
+      verifyFiles();
+   }, [])
+    if(!exist)
     {
-      firestore().collection('chats').doc(currentMessage._id).update({downloaded:true});
-      let DownloadDir = fs.dirs.DownloadDir // this is the pictures directory. You can check the available directories in the wiki.
+     // firestore().collection('chats').doc(currentMessage._id).update({downloaded:true});
+     // let DownloadDir = fs.dirs.DownloadDir // this is the pictures directory. You can check the available directories in the wiki.
       let options = {
       fileCache: true,
       addAndroidDownloads : {
@@ -116,9 +126,9 @@ export default function ChatScreen({navigation,route}) {
       config(options).fetch('GET',currentMessage.file_url).then((res) => {
         // do some magic here
       })
+      
     }
-    let DownloadDir = fs.dirs.DownloadDir
-    const path = DownloadDir + "/" + currentMessage.text;
+
     return (
       <MessageText {...props}/>
     );  
@@ -129,7 +139,7 @@ export default function ChatScreen({navigation,route}) {
     return (
       <TouchableOpacity onPress={()=>{alert("Locked")}}>
         <Image
-          style={styles.lockedLogo}
+          style={styles.largerLogo}
           source={require('../../assets/lock.jpeg')}
         />
       </TouchableOpacity>
@@ -193,67 +203,88 @@ export default function ChatScreen({navigation,route}) {
       text: file.name,
       file_type: file.type,
       file_url: downloadURL,
-      downloaded: false,
       is_file: true,
     });
   }
   
   const renderActions = (props) => {
     return(
-            <Actions
-                {...props}
-                options={{
-                    ['Document']: async (props) => {
-                      try {
-                         const res = await DocumentPicker.pick({
-                           type: [DocumentPicker.types.allFiles],
-                         });                   
-                        console.log('res : ' + JSON.stringify(res));
-                        console.log('URI : ' + res[0].uri);
-                        console.log('Type : ' + res[0].type);
-                        console.log('File Name : ' + res[0].name);
-                        console.log('File Size : ' + res[0].size);
-                        const granted = await PermissionsAndroid.request(
-                          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                          {
-                            title: 'ReactNativeCode Read External Storage Permission',
-                            message: 'ReactNativeCode App needs access to your storage ',
-                          },
-                        );
-                        if (granted === PermissionsAndroid.RESULTS.GRANTED){
-                          const result = await RNFetchBlob.fs.readFile(res[0].uri, 'base64')
-                          console.log(result)
-                          uploadFileToFirebase(result, res[0])
-                        }
-                      }
-                     catch(e){
-                         if(DocumentPicker.isCancel(e)){
-                           console.log("User cancelled!")
-                         } else {
-                           throw e;
-                        }
-                      }
+        <Actions
+            {...props}
+            options={{
+                ['Document']: async (props) => {
+                  try {
+                      const res = await DocumentPicker.pick({
+                        type: [DocumentPicker.types.allFiles],
+                      });                   
+                    const granted = await PermissionsAndroid.request(
+                      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                      {
+                        title: 'ReactNativeCode Read External Storage Permission',
+                        message: 'ReactNativeCode App needs access to your storage ',
+                      },
+                    );
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED){
+                      const result = await RNFetchBlob.fs.readFile(res[0].uri, 'base64')
+                      console.log(result)
+                      uploadFileToFirebase(result, res[0])
+                    }
+                  }
+                  catch(e){
+                      if(DocumentPicker.isCancel(e)){
+                        console.log("User cancelled!")
+                      } else {
+                        throw e;
+                    }
+                  }
 
-                     },
-                    Cancel: (props) => {console.log("Cancel")}
-                }}
-                icon={() => (
-                   <Button
-                       name={'add'}
-                       size={28}
-                       color={'blue'}
-                       style={{left:0, bottom:0}}                           
-                  />
-               )}
-               onSend={args => console.log(args)}
-            />
+                  },
+                Cancel: (props) => {console.log("Cancel")}
+            }}
+            icon={() => (
+              <Image
+                  style={styles.smallerLogo}
+                  source={require('../../assets/file.jpeg')}
+                />
+
+            )}
+            onSend={args => console.log(args)}
+        />
          )
     }
        
+  async function filePressed(currentMessage) {
+    const { config, fs } = RNFetchBlob
+    let DownloadDir = fs.dirs.DownloadDir 
+    const path = DownloadDir + "/" + currentMessage.text;
+    if(!await RNFS.exists(path))
+    {
+     // firestore().collection('chats').doc(currentMessage._id).update({downloaded:true});
+     // let DownloadDir = fs.dirs.DownloadDir // this is the pictures directory. You can check the available directories in the wiki.
+      let options = {
+      fileCache: true,
+      addAndroidDownloads : {
+        useDownloadManager : true, // setting it to true will use the device's native download manager and will be shown in the notification bar.
+        notification : false,
+        path:  DownloadDir + "/" + currentMessage.text, // this is the path where your downloaded file will live in
+        description : 'Downloading file'
+      }
+    }
+      config(options).fetch('GET',currentMessage.file_url).then((res) => {
+        // do some magic here
+        alert("Downloaded");
+      })
+      
+    }
+    else
+      FileViewer.open(path);
+  }
+
   const renderBubble = (props) => {
     const { currentMessage } = props;
     if(currentMessage.is_file == true)
     {
+
       const { config, fs } = RNFetchBlob
       let DownloadDir = fs.dirs.DownloadDir
       const path = DownloadDir + "/" + currentMessage.text;
@@ -262,10 +293,10 @@ export default function ChatScreen({navigation,route}) {
           {...props}
           touchableProps={{ disabled: true }} // <= put this in to fix!
           renderCustomView={() => (
-            <TouchableOpacity onPress={() => openFile(path)}>
+            <TouchableOpacity onPress={()=>{filePressed(currentMessage)}}>
               <View style={{ width: 50, height: 50 }}>
                 <Image
-                  style={styles.lockedLogo}
+                  style={styles.largerLogo}
                   source={require('../../assets/file.jpeg')}
                 />
               </View>
@@ -278,25 +309,24 @@ export default function ChatScreen({navigation,route}) {
   };
 
 
-  const renderMessageText = (props) => {
+  const renderMessageText =  (props) => {
     const { currentMessage } = props;
   
     if (currentMessage.locked && currentMessage.user._id != 1){
       return <CustomMessageText {...props} />
     }
-    if(currentMessage.is_file){
-      return <FileText {...props}/>
-    }
-    
+  
+  
     return <MessageText {...props} />
   };
 
   const renderSend= (props) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', height: 60 }}>
       <Checkbox
-        status={checked ? 'checked' : 'unchecked'}
+        status={check ? 'checked' : 'unchecked'}
         onPress={() => {
-          setChecked(!checked);
+          check = !check;
+          console.log(check);
         }}
       />
       <Send {...props}>
@@ -325,9 +355,13 @@ export default function ChatScreen({navigation,route}) {
 }
 
 const styles = StyleSheet.create({
-  lockedLogo: {
+  largerLogo: {
     width: 50,
     height: 50,
+  },
+  smallerLogo:{
+    width: 30,
+    height: 30
   },
   button: {
     alignItems: "center",
