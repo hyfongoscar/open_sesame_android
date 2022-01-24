@@ -6,6 +6,7 @@ import { GiftedChat, Bubble, MessageText, Send, Actions} from 'react-native-gift
 import DocumentPicker  from 'react-native-document-picker';
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
+import uuid from 'react-native-uuid';
 
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -14,7 +15,6 @@ var RNFS = require('react-native-fs');
 var locked = false
 
 export default function ChatScreen({ navigation, route }) {
-  
   const [messages, setMessages] = useState([])
   const [checked, setChecked] = useState(false)
 
@@ -39,16 +39,7 @@ export default function ChatScreen({ navigation, route }) {
         );
       });
     return subscriber;
-  });
-
-  const getRandomString = (length) => {
-    var randomChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    }
-    return result;
-  }
+  })
 
   const onSend = useCallback((messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
@@ -111,7 +102,7 @@ export default function ChatScreen({ navigation, route }) {
   }
 
   const saveFileToDatabase = (downloadURL, file) => {
-    const randomID = getRandomString(8) + "-" +  getRandomString(4) + "-" + getRandomString(4) + "-" + getRandomString(4) + "-" + getRandomString(12);
+    const randomID = uuid.v4()
     firestore().collection('chats').doc(randomID).set({
       _id: randomID,
       _rid: route.params.userID,
