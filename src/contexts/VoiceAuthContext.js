@@ -1,15 +1,18 @@
-import React, { createContext, useState } from 'react';
-// import AudioRecorderPlayer from 'react-native-audio-recorder-player'
+import React, { createContext, useContext, useState } from 'react';
+import { PermissionsAndroid, Platform } from 'react-native';
 import AudioRecord from 'react-native-audio-record'
 import storage from '@react-native-firebase/storage';
+
+import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
 export const VoiceAuthContext = createContext();
 const THRESHOLD = 10
 
 const VoiceAuthContextProvider = ({ children }) => {
+  const { user } = useContext(AccountAuthContext)
+
   const [recording, setRecording] = useState(false)
 
-  // const audioRecorderPlayer = new AudioRecorderPlayer()
   const options = {
     sampleRate: 16000,
     channels: 1,
@@ -28,6 +31,23 @@ const VoiceAuthContextProvider = ({ children }) => {
   }
 
   const onStartRecord = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Permissions for record audio',
+            message: 'Give permission to your device to record audio',
+            buttonPositive: 'ok',
+          },
+        )
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) 
+          return false
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    }
     AudioRecord.init(options);
     AudioRecord.start();
     setRecording(true)
@@ -36,7 +56,7 @@ const VoiceAuthContextProvider = ({ children }) => {
   const onStopEnroll = async () => {
     audioFile = await AudioRecord.stop();
     setRecording(false)
-    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/user1/enroll.wav`)
+    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/enroll.wav`)
 
     var success = false
     await fetch(`http://35.215.162.230:8080/enroll`, {
@@ -44,7 +64,7 @@ const VoiceAuthContextProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: `{"url": "${downloadUrl}", "user": "oscar"}`
+      body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
     }).then(async (response) => {
       returnResults = await response.json()
       if (returnResults.url === downloadUrl)
@@ -53,12 +73,12 @@ const VoiceAuthContextProvider = ({ children }) => {
       console.log(err)
     })
     return success
-  };
+  }
 
   const onStopVerify = async () => {
     audioFile = await AudioRecord.stop();
     setRecording(false)
-    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/user1/verify.wav`)
+    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
 
     var returnObj = {
       networkSuccess: false,
@@ -69,7 +89,7 @@ const VoiceAuthContextProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: `{"url": "${downloadUrl}", "user": "oscar"}`
+      body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
     }).then(async (response) => {
       const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
