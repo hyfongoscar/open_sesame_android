@@ -7,22 +7,36 @@ import { AccountAuthContext } from '../contexts/AccountAuthContext'
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginText, setLoginText] = useState('');
 
   const { login } = useContext(AccountAuthContext)
 
   const handleLogin = () => {
-    login(email, password).then(({ userCredential, errorCode, errorMessage }) => {
-      if (userCredential) {
+    login(email, password).then(({ success, errorCode, errorMessage }) => {
+      if (success) {
         navigation.navigate('Message')
       }
       else {
         switch (errorCode) {
-          // case "auth/email-already-in-use":
-          //   setLoginText("This email is already registered! If you forgot your password, please reset your password in the login page.")
-          //   break
+          case "auth/user-not-found":
+            Alert.alert("", "This email is not registered yet! Please check your input, or sign up first.", [
+              { text: "Sign up" , onPress: () => navigation.navigate("Signup")},
+              { text: "Cancel" }
+            ])
+            break
+          case "auth/wrong-password":
+            Alert.alert("", "Incorrect password!", [
+              // { text: "Forget password" , onPress: () => navigation.navigate("Signup")},
+              { text: "Ok" }
+            ])
+            break
+          case "auth/too-many-requests":
+            Alert.alert("", "You have tried too many times. Please try again later or reset your password.", [
+              // { text: "Forget password" , onPress: () => navigation.navigate("Signup")},
+              { text: "Ok" }
+            ])
+            break
           default:
-            setLoginText("Login failed: " + errorMessage + " (Error Code: " + errorCode + ")")
+            Alert.alert("Login failed", errorMessage + " (Error Code: " + errorCode + ")")
         }
       }
     })
@@ -56,10 +70,9 @@ export default function LoginScreen({ navigation }) {
                if (email && password)
                  handleLogin()
                else
-                 setLoginText("Please enter both email and password!")
+                 Alert.alert("Invalid credentials", "Please enter both email and password!")
             }}
         > Login </Button>
-        <Text>{ loginText }</Text>
         <Button
             mode="text"
             uppercase={false}
