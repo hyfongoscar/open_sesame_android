@@ -20,7 +20,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     bitsPerSample: 16,
     audioSource: 6,
     wavFile: 'test.wav'
-  };
+  }
 
   const uploadToFirebase = async (file, referenceUrl) => {
     const reference = storage().ref(referenceUrl);
@@ -52,7 +52,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     AudioRecord.init(options);
     AudioRecord.start();
     setRecording(true)
-  };
+  }
 
   const onStopEnroll = async () => {
     const audioFile = await AudioRecord.stop();
@@ -97,13 +97,16 @@ const VoiceAuthContextProvider = ({ children }) => {
         returnObj.networkSuccess = true
       if (parseFloat(returnResults.score) > THRESHOLD)
         returnObj.thresholdPassed = true
-      if (returnObj.networkSuccess && returnObj.thresholdPassed)
+      if (returnObj.networkSuccess && returnObj.thresholdPassed) {
         setVerified(true)
+        setTimeout(() => setVerified(false), 5 * 60 * 1000);
+      }
+      // TODO: make timeout customizable when settings are ready
     }).catch((err) => {
       console.log(err)
     })
     return returnObj
-  };
+  }
 
   const verifySpeech = async () => {
 
