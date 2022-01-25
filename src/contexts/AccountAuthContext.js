@@ -29,14 +29,17 @@ const AccountAuthContextProvider = ({ children }) => {
   }
 
   const register = async (displayName, email, password) => {
-    await firestore()
-      .collection('username')
-      .doc(email)
-      .set({
-        name: displayName,
-      })
     await auth()
       .createUserWithEmailAndPassword(email, password)
+      .then(async (userCredential) => {
+        const user = userCredential.user
+        const profile = {
+          displayName,
+          photoURL: 'https://my-cdn.com/assets/user/123.png',
+        }
+        await user.updateProfile(profile)
+        setUser(userCredential.user)
+      })
       .catch(error => {
         throw error
       })

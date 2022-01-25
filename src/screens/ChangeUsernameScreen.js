@@ -3,34 +3,27 @@ import { Alert, Dimensions, StyleSheet, View } from 'react-native';
 import { Button, Text, Title, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import auth from '@react-native-firebase/auth';
 
 export default function ChangeUsernameScreen({ navigation }) {
-    const user = auth().currentUser;
+  const { user } = useContext(AccountAuthContext)
     const [newUserName, setNewUserName] = useState('')
-    const userNameCollection = firestore().collection('username');
 
-    const changeName = () => {
-        userNameCollection
-            //.doc(user.email)
-            .doc('samsamho718@gmail.com')
-            .update({
-                name: newUserName,
-            })
-            .then(() => {
-                console.log('Username changed!');
-            });
+    const changeName = async () => {
+      const profile = {
+        displayName: newUserName,
+      }
+      await user.updateProfile(profile)
     }
     return (
-        <View>
-            <TextInput
-                label="NewUserName"
-                numberOfLines={1}
-                onChangeText={(newUserName) => setNewUserName(newUserName)}
-            />
-            <Button
-                onPress={ () => {changeName()}}
-            >Change Username</Button>
-        </View>
+      <View>
+        <TextInput
+            label="NewUserName"
+            numberOfLines={1}
+            onChangeText={(newUserName) => setNewUserName(newUserName)}
+        />
+        <Button
+            onPress={ () => changeName()}
+        >Change Username</Button>
+      </View>
     );
 }

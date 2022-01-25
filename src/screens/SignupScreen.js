@@ -14,6 +14,10 @@ export default function SignupScreen({ navigation }) {
   const { register } = useContext(AccountAuthContext)
 
   const validateEmail = () => {
+    if (email == '') {
+      Alert.alert("", "Please enter an email address.")
+      return false;
+    }
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(email) === false) {
       Alert.alert("", "Please enter a valid email address.")
@@ -23,6 +27,10 @@ export default function SignupScreen({ navigation }) {
   }
 
   const validatePassword = () => {
+    if (password1 == '' || password2 == '') {
+      Alert.alert("", "Please enter your passwords")
+      return false
+    }
     if (password1 !== password2) {
       Alert.alert("", "Your passwords do not match.")
       return false
@@ -30,13 +38,20 @@ export default function SignupScreen({ navigation }) {
     return true;
   }
 
+  const validateName = () => {
+    if (displayName === '') {
+      Alert.alert("", "Please enter a display name.")
+      return false
+    }
+    return true;
+  }
+
   const handleRegister = () => {
+    if (!validateName() || !validateEmail() || !validatePassword())
+      return false
     register(displayName, email, password1)
       .then(() => {
-        Alert.alert("", "Sign up success", [
-          { text: "Login", onPress: () => navigation.navigate("Login") },
-          { text: "OK" }
-        ])
+        Alert.alert("Sign up success", "You are now logged in")
       })
       .catch(({ code, message }) => {
         switch (code) {
@@ -88,9 +103,8 @@ export default function SignupScreen({ navigation }) {
             style={styles.button}
             contentStyle={styles.buttonContainer}
             labelStyle={styles.signupButtonLabel}
-            onPress={async () => {
-              if (validateEmail() && validatePassword())
-                handleRegister()
+            onPress={() => {
+              handleRegister()
             }}
         >Sign Up</Button>
       </View>
