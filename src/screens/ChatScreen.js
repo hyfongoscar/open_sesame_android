@@ -1,6 +1,6 @@
 import React, { useCallback, useLayoutEffect, useContext, useState } from 'react'
 import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import CheckBox from '@react-native-community/checkbox'
+import { Checkbox } from 'react-native-paper'
 
 import { GiftedChat, Bubble, MessageText, Send, Actions} from 'react-native-gifted-chat'
 import DocumentPicker  from 'react-native-document-picker';
@@ -236,11 +236,11 @@ export default function ChatScreen({ navigation, route }) {
   const renderSend = (props) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', height: 60 }}>
       <View style={styles.checkboxContainer}>
-        <CheckBox
-          value={checked}
-          onValueChange={(newValue) => {
-            setChecked(newValue)
-            locked = newValue
+        <Checkbox
+          status={checked ? 'checked' : 'unchecked'}
+          onPress={() => {
+            setChecked(!checked)
+            locked = !locked
           }}
           style={styles.checkbox}
         />
@@ -265,6 +265,7 @@ export default function ChatScreen({ navigation, route }) {
             { text: "Cancel" }
           ])
         }
+        // TODO: make this onPress
       }}
       user = {{
         _id: 1,
