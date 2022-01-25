@@ -11,12 +11,12 @@ export default function LoginScreen({ navigation }) {
   const { login } = useContext(AccountAuthContext)
 
   const handleLogin = () => {
-    login(email, password).then(({ success, errorCode, errorMessage }) => {
-      if (success) {
-        navigation.navigate('Message')
-      }
-      else {
-        switch (errorCode) {
+    login(email, password)
+      .catch(({ code, message }) => {
+        switch (code) {
+          case "auth/invalid-email":
+            Alert.alert("", "Please enter a valid email address.")
+            break
           case "auth/user-not-found":
             Alert.alert("", "This email is not registered yet! Please check your input, or sign up first.", [
               { text: "Sign up" , onPress: () => navigation.navigate("Signup")},
@@ -36,10 +36,9 @@ export default function LoginScreen({ navigation }) {
             ])
             break
           default:
-            Alert.alert("Login failed", errorMessage + " (Error Code: " + errorCode + ")")
+            Alert.alert("Login failed", message + " (Error Code: " + code + ")")
         }
-      }
-    })
+      })
   }
 
   return (

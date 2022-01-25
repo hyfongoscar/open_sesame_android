@@ -97,7 +97,6 @@ export default function MessageScreen({ navigation }) {
             labelStyle={styles.navButtonText}
           onPress={async () => {
               logout();
-              navigation.navigate('Login');
           }}
       >Log out</Button>
     </View>

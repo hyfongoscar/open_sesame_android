@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react'
+import React, { useContext } from 'react'
 
 import LoginScreen from '../screens/LoginScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -8,6 +8,8 @@ import MessageScreen from '../screens/MessageScreen';
 import VoiceEnrollScreen from '../screens/VoiceEnrollScreen'
 import VoiceRecordingScreen from '../screens/VoiceRecordingScreen'
 import ChangeUsernameScreen from '../screens/ChangeUsernameScreen'
+
+import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
 
 const Stack = createNativeStackNavigator();
@@ -19,15 +21,24 @@ const globalScreenOptions = {
 }
 
 export default function AuthStack() {
+  const { user } = useContext(AccountAuthContext)
+
   return (
-      <Stack.Navigator initialRouteName="Login" screenOptions={globalScreenOptions}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
-        <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
-        <Stack.Screen name="Chat" component={ChatScreen}/>
-        <Stack.Screen name="Message" component={MessageScreen}/>
-        <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
+      <Stack.Navigator screenOptions={globalScreenOptions}>
+        {user == null ? (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Message" component={MessageScreen}/>
+            <Stack.Screen name="Chat" component={ChatScreen}/>
+            <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
+            <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
+            <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
+          </>
+        )}
       </Stack.Navigator>
   );
 }

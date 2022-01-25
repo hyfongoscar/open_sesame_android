@@ -31,15 +31,15 @@ export default function SignupScreen({ navigation }) {
   }
 
   const handleRegister = () => {
-    register(displayName, email, password1).then(({ success, errorCode, errorMessage }) => {
-      if (success) {
+    register(displayName, email, password1)
+      .then(() => {
         Alert.alert("", "Sign up success", [
           { text: "Login", onPress: () => navigation.navigate("Login") },
           { text: "OK" }
         ])
-      }
-      else {
-        switch (errorCode) {
+      })
+      .catch(({ code, message }) => {
+        switch (code) {
           case "auth/email-already-in-use":
             Alert.alert("This email is already registered", "If you forgot your password, please reset your password in the login page.")
             break
@@ -47,10 +47,9 @@ export default function SignupScreen({ navigation }) {
             Alert.alert("Weak password", "Your password should be at least 6 characters long.")
             break
           default:
-            Alert.alert("Signup failed", errorMessage + " (Error Code: " + errorCode + ")")
+            Alert.alert("Signup failed", message + " (Error Code: " + code + ")")
         }
-      }
-    })
+      })
   }
 
   return (
