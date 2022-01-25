@@ -111,6 +111,43 @@ export default function ChatScreen({ navigation, route }) {
     })
   }
   
+  const saveFileToDevice = (downloadURL, path) => {
+    const { config } = RNFetchBlob
+    let options = {
+      fileCache: true,
+      addAndroidDownloads : {
+        useDownloadManager : true, // setting it to true will use the device's native download manager and notification bar.
+        notification : false,
+        path, // this is the path where your downloaded file will live in
+        description : 'Downloading file'
+      }
+    }
+    config(options).fetch('GET', downloadURL)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  const filePressed = async (currentMessage) => {
+    const { fs } = RNFetchBlob
+    let downloadDir = fs.dirs.DownloadDir 
+    const path = downloadDir + "/" + currentMessage.text
+    const exists = await RNFS.exists(path)
+    if (exists) {
+      Alert.alert("", "File exists already, do you wish to download again or open the file?", [
+        { text: "Open", onPress: () => FileViewer.open(path) },
+        { text: "Download", onPress: () => saveFileToDevice(currentMessage.file_url, path)}
+      ])
+    }
+    else {
+      saveFileToDevice(currentMessage.file_url, path)
+    }
+  }
+
+  // Custom Action button at the bottom left
   const renderActions = (props) => {
     return(
       <Actions
@@ -154,46 +191,35 @@ export default function ChatScreen({ navigation, route }) {
     )
   }
 
-  const saveFileToDevice = (downloadURL, path) => {
-    const { config } = RNFetchBlob
-    let options = {
-      fileCache: true,
-      addAndroidDownloads : {
-        useDownloadManager : true, // setting it to true will use the device's native download manager and notification bar.
-        notification : false,
-        path, // this is the path where your downloaded file will live in
-        description : 'Downloading file'
-      }
-    }
-    config(options).fetch('GET', downloadURL)
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }
-
-  const filePressed = async (currentMessage) => {
-    const { fs } = RNFetchBlob
-    let downloadDir = fs.dirs.DownloadDir 
-    const path = downloadDir + "/" + currentMessage.text
-    const exists = await RNFS.exists(path)
-    if (exists) {
-      Alert.alert("", "File exists already, do you wish to download again or open the file?", [
-        { text: "Open", onPress: () => FileViewer.open(path) },
-        { text: "Download", onPress: () => saveFileToDevice(currentMessage.file_url, path)}
-      ])
-    }
-    else {
-      saveFileToDevice(currentMessage.file_url, path)
-    }
-  }
-
+  // Custom message bubble
+  // Overrides MessageText for locked messages
+  // Overrides View for files
   const renderBubble = (props) => {
     const { currentMessage } = props;
-    if (currentMessage.is_file == true){
-      return(
+    if (currentMessage._rid == 1 && currentMessage.locked && !verified) {
+      return (
+        <Bubble
+          {...props} 
+          renderMessageText={() => (
+            <TouchableOpacity 
+              onPress={ () => {
+                Alert.alert("Locked!", "Unlock this message with your voiceprint", [
+                  { text: "Unlock", onPress: () => navigation.navigate("VoiceRecording", {option: "verify"}) },
+                  { text: "Cancel" }
+                ])
+              }}
+            >
+              <Image
+                style={styles.largerLogo}
+                source={require('../../assets/lock.jpeg')}
+              />
+            </TouchableOpacity>
+          )}
+        />
+      )
+    }
+    else if (currentMessage.is_file == true){
+      return (
         <Bubble
           {...props}
           touchableProps={{ disabled: true }}
@@ -220,19 +246,7 @@ export default function ChatScreen({ navigation, route }) {
     return <Bubble {...props} />
   }
 
-  const renderMessageText =  (props) => {
-    const { currentMessage } = props;
-    if (currentMessage.locked && currentMessage._rid == 1 && !verified){
-      return (
-        <Image
-          style={styles.largerLogo}
-          source={require('../../assets/lock.jpeg')}
-        />
-      )
-    }
-    return <MessageText {...props} />
-  }
-
+  // Custom Send bar at the bottom
   const renderSend = (props) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', height: 60 }}>
       <View style={styles.checkboxContainer}>
@@ -252,21 +266,11 @@ export default function ChatScreen({ navigation, route }) {
 
   return (
     <GiftedChat
-      renderBubble = {renderBubble}
-      renderMessageText = {renderMessageText}
       renderActions = {renderActions}
+      renderBubble = {renderBubble}
       renderSend = {renderSend}
       messages = {messages}
       onSend = {messages => onSend(messages)}
-      onLongPress = {(context, message) => {
-        if (message._rid == 1 && message.locked) {
-          Alert.alert("Locked!", "Unlock this message with your voiceprint", [
-            { text: "Unlock", onPress: () => navigation.navigate("VoiceRecording", {option: "verify"}) },
-            { text: "Cancel" }
-          ])
-        }
-        // TODO: make this onPress
-      }}
       user = {{
         _id: 1,
       }}
