@@ -1,48 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
+import firestore, {arrayUnion} from '@react-native-firebase/firestore';
+import Moment from 'moment';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { MessageContext } from '../contexts/MessageContext';
 
-const Messages = [
-  {
-    userName: 'Jenny Doe',
-//      userImg: require('../assets/users/user-3.jpg'),
-      message:{
-        _id: 1,
-        text: 'Hey there, this is my test for a post of my social app in React Native.',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-        locked:false,
 
-    },
-  },
-  {
-    userName: 'John Doe',
- //     userImg: require('../assets/users/user-1.jpg'),
-    message:{
-      _id: 1,
-      text: 'Hey there, this is my test for a post of my social app in React Native.',
-      createdAt: new Date(),
-      user: {
-        _id: 3,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
-    locked:true,
-    },
-   
-  },
-]
 
 export default function MessageScreen({ navigation }) {
-
-  const { user, logout } = useContext(AccountAuthContext)
-
+  const { fetchLastMessage, lastMessage } = useContext(MessageContext);
+  const { user, logout } = useContext(AccountAuthContext);
+  const [profile, setProfile] = useState();
+  
+  useLayoutEffect(() => {    
+    const subscriber = firestore()
+    .collection('friendList')
+    .where('friend_id_pair', 'array-contains',1)
+   // .orderBy('createdAt','desc')
+    .onSnapshot(querySnapshot => {
+    setProfile(
+        querySnapshot.docs.map(doc => ({
+          rid: (doc.data().friend_id_pair[0] == 1)?doc.data().friend_id_pair[1]:doc.data().friend_id_pair[0],
+          worthless: fetchLastMessage(doc.data().friend_id_pair[0], doc.data().friend_id_pair[1]),
+          r_email:  (doc.data().email_pair[0] == "kylesora419@gmail.com")?doc.data().email_pair[1]:doc.data().email_pair[0],
+          lastMessageText: lastMessage[0].text,
+          lastMessageTime: lastMessage[0].createdAt,
+        }))
+      );
+    });
+    
+    return subscriber;
+  })
+  
   useEffect(() => {
     if (!user)
       Alert.alert("Error", "User not found!", [
@@ -53,27 +44,35 @@ export default function MessageScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <FlatList
-        data ={Messages}
-        keyExtractor={item=>item.id}
+        data ={profile}
+        keyExtractor={item=>item.rid}
         renderItem={({item}) => (
           <TouchableOpacity 
             style = {styles.profile}
-            onPress={() => navigation.navigate('Chat', {userName: item.userName, messages: item.message, userID: item.message.user._id})}
+            onPress={() => navigation.navigate('Chat', {userName: item.r_email,  userID: item.rid})}
           >
             <View style={styles.userInfo}>
               <View style={styles.imgWrapper}>
                 <Image
                   style={styles.userImg}
-                  source={item.message.user.avatar}
                 />
               </View>
               <View style={styles.textSection}>
-                <Text style = {styles.userName}> {item.userName}</Text>
+                <Text style = {styles.userName}> {item.r_email}</Text>
+                <Text style = {styles.messageText}> {item.lastMessageText}</Text>
+                <Text style = {styles.postTime}> {Moment(item.lastMessageTime).format('D MMM H:mm')}</Text>
               </View>
             </View>   
           </TouchableOpacity>
         )}
       ></FlatList>
+      <Button
+          mode="contained"
+          style={styles.button}
+          contentStyle={styles.buttonContainer}
+          labelStyle={styles.navButtonText}
+          onPress={() => navigation.navigate('FriendRequest')}
+      >Add Friend </Button>
       <Button
           mode="contained"
           style={styles.button}

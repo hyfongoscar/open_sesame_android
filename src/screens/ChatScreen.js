@@ -14,15 +14,20 @@ import storage from '@react-native-firebase/storage';
 var RNFS = require('react-native-fs');
 var locked = false
 
-import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+import { VoiceAuthContext } from '../contexts/VoiceAuthContext';
+//import { MessageContext } from '../contexts/MessageContext';
+
 
 export default function ChatScreen({ navigation, route }) {
-  const [messages, setMessages] = useState([])
+ const [messages, setMessages] = useState([])
   const [checked, setChecked] = useState(false)
 
   const { verified } = useContext(VoiceAuthContext)
+ // const { messages, setRID } = useContext(MessageContext)
+ // setRID(route.params.userID);
 
   useLayoutEffect(() => {
+    
     const subscriber = firestore()
       .collection('chats')
       .where('sender_id_pair', 'in',[[route.params.userID, 1], [1, route.params.userID]])
@@ -42,11 +47,11 @@ export default function ChatScreen({ navigation, route }) {
           }))
         );
       });
-    return subscriber;
+     return subscriber;
   })
 
   const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     const {_id, createdAt, text, user} = messages[0]
     firestore().collection('chats').doc(_id).set({
       _id,

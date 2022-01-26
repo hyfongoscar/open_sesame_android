@@ -19,6 +19,7 @@
     "@react-navigation/native-stack": "^6.2.5",
     "dayjs": "^1.10.7",
     "fbjs": "^3.0.2",
+    "moment": "^2.29.1",
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-audio-record": "^0.2.2",
