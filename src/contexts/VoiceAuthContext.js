@@ -82,9 +82,12 @@ const VoiceAuthContextProvider = ({ children }) => {
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
 
     var returnObj = {
-      networkSuccess: false,
-      thresholdPassed: false
+      svNetworkSuccess: false,
+      thresholdPassed: false,
+      // speechPassed: false
     }
+    
+    // Speaker Verification
     await fetch(`http://35.215.162.230:8080/verify`, {
       method: "POST",
       headers: {
@@ -94,22 +97,21 @@ const VoiceAuthContextProvider = ({ children }) => {
     }).then(async (response) => {
       const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
-        returnObj.networkSuccess = true
+        returnObj.svNetworkSuccess = true
       if (parseFloat(returnResults.score) > THRESHOLD)
         returnObj.thresholdPassed = true
-      if (returnObj.networkSuccess && returnObj.thresholdPassed) {
-        setVerified(true)
-        setTimeout(() => setVerified(false), 5 * 60 * 1000);
-      }
-      // TODO: make timeout customizable when settings are ready
+      console.log(returnResults.digits)
     }).catch((err) => {
       console.log(err)
     })
+
+    if (Object.values(returnObj).every(true)) {
+      setVerified(true)
+      setTimeout(() => setVerified(false), 5 * 60 * 1000);
+    }
+    // TODO: make timeout customizable when settings are ready
+
     return returnObj
-  }
-
-  const verifySpeech = async () => {
-
   }
 
   return (

@@ -49,23 +49,30 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 }
                 else if (option === "verify") {
                   const results = await onStopVerify()
-                  if (results.thresholdPassed) {
+                  if (Object.values(results).every(true)) {
                     Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
                       // TODO: after binding the verification with locaked message, set message to unlocked
                     ])
                   }
-                  else if (results.networkSuccess){
+                  else if (!results.thresholdPassed) {
                     Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
                       // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                     ]) 
                   }
-                  else 
+                  // else if (!results.speechPassed) {
+                  //   Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again", [
+                  //     { text: "OK", onPress: () => setRecordText("") } 
+                  //     // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
+                  //   ]) 
+                  // }
+                  else {
                     Alert.alert(`Verification failed`, "This is probably a problem on our side. Please try again.", [
-                      { text: "OK", onPress: () => navigation.goBack() } 
+                      { text: "OK", onPress: () => setRecordText("") } 
                       // TODO: after binding the verification with locaked message, set message to unlocked
                     ]) 
+                  }
                 }
               }
             }}
