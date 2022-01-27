@@ -42,7 +42,7 @@ const AccountAuthContextProvider = ({ children }) => {
           .collection('profiles')
           .doc(email)
           .set({
-            id: user.uid,
+            uid: user.uid,
             displayName,
             // photo:
           })
