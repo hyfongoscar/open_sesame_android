@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import AudioRecord from 'react-native-audio-record'
-import storage from '@react-native-firebase/storage';
+import storage from '@react-native-firebase/storage'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 

@@ -13,6 +13,12 @@ export default function ChangeUsernameScreen({ navigation }) {
         displayName: newUserName,
       }
       await user.updateProfile(profile)
+      await firestore()
+        .collection('profiles')
+        .doc(email)
+        .update({
+          displayName: newUserName,
+        })
     }
     return (
       <View>
