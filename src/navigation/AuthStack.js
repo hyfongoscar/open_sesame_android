@@ -9,6 +9,7 @@ import VoiceEnrollScreen from '../screens/VoiceEnrollScreen'
 import VoiceRecordingScreen from '../screens/VoiceRecordingScreen'
 import ChangeUsernameScreen from '../screens/ChangeUsernameScreen'
 import FriendRequestScreen from '../screens/FriendRequestScreen';
+import ChangeProfilePicScreen from '../screens/ChangeProfilePicScreen';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
@@ -39,6 +40,7 @@ export default function AuthStack() {
             <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
             <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
             <Stack.Screen name="FriendRequest" component={FriendRequestScreen}/>
+            <Stack.Screen name="ChangeProfilePic" component={ChangeProfilePicScreen}/>
           </>
         )}
       </Stack.Navigator>

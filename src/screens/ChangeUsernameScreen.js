@@ -11,6 +11,7 @@ export default function ChangeUsernameScreen({ navigation }) {
     const changeName = async () => {
       const profile = {
         displayName: newUserName,
+        photoURL: user.photoURL,
       }
       await user.updateProfile(profile)
       await firestore()

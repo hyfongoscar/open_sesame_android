@@ -66,6 +66,13 @@ export default function MessageScreen({ navigation }) {
           </TouchableOpacity>
         )}
       ></FlatList>
+       <Button
+          mode="contained"
+          style={styles.button}
+          contentStyle={styles.buttonContainer}
+          labelStyle={styles.navButtonText}
+          onPress={() => navigation.navigate('ChangeProfilePic')}
+      >Change Profile Picture </Button>
       <Button
           mode="contained"
           style={styles.button}

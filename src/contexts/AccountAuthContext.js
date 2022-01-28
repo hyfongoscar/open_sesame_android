@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage'
 
 export const AccountAuthContext = createContext();
@@ -35,7 +36,7 @@ const AccountAuthContextProvider = ({ children }) => {
         const user = userCredential.user
         const profile = {
           displayName,
-          photoURL: 'https://my-cdn.com/assets/user/123.png',
+          photoURL: 'https://firebasestorage.googleapis.com/v0/b/open-sesame-ebca1.appspot.com/o/profilePic%2Fdefault.jpeg?alt=media&token=4851efe0-4063-4bd4-a647-20a72b7cc0ac',
         }
         await user.updateProfile(profile)
         await firestore()
@@ -44,7 +45,7 @@ const AccountAuthContextProvider = ({ children }) => {
           .set({
             uid: user.uid,
             displayName,
-            // photo:
+            photoURL:  'https://firebasestorage.googleapis.com/v0/b/open-sesame-ebca1.appspot.com/o/profilePic%2Fdefault.jpeg?alt=media&token=4851efe0-4063-4bd4-a647-20a72b7cc0ac',
           })
         setUser(userCredential.user)
       })
