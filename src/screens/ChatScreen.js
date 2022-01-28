@@ -15,19 +15,17 @@ var RNFS = require('react-native-fs');
 var locked = false
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext';
-//import { MessageContext } from '../contexts/MessageContext';
+import { AccountAuthContext } from '../contexts/AccountAuthContext';
 
 
 export default function ChatScreen({ navigation, route }) {
- const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState([])
   const [checked, setChecked] = useState(false)
 
   const { verified } = useContext(VoiceAuthContext)
- // const { messages, setRID } = useContext(MessageContext)
- // setRID(route.params.userID);
+  const { user } = useContext(AccountAuthContext)
 
   useLayoutEffect(() => {
-    
     const subscriber = firestore()
       .collection('chats')
       .where('sender_id_pair', 'in',[[route.params.userID, 1], [1, route.params.userID]])
@@ -40,7 +38,6 @@ export default function ChatScreen({ navigation, route }) {
             _rid: doc.data()._rid,
             createdAt: doc.data().createdAt.toDate(),
             text: doc.data().text,
-            user: doc.data().user,
             locked: doc.data().locked,
             file_url: doc.data().file_url,
             is_file : doc.data().is_file, 
@@ -52,15 +49,14 @@ export default function ChatScreen({ navigation, route }) {
 
   const onSend = useCallback((messages = []) => {
     //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    const {_id, createdAt, text, user} = messages[0]
+    const { _id, createdAt, text } = messages[0]
     firestore().collection('chats').doc(_id).set({
       _id,
-      sender_id: user._id,
+      sender_id: user.uid,
       _rid: route.params.userID,
-      sender_id_pair: [user._id, route.params.userID],
+      sender_id_pair: [user.uid, route.params.userID],
       createdAt,
       text,
-      user,
       locked,
       is_file: false,
     });
@@ -88,10 +84,7 @@ export default function ChatScreen({ navigation, route }) {
       }, 
       () => {
         // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-       // getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
-          console.log('File available at', downloadURL);
           saveFileToDatabase(downloadURL, file)
         })
       }
@@ -99,17 +92,13 @@ export default function ChatScreen({ navigation, route }) {
   }
 
   const saveFileToDatabase = (downloadURL, file) => {
-    const randomID = uuid.v4()
     firestore().collection('chats').doc(randomID).set({
-      _id: randomID,
+      _id: uuid.v4(),
       _rid: route.params.userID,
       createdAt: new Date(),
       locked,
-      sender_id: 1,
+      sender_id: user.uid,
       sender_id_pair: [1,route.params.userID],
-      user:{
-        _id: 1,
-      },
       text: file.name,
       file_url: downloadURL,
       is_file: true,
@@ -277,7 +266,7 @@ export default function ChatScreen({ navigation, route }) {
       messages = {messages}
       onSend = {messages => onSend(messages)}
       user = {{
-        _id: 1,
+        _id: user.uid,
       }}
     />
   )

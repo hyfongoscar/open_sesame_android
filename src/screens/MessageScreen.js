@@ -17,22 +17,38 @@ export default function MessageScreen({ navigation }) {
   useLayoutEffect(() => {    
     const subscriber = firestore()
     .collection('friendList')
-    .where('friend_id_pair', 'array-contains',1)
+    .where('friend_email_pair', 'array-contains', user.email)
    // .orderBy('createdAt','desc')
     .onSnapshot(querySnapshot => {
     setProfile(
         querySnapshot.docs.map(doc => ({
-          rid: (doc.data().friend_id_pair[0] == 1)?doc.data().friend_id_pair[1]:doc.data().friend_id_pair[0],
-          worthless: fetchLastMessage(doc.data().friend_id_pair[0], doc.data().friend_id_pair[1]),
-          r_email:  (doc.data().email_pair[0] == "kylesora419@gmail.com")?doc.data().email_pair[1]:doc.data().email_pair[0],
-          lastMessageText: lastMessage[0].text,
-          lastMessageTime: lastMessage[0].createdAt,
+          // rid: (doc.data().friend_id_pair[0] == 1)?doc.data().friend_id_pair[1]:doc.data().friend_id_pair[0],
+          worthless: fetchLastMessage(doc.data().friend_email_pair[0], doc.data().friend_email_pair[1]),
+          r_email:  (doc.data().friend_email_pair[0] == user.email) ? doc.data().friend_email_pair[1] : doc.data().friend_email_pair[0],
+          // lastMessageText: lastMessage[0].text,
+          // lastMessageTime: lastMessage[0].createdAt,
         }))
       );
     });
     
     return subscriber;
   })
+
+  const getDisplayName = async (email) => {
+    const query = await firestore()
+      .collection('profiles')
+      .doc(email)
+      .get()
+    return query._data.displayName || ""
+  }
+
+  const getId = async (email) => {
+    const data = await firestore()
+      .collection('profiles')
+      .doc(email)
+      .get()._data
+    return data.uid || ""
+  }
   
   useEffect(() => {
     if (!user)
