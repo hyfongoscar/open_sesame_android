@@ -21,14 +21,13 @@ import { AccountAuthContext } from '../contexts/AccountAuthContext';
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([])
   const [checked, setChecked] = useState(false)
-
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
 
   useLayoutEffect(() => {
     const subscriber = firestore()
       .collection('chats')
-      .where('sender_id_pair', 'in',[[route.params.userID, 1], [1, route.params.userID]])
+      .where('sender_id_pair', 'in',[[route.params.userID, user.uid], [user.uid, route.params.userID]])
       .orderBy('createdAt','desc')
       .onSnapshot(querySnapshot => {
         setMessages(
@@ -38,6 +37,7 @@ export default function ChatScreen({ navigation, route }) {
             _rid: doc.data()._rid,
             createdAt: doc.data().createdAt.toDate(),
             text: doc.data().text,
+            user: doc.data().s_user,
             locked: doc.data().locked,
             file_url: doc.data().file_url,
             is_file : doc.data().is_file, 
@@ -49,14 +49,16 @@ export default function ChatScreen({ navigation, route }) {
 
   const onSend = useCallback((messages = []) => {
     //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    const { _id, createdAt, text } = messages[0]
+    const { _id, createdAt, text} = messages[0];
+
     firestore().collection('chats').doc(_id).set({
       _id,
-      sender_id: user.uid,
+      sender_id: messages[0].user._id,
       _rid: route.params.userID,
-      sender_id_pair: [user.uid, route.params.userID],
+      sender_id_pair: [messages[0].user._id, route.params.userID],
       createdAt,
       text,
+      s_user: messages[0].user,
       locked,
       is_file: false,
     });
@@ -92,17 +94,24 @@ export default function ChatScreen({ navigation, route }) {
   }
 
   const saveFileToDatabase = (downloadURL, file) => {
+    const randomID = uuid.v4();
+    const s_user = {
+      _id: user.uid,
+    };
+    console.log(randomID);
     firestore().collection('chats').doc(randomID).set({
-      _id: uuid.v4(),
+      _id: randomID,
       _rid: route.params.userID,
       createdAt: new Date(),
       locked,
       sender_id: user.uid,
-      sender_id_pair: [1,route.params.userID],
+      sender_id_pair: [user.uid,route.params.userID],
+      s_user: s_user,
       text: file.name,
       file_url: downloadURL,
       is_file: true,
     })
+    console.log("Done");
   }
   
   const saveFileToDevice = (downloadURL, path) => {
@@ -161,7 +170,7 @@ export default function ChatScreen({ navigation, route }) {
               );
               if (granted === PermissionsAndroid.RESULTS.GRANTED){
                 const result = await RNFetchBlob.fs.readFile(res[0].uri, 'base64')
-                console.log(result)
+               // console.log(result)
                 uploadFileToFirebase(result, res[0])
               }
             } catch(e){

@@ -10,7 +10,7 @@ import { MessageContext } from '../contexts/MessageContext';
 
 
 export default function MessageScreen({ navigation }) {
-  const { fetchLastMessage, lastMessage } = useContext(MessageContext);
+  const { fetchLastMessage, lastMessage, fetchRID, rid} = useContext(MessageContext);
   const { user, logout } = useContext(AccountAuthContext);
   const [profile, setProfile] = useState();
   
@@ -22,11 +22,12 @@ export default function MessageScreen({ navigation }) {
     .onSnapshot(querySnapshot => {
     setProfile(
         querySnapshot.docs.map(doc => ({
-          // rid: (doc.data().friend_id_pair[0] == 1)?doc.data().friend_id_pair[1]:doc.data().friend_id_pair[0],
-          worthless: fetchLastMessage(doc.data().friend_email_pair[0], doc.data().friend_email_pair[1]),
           r_email:  (doc.data().friend_email_pair[0] == user.email) ? doc.data().friend_email_pair[1] : doc.data().friend_email_pair[0],
-          // lastMessageText: lastMessage[0].text,
-          // lastMessageTime: lastMessage[0].createdAt,
+          worthless2: fetchRID((doc.data().friend_email_pair[0] == user.email) ? doc.data().friend_email_pair[1] : doc.data().friend_email_pair[0]),
+          rid: rid,
+          worthless: fetchLastMessage(user.uid, rid),
+          lastMessageText: (lastMessage[0] == null)? "":lastMessage[0].text,
+          lastMessageTime: (lastMessage[0] == null)? new Date():lastMessage[0].createdAt,
         }))
       );
     });

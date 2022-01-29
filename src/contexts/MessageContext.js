@@ -9,10 +9,19 @@ export const MessageContext = createContext();
 
 const MessageContextProvider = ({ children }) => {
     const [messages, setMessages] = useState([""]);
-    const [lastMessage, setLastMessage] = useState([""]);
+    const [lastMessage, setLastMessage] = useState([]);
     const { user } = useContext(AccountAuthContext);
     const [rid, setRID] = useState(0);
 
+
+    const fetchRID = async (r_email) =>{
+        const doc = await firestore()
+        .collection('profiles')
+        .doc(r_email)
+        .get()
+        setRID(doc.data().uid)
+        
+    }    
     const fetchLastMessage = async (sid, rid) => {
         firestore()
         .collection('chats')
@@ -22,12 +31,11 @@ const MessageContextProvider = ({ children }) => {
         .onSnapshot(querySnapshot => {
             setLastMessage(
             querySnapshot.docs.map(doc => ({
-                text: doc.data().text,
+                text:  doc.data().text,
                 createdAt: doc.data().createdAt.toDate(),
             }))
             );
         });
-        return lastMessage;
     }
    
     useLayoutEffect(() => {    
@@ -56,7 +64,7 @@ const MessageContextProvider = ({ children }) => {
 
     <MessageContext.Provider
             value={{
-             messages,setRID,
+             messages,fetchRID, setRID, rid,
              fetchLastMessage,lastMessage
             }}
         >
