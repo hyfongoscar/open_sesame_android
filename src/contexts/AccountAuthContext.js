@@ -54,6 +54,14 @@ const AccountAuthContextProvider = ({ children }) => {
                 .signOut()
                 .then(() => console.log('User signed out!'));
             },
+            reset: async(email) => {
+                auth().sendPasswordResetEmail(email)
+                    .then(function (user) {
+                        alert('Please check your email to reset password')
+                    }).catch(function (e)) {
+                        console.log(e)
+                    }
+            },
           }}
       >
         {children}

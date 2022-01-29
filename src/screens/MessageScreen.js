@@ -73,35 +73,8 @@ export default function MessageScreen({navigation }) {
           style={styles.button}
           contentStyle={styles.buttonContainer}
           labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('ChangeUsername')}
-      > Change username </Button>
-
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('VoiceEnroll')}
-      > Enroll Voiceprint </Button>
-
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('VoiceVerify')}
-      > Verify Voiceprint </Button>
-          
-      <Button
-          mode="contained"
-            style={styles.button}
-            contentStyle={styles.buttonContainer}
-            labelStyle={styles.navButtonText}
-          onPress={async () => {
-              logout();
-              navigation.navigate('Login');
-          }}
-      >Log out</Button>
+          onPress={() => navigation.navigate('Setting')}
+      > Setting </Button>
     </View>
   );
 };

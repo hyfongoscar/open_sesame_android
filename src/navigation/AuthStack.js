@@ -9,6 +9,8 @@ import VoiceEnrollScreen from '../screens/VoiceEnrollScreen'
 import VoiceRecordingScreen from '../screens/VoiceRecordingScreen'
 import VoiceVerificationScreen from '../screens/VoiceVerificationScreen'
 import ChangeUsernameScreen from '../screens/ChangeUsernameScreen'
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'
+import SettingScreen from '../screens/SettingScreen'
 
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +32,8 @@ export default function AuthStack() {
         <Stack.Screen name="Chat" component={ChatScreen}/>
         <Stack.Screen name="Message" component={MessageScreen}/>
         <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
+        <Stack.Screen name="Forgot" component={ForgotPasswordScreen}/>
+        <Stack.Screen name="Setting" component={SettingScreen}/>
       </Stack.Navigator>
   );
 }
