@@ -177,7 +177,7 @@ export default function ChatScreen({ navigation, route }) {
   // Overrides View for files
   const renderBubble = (props) => {
     const { currentMessage } = props;
-    if (currentMessage._rid == 1 && currentMessage.locked && !verified) {
+    if (currentMessage._rid == user.uid && currentMessage.locked && !verified) {
       return (
         <Bubble
           {...props} 

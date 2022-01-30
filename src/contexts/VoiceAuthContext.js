@@ -82,7 +82,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
 
     var returnObj = {
-      svNetworkSuccess: false,
+      networkSuccess: false,
       thresholdPassed: false,
       // speechPassed: false
     }
@@ -97,7 +97,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     }).then(async (response) => {
       const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
-        returnObj.svNetworkSuccess = true
+        returnObj.networkSuccess = true
       if (parseFloat(returnResults.score) > THRESHOLD)
         returnObj.thresholdPassed = true
       console.log(returnResults.digits)
@@ -105,7 +105,7 @@ const VoiceAuthContextProvider = ({ children }) => {
       console.log(err)
     })
 
-    if (Object.values(returnObj).every(true)) {
+    if (Object.values(returnObj).every(item => item == true)) {
       setVerified(true)
       setTimeout(() => setVerified(false), 5 * 60 * 1000);
     }
