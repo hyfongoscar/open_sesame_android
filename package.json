@@ -19,6 +19,7 @@
     "@react-navigation/native-stack": "^6.2.5",
     "dayjs": "^1.10.7",
     "fbjs": "^3.0.2",
+    "moment": "^2.29.1",
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-audio-record": "^0.2.2",
@@ -30,6 +31,7 @@
     "react-native-paper": "^4.11.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",
+    "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.0.0",
     "rn-fetch-blob": "^0.12.0"
   },

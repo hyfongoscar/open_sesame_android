@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Alert, Dimensions, StyleSheet, View } from 'react-native';
 import { Button, IconButton, Text, TextInput, Title } from 'react-native-paper';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
@@ -10,46 +10,61 @@ export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
-  const [signupText, setSignupText] = useState('');
 
   const { register } = useContext(AccountAuthContext)
 
   const validateEmail = () => {
+    if (email == '') {
+      Alert.alert("", "Please enter an email address.")
+      return false;
+    }
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(email) === false) {
-      setSignupText("Please enter a valid email address.")
+      Alert.alert("", "Please enter a valid email address.")
       return false;
-    } else {
-      setSignupText("")
-      return true;
     }
+    return true;
   }
 
   const validatePassword = () => {
-    if (password1 !== password2) {
-      setSignupText("Your passwords do not match.")
+    if (password1 == '' || password2 == '') {
+      Alert.alert("", "Please enter your passwords")
       return false
-    } else {
-      setSignupText("")
-      return true;
     }
+    if (password1 !== password2) {
+      Alert.alert("", "Your passwords do not match.")
+      return false
+    }
+    return true;
+  }
+
+  const validateName = () => {
+    if (displayName === '') {
+      Alert.alert("", "Please enter a display name.")
+      return false
+    }
+    return true;
   }
 
   const handleRegister = () => {
-    register(displayName, email, password1).then(({ userCredential, errorCode, errorMessage }) => {
-      if (userCredential) {
-        setSignupText("Sign up success. Please check your email for verification.")
-      }
-      else {
-        switch (errorCode) {
+    if (!validateName() || !validateEmail() || !validatePassword())
+      return false
+    register(displayName, email, password1)
+      .then(() => {
+        Alert.alert("Sign up success", "You are now logged in")
+      })
+      .catch(({ code, message }) => {
+        switch (code) {
           case "auth/email-already-in-use":
-            setSignupText("This email is already registered! If you forgot your password, please reset your password in the login page.")
+            Alert.alert("This email is already registered", "If you forgot your password, please reset your password in the login page.")
+            break
+          case "auth/weak-password":
+            Alert.alert("Weak password", "Your password should be at least 6 characters long.")
             break
           default:
-            setSignupText("Signup failed: " + errorMessage + " (Error Code: " + errorCode + ")")
+            Alert.alert("Signup failed", message + " (Error Code: " + code + ")")
         }
-      }
-    })
+      })
   }
 
   return (
@@ -83,15 +98,13 @@ export default function SignupScreen({ navigation }) {
             secureTextEntry={true}
             onChangeText={(password2) => setPassword2(password2)}
         />
-        <Text>{ signupText }</Text>
         <Button
             mode="contained"
             style={styles.button}
             contentStyle={styles.buttonContainer}
             labelStyle={styles.signupButtonLabel}
-            onPress={async () => {
-              if (validateEmail() && validatePassword())
-                handleRegister()
+            onPress={() => {
+              handleRegister()
             }}
         >Sign Up</Button>
       </View>
