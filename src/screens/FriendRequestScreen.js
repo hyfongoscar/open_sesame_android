@@ -43,9 +43,9 @@ export default function FriendRequestScreen({ navigation }){
       .get()
 
     const sentQuery = await firestore()
-    .collection('friendRequest')
-    .where('s_email', '==', user.email)
-    .get()
+      .collection('friendRequest')
+      .where('r_email', '==', email)
+      .get()
 
     if (email == user.email) 
       Alert.alert("", "You cannot add yourself as friend.")
