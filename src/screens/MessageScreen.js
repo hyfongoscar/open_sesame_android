@@ -1,73 +1,84 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+import { MessageContext } from '../contexts/MessageContext';
 
+export default function MessageScreen({ navigation }) {
+  const { friends, setChatter } = useContext(MessageContext)
+  const { user, logout } = useContext(AccountAuthContext)
+  const { verified } = useContext(VoiceAuthContext)
 
-const Messages = [
-  {
-    userName: 'Jenny Doe',
-//      userImg: require('../assets/users/user-3.jpg'),
-      message:{
-        _id: 1,
-        text: 'Hey there, this is my test for a post of my social app in React Native.',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-        locked:false,
+  useEffect(() => {
+    if (!user)
+      Alert.alert("Error", "User not found!", [
+        { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
+      ])
+  }, [])
 
-    },
-  },
-  {
-    userName: 'John Doe',
- //     userImg: require('../assets/users/user-1.jpg'),
-    message:{
-      _id: 1,
-      text: 'Hey there, this is my test for a post of my social app in React Native.',
-      createdAt: new Date(),
-      user: {
-        _id: 3,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
-    locked:true,
-    },
-   
-  },
-]
-
-export default function MessageScreen({navigation }) {
-
-  const { logout } = useContext(AccountAuthContext)
+  const LastMessage = (props) => {
+    const message = props.message
+    if (message) {
+      if (message.locked && !verified)
+        return (
+          <>
+            <Image
+              style={styles.lockMessageIcon}
+              source={require('../../assets/lock.jpeg')}
+            />
+            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+          </>
+        )
+      else
+        return (
+          <>
+            <Text style = {styles.messageText}>{message.text}</Text>
+            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+          </>
+        )
+    }
+    return (
+      <Text style = {styles.nothingText}>You have not chatted with them yet!</Text>
+    )
+  }
 
   return (
     <View style={styles.container}>
       <FlatList
-        data ={Messages}
-        keyExtractor={item=>item.id}
-        renderItem={({item}) => (
+        data ={friends}
+        keyExtractor={friend=>friend.uid}
+        renderItem={({ item }) => (
           <TouchableOpacity 
             style = {styles.profile}
-            onPress={() => navigation.navigate('Chat', {userName: item.userName, messages: item.message, userID: item.message.user._id})}
+            onPress={() => {
+              const chatter = {userName: item.displayName,  userID: item.uid}
+              setChatter(chatter)
+              navigation.navigate('Chat', chatter)
+            }}
           >
             <View style={styles.userInfo}>
               <View style={styles.imgWrapper}>
                 <Image
                   style={styles.userImg}
-                  source={item.message.user.avatar}
                 />
               </View>
               <View style={styles.textSection}>
-                <Text style = {styles.userName}> {item.userName}</Text>
+                <Text style = {styles.userName}> {item.displayName}</Text>
+                <LastMessage message = {item.lastMessage}/>
               </View>
-            </View>   
+            </View>
           </TouchableOpacity>
         )}
       ></FlatList>
+       <Button
+          mode="contained"
+          style={styles.button}
+          contentStyle={styles.buttonContainer}
+          labelStyle={styles.navButtonText}
+          onPress={() => navigation.navigate('ChangeProfilePic')}
+      >Change Profile Picture </Button>
       <Button
           mode="contained"
           style={styles.button}
@@ -108,16 +119,26 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   userName:{
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: "#0000ff",
   },
   postTime:{
-    fontSize: 12,
+    fontSize: 15,
     color: '#666',
   },
   messageText:{
     fontSize: 14,
     color: '#333333',
+  },
+  nothingText:{
+    fontSize: 14,
+    color: '#333333',
+    fontStyle: 'italic',
+  },
+  lockMessageIcon:{
+    width: 30,
+    height: 30
   },
   imgWrapper:{
     paddingTop: 15,
