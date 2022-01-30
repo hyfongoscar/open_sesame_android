@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useContext, useState } from 'react'
+import React, { useCallback, useEffect, useContext, useState } from 'react'
 import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
@@ -14,41 +14,19 @@ import storage from '@react-native-firebase/storage';
 var RNFS = require('react-native-fs');
 var locked = false
 
-import { VoiceAuthContext } from '../contexts/VoiceAuthContext';
-import { AccountAuthContext } from '../contexts/AccountAuthContext';
+import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+import { MessageContext } from '../contexts/MessageContext';
 
 
 export default function ChatScreen({ navigation, route }) {
-  const [messages, setMessages] = useState([])
   const [checked, setChecked] = useState(false)
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
-
-  useLayoutEffect(() => {
-    const subscriber = firestore()
-      .collection('chats')
-      .where('sender_id_pair', 'in',[[route.params.userID, user.uid], [user.uid, route.params.userID]])
-      .orderBy('createdAt','desc')
-      .onSnapshot(querySnapshot => {
-        setMessages(
-          querySnapshot.docs.map(doc => ({
-            _id: doc.data()._id,
-            sender_id: doc.data().sender_id,
-            _rid: doc.data()._rid,
-            createdAt: doc.data().createdAt.toDate(),
-            text: doc.data().text,
-            user: doc.data().s_user,
-            locked: doc.data().locked,
-            file_url: doc.data().file_url,
-            is_file : doc.data().is_file, 
-          }))
-        );
-      });
-     return subscriber;
-  })
+  const { messages, setMessages } = useContext(MessageContext)
 
   const onSend = useCallback((messages = []) => {
-    //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     const { _id, createdAt, text} = messages[0];
 
     firestore().collection('chats').doc(_id).set({

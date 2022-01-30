@@ -1,56 +1,16 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
-import firestore, {arrayUnion} from '@react-native-firebase/firestore';
-import Moment from 'moment';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
 
-
-
 export default function MessageScreen({ navigation }) {
-  const { fetchLastMessage, lastMessage, fetchRID, rid} = useContext(MessageContext);
-  const { user, logout } = useContext(AccountAuthContext);
-  const [profile, setProfile] = useState();
-  
-  useLayoutEffect(() => {    
-    const subscriber = firestore()
-    .collection('friendList')
-    .where('friend_email_pair', 'array-contains', user.email)
-   // .orderBy('createdAt','desc')
-    .onSnapshot(querySnapshot => {
-    setProfile(
-        querySnapshot.docs.map(doc => ({
-          r_email:  (doc.data().friend_email_pair[0] == user.email) ? doc.data().friend_email_pair[1] : doc.data().friend_email_pair[0],
-          worthless2: fetchRID((doc.data().friend_email_pair[0] == user.email) ? doc.data().friend_email_pair[1] : doc.data().friend_email_pair[0]),
-          rid: rid,
-          worthless: fetchLastMessage(user.uid, rid),
-          lastMessageText: (lastMessage[0] == null)? "":lastMessage[0].text,
-          lastMessageTime: (lastMessage[0] == null)? new Date():lastMessage[0].createdAt,
-        }))
-      );
-    });
-    
-    return subscriber;
-  })
+  const { friends, setChatter } = useContext(MessageContext)
+  const { user, logout } = useContext(AccountAuthContext)
+  const { verified } = useContext(VoiceAuthContext)
 
-  const getDisplayName = async (email) => {
-    const query = await firestore()
-      .collection('profiles')
-      .doc(email)
-      .get()
-    return query._data.displayName || ""
-  }
-
-  const getId = async (email) => {
-    const data = await firestore()
-      .collection('profiles')
-      .doc(email)
-      .get()._data
-    return data.uid || ""
-  }
-  
   useEffect(() => {
     if (!user)
       Alert.alert("Error", "User not found!", [
@@ -58,15 +18,45 @@ export default function MessageScreen({ navigation }) {
       ])
   }, [])
 
+  const LastMessage = (props) => {
+    const message = props.message
+    if (message) {
+      if (message.locked && !verified)
+        return (
+          <>
+            <Image
+              style={styles.lockMessageIcon}
+              source={require('../../assets/lock.jpeg')}
+            />
+            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+          </>
+        )
+      else
+        return (
+          <>
+            <Text style = {styles.messageText}>{message.text}</Text>
+            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+          </>
+        )
+    }
+    return (
+      <Text style = {styles.nothingText}>You have not chatted with them yet!</Text>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
-        data ={profile}
-        keyExtractor={item=>item.rid}
-        renderItem={({item}) => (
+        data ={friends}
+        keyExtractor={friend=>friend.uid}
+        renderItem={({ item }) => (
           <TouchableOpacity 
             style = {styles.profile}
-            onPress={() => navigation.navigate('Chat', {userName: item.r_email,  userID: item.rid})}
+            onPress={() => {
+              const chatter = {userName: item.displayName,  userID: item.uid}
+              setChatter(chatter)
+              navigation.navigate('Chat', chatter)
+            }}
           >
             <View style={styles.userInfo}>
               <View style={styles.imgWrapper}>
@@ -75,11 +65,10 @@ export default function MessageScreen({ navigation }) {
                 />
               </View>
               <View style={styles.textSection}>
-                <Text style = {styles.userName}> {item.r_email}</Text>
-                <Text style = {styles.messageText}> {item.lastMessageText}</Text>
-                <Text style = {styles.postTime}> {Moment(item.lastMessageTime).format('D MMM H:mm')}</Text>
+                <Text style = {styles.userName}> {item.displayName}</Text>
+                <LastMessage message = {item.lastMessage}/>
               </View>
-            </View>   
+            </View>
           </TouchableOpacity>
         )}
       ></FlatList>
@@ -155,16 +144,26 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   userName:{
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: "#0000ff",
   },
   postTime:{
-    fontSize: 12,
+    fontSize: 15,
     color: '#666',
   },
   messageText:{
     fontSize: 14,
     color: '#333333',
+  },
+  nothingText:{
+    fontSize: 14,
+    color: '#333333',
+    fontStyle: 'italic',
+  },
+  lockMessageIcon:{
+    width: 30,
+    height: 30
   },
   imgWrapper:{
     paddingTop: 15,
