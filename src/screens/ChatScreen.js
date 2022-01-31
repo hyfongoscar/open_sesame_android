@@ -25,11 +25,11 @@ export default function ChatScreen({ navigation, route }) {
   const { user } = useContext(AccountAuthContext)
   const { messages, setMessages } = useContext(MessageContext)
 
-  const onSend = useCallback((messages = []) => {
+  const onSend = useCallback(async (messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     const { _id, createdAt, text} = messages[0];
 
-    firestore().collection('chats').doc(_id).set({
+    const messageObj = {
       _id,
       sender_id: messages[0].user._id,
       _rid: route.params.userID,
@@ -39,7 +39,23 @@ export default function ChatScreen({ navigation, route }) {
       s_user: messages[0].user,
       locked,
       is_file: false,
-    });
+    }
+
+    firestore().collection('chats').doc(_id).set(messageObj)
+
+    var friendPairID
+    await firestore()
+      .collection('friendList')
+      .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
+      .get()
+      .then(querySnapshot => {
+        friendPairID = querySnapshot.docs[0].id
+      })
+    
+    firestore().collection('friendList').doc(friendPairID)
+      .update({
+        lastMessage: messageObj
+      })
   }, [])
 
   const uploadFileToFirebase = async (result, file) => {
@@ -71,13 +87,12 @@ export default function ChatScreen({ navigation, route }) {
     )
   }
 
-  const saveFileToDatabase = (downloadURL, file) => {
+  const saveFileToDatabase = async (downloadURL, file) => {
     const randomID = uuid.v4();
     const s_user = {
       _id: user.uid,
-    };
-    console.log(randomID);
-    firestore().collection('chats').doc(randomID).set({
+    }
+    const messageObj = {
       _id: randomID,
       _rid: route.params.userID,
       createdAt: new Date(),
@@ -88,7 +103,23 @@ export default function ChatScreen({ navigation, route }) {
       text: file.name,
       file_url: downloadURL,
       is_file: true,
-    })
+    }
+
+    firestore().collection('chats').doc(randomID).set(messageObj)
+
+    var friendPairID
+    await firestore()
+      .collection('friendList')
+      .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
+      .get()
+      .then(querySnapshot => {
+        friendPairID = querySnapshot.docs[0].id
+      })
+    
+    firestore().collection('friendList').doc(friendPairID)
+      .update({
+        lastMessage: messageObj
+      })
     console.log("Done");
   }
   

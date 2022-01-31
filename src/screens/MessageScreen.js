@@ -53,7 +53,7 @@ export default function MessageScreen({ navigation }) {
           <TouchableOpacity 
             style = {styles.profile}
             onPress={() => {
-              const chatter = {userName: item.displayName,  userID: item.uid}
+              const chatter = {userName: item.displayName,  userID: item.uid, userEmail: item.email}
               setChatter(chatter)
               navigation.navigate('Chat', chatter)
             }}
@@ -72,20 +72,13 @@ export default function MessageScreen({ navigation }) {
           </TouchableOpacity>
         )}
       ></FlatList>
-       <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('ChangeProfilePic')}
-      >Change Profile Picture </Button>
       <Button
           mode="contained"
           style={styles.button}
           contentStyle={styles.buttonContainer}
           labelStyle={styles.navButtonText}
           onPress={() => navigation.navigate('Setting')}
-      > Setting </Button>
+      > Settings </Button>
     </View>
   );
 };
