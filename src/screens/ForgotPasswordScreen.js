@@ -14,13 +14,12 @@ export default function ForgotPasswordScreen({ navigation }) {
         <View>
             <TextInput
                 label="Email"
-                value={email}
                 numberOfLines={1}
                 onChangeText={(currentEmail) => setEmail(currentEmail)}
                 />
             <Button
                 onPress={ () => { reset(currentEmail) }}
-            >Change Username</Button>
+            >Send Reset Password Email </Button>
         </View>
     );
 }

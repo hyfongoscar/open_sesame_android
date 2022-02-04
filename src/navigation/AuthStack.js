@@ -1,5 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext } from 'react'
+import { Button } from 'react-native-paper';
+import { Dimensions} from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -37,8 +39,30 @@ export default function AuthStack() {
           </>
         ) : (
           <>
-            <Stack.Screen name="Message" component={MessageScreen}/>
-            <Stack.Screen name="Chat" component={ChatScreen}/>
+            <Stack.Screen
+                name="Message"
+                component={MessageScreen}
+                options={{
+                    headerRight: () => (
+                        <Button
+                            onPress={() => alert('This is a button!')}
+                            title="Setting"
+                        />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="Chat"
+                component={ChatScreen}
+                options={{
+                    headerRight: () => (
+                        <Button
+                            onPress={() => alert('This is a button!')}
+                            title="Setting"
+                        />
+                    ),
+                }}
+            />
             <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
             <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
             <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>

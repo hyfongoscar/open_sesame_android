@@ -41,50 +41,6 @@ export default function LoginScreen({ navigation }) {
       })
   }
 
-  toggleRememberMe = value => {
-    this.setState({ rememberMe: value })
-      if (value === true) {
-    //user wants to be remembered.
-      this.rememberUser();
-    } else {
-      this.forgetUser();
-    }
-  }
-
-  rememberUser = async () => {
-  try {
-    await AsyncStorage.setItem('YOUR-KEY', this.state.username);
-  } catch (error) {
-    // Error saving data
-  }
-  };
-  getRememberedUser = async () => {
-  try {
-    const username = await AsyncStorage.getItem('YOUR-KEY');
-    if (username !== null) {
-      // We have username!!
-      return username;
-    }
-  } catch (error) {
-    // Error retrieving data
-  }
-  };
-
-  forgetUser = async () => {
-    try {
-      await AsyncStorage.removeItem('Longtail-User');
-    } catch (error) {
-     // Error removing
-    }
-  };
-
-  async componentDidMount() {
-  const username = await this.getRememberedUser();
-  this.setState({
-     username: username || "",
-     rememberMe: username ? true : false });
-  }
-
   return (
       <View style={styles.container}>
         <Title style={styles.titleText}>Open Sesame</Title>
@@ -124,10 +80,14 @@ export default function LoginScreen({ navigation }) {
             labelStyle={styles.navButtonText}
             onPress={() => navigation.navigate('Signup')}
         > Sign up here </Button>
-        <Switch
-          value={this.state.rememberMe}
-          onValueChange={(value) => this.toggleRememberMe(value)}
-          /><Text>Remember Me</Text>
+        <Button
+            mode="text"
+            uppercase={false}
+            style={styles.button}
+            contentStyle={styles.buttonContainer}
+            labelStyle={styles.navButtonText}
+            onPress={() => navigation.navigate('Forgot')}
+        > Reset Password </Button>
       </View>
   );
 }
