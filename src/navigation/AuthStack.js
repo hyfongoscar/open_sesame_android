@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext } from 'react'
-import { Button } from 'react-native-paper';
-import { Dimensions} from 'react-native';
+import { TouchableOpacity, Image } from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -44,10 +43,9 @@ export default function AuthStack() {
                 component={MessageScreen}
                 options={{
                     headerRight: () => (
-                        <Button
-                            onPress={() => alert('This is a button!')}
-                            title="Setting"
-                        />
+                        <TouchableOpacity onPress={() => alert('This is a button!')}>
+                            <Image style={{ width: 30, height: 30, opacity: 0.5 }} source={require("../../assets/setting.png")}/>
+                        </TouchableOpacity>
                     ),
                 }}
             />
@@ -56,10 +54,9 @@ export default function AuthStack() {
                 component={ChatScreen}
                 options={{
                     headerRight: () => (
-                        <Button
-                            onPress={() => alert('This is a button!')}
-                            title="Setting"
-                        />
+                        <TouchableOpacity onPress={() => alert('This is a button!')}>
+                            <Image style={{ width: 30, height: 30, opacity: 0.5 }} source={require("../../assets/setting.png")}/>
+                        </TouchableOpacity>
                     ),
                 }}
             />
@@ -74,3 +71,4 @@ export default function AuthStack() {
       </Stack.Navigator>
   );
 }
+
