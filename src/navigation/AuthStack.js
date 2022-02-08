@@ -43,7 +43,7 @@ export default function AuthStack() {
                 options={({navigation}) => ({
                     headerRight: () => (
                         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
-                            <Image style={{ width: 30, height: 30, opacity: 0.5 }} source={require("../../assets/setting.png")}/>
+                            <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
                         </TouchableOpacity>
                     ),
                 })}
