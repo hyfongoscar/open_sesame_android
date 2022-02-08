@@ -11,6 +11,12 @@ export default function SettingScreen({ navigation }) {
                 mode="contained"
                 uppercase={false}
                 style={styles.button}
+                onPress={async () => navigation.navigate('FriendRequest')}
+            >Add friends</Button>
+            <Button
+                mode="contained"
+                uppercase={false}
+                style={styles.button}
                 onPress={() => navigation.navigate('Change Username')}
             > Change Username </Button>
             <Button
@@ -43,11 +49,6 @@ export default function SettingScreen({ navigation }) {
                     logout();
                 }}
             >Log out</Button>
-            <Button
-                mode="contained"
-                style={styles.button}
-                onPress={async () => navigation.navigate('FriendRequest')}
-            >Add friends</Button>
         </View>
     );
 }
