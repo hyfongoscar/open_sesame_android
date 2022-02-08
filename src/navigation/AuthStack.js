@@ -41,24 +41,24 @@ export default function AuthStack() {
             <Stack.Screen
                 name="Message"
                 component={MessageScreen}
-                options={{
+                options={({navigation}) => ({
                     headerRight: () => (
-                        <TouchableOpacity onPress={() => alert('This is a button!')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
                             <Image style={{ width: 30, height: 30, opacity: 0.5 }} source={require("../../assets/setting.png")}/>
                         </TouchableOpacity>
                     ),
-                }}
+                })}
             />
             <Stack.Screen
                 name="Chat"
                 component={ChatScreen}
-                options={{
+                options={({navigation}) => ({
                     headerRight: () => (
-                        <TouchableOpacity onPress={() => alert('This is a button!')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
                             <Image style={{ width: 30, height: 30, opacity: 0.5 }} source={require("../../assets/setting.png")}/>
                         </TouchableOpacity>
                     ),
-                }}
+                })}
             />
             <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
             <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />

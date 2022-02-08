@@ -24,6 +24,13 @@ export default function SettingScreen({ navigation }) {
                   logout();
                 }}
             >Log out</Button>
+            <Button
+                mode="contained"
+                style={styles.button}
+                contentStyle={styles.buttonContainer}
+                labelStyle={styles.navButtonText}
+                onPress={() => navigation.navigate('ChangeProfilePic')}
+            >Change Profile Picture </Button>
         </View>
     );
 }
