@@ -9,19 +9,38 @@ export default function SettingScreen({ navigation }) {
         <View style={styles.container}>
             <Button
                 mode="contained"
+                uppercase={false}
                 style={styles.button}
-                onPress={() => navigation.navigate('ChangeUsername')}
-            > Change username </Button>
+                onPress={() => navigation.navigate('Change Username')}
+            > Change Username </Button>
             <Button
                 mode="contained"
+                uppercase={false}
+                style={styles.button}
+                contentStyle={styles.buttonContainer}
+                labelStyle={styles.navButtonText}
+                onPress={() => navigation.navigate('ChangeProfilePic')}
+            >Change Profile Picture </Button>
+            <Button
+                mode="contained"
+                uppercase={false}
                 style={styles.button}
                 onPress={() => navigation.navigate('VoiceEnroll')}
             > Enroll Voiceprint </Button>
             <Button
                 mode="contained"
+                uppercase={false}
+                style={styles.button}
+                contentStyle={styles.buttonContainer}
+                labelStyle={styles.navButtonText}
+                onPress={() => navigation.navigate('ChangeProfilePic')}
+            >Change Profile Picture </Button>
+            <Button
+                mode="contained"
+                uppercase={false}
                 style={styles.button}
                 onPress={async () => {
-                  logout();
+                    logout();
                 }}
             >Log out</Button>
             <Button

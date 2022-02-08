@@ -24,11 +24,12 @@ export default function ChangeUsernameScreen({ navigation }) {
     return (
       <View>
         <TextInput
-            label="NewUserName"
+            label="Enter your new username here"
             numberOfLines={1}
             onChangeText={(newUserName) => setNewUserName(newUserName)}
         />
         <Button
+            uppercase={false}
             onPress={ () => changeName()}
         >Change Username</Button>
       </View>

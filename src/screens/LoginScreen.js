@@ -84,9 +84,8 @@ export default function LoginScreen({ navigation }) {
             mode="text"
             uppercase={false}
             style={styles.button}
-            contentStyle={styles.buttonContainer}
             labelStyle={styles.navButtonText}
-            onPress={() => navigation.navigate('Forgot')}
+            onPress={() => navigation.navigate('Reset Password')}
         > Reset Password </Button>
       </View>
   );
