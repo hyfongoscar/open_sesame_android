@@ -52,7 +52,7 @@ export default function ChatScreen({ navigation, route }) {
         friendPairID = querySnapshot.docs[0].id
       })
     
-    firestore().collection('friendList').doc(friendPairID)
+    await firestore().collection('friendList').doc(friendPairID)
       .update({
         lastMessage: messageObj
       })
