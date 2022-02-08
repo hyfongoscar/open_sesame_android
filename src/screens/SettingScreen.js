@@ -17,6 +17,13 @@ export default function SettingScreen({ navigation }) {
                 mode="contained"
                 uppercase={false}
                 style={styles.button}
+                contentStyle={styles.buttonContainer}
+                labelStyle={styles.navButtonText}
+                onPress={() => navigation.navigate('ChangeProfilePic')}
+            >Change Profile Picture </Button>
+            <Button
+                mode="contained"
+                style={styles.button}
                 onPress={() => navigation.navigate('VoiceEnroll')}
             > Enroll Voiceprint </Button>
             <Button

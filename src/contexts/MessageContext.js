@@ -34,35 +34,20 @@ const MessageContextProvider = ({ children }) => {
         .collection('friendList')
         .where('friend_email_pair', 'array-contains', user.email)
         .onSnapshot(querySnapshot => {
-          let tempFriends = []
+          var tempFriends = []
           querySnapshot.forEach( async (documentSnapshot) => {
             const email_pair = documentSnapshot.data().friend_email_pair
             const friend_email = email_pair[0] == user.email ? email_pair[1] : email_pair[0]
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
             // TODO: friend lists spazzing out after having new meesage in chat, subscribers are colliding
-            firestore()
-              .collection('chats')
-              .where('sender_id_pair', 'in',[[user.uid, friend_uid], [friend_uid, user.uid]])
-              .orderBy('createdAt','desc')
-              .limit(1)
-              .onSnapshot(querySnapshot => {
-                // if the two friends has sent messages before
-                if (querySnapshot.size)
-                  tempFriends.push({
-                    uid: friend_uid,
-                    email: friend_email,
-                    displayName: friend_name || "",
-                    lastMessage: querySnapshot._docs[0].data()
-                  })
-                else 
-                  tempFriends.push({
-                    uid: friend_uid,
-                    email: friend_email,
-                    displayName: friend_name || ""
-                  })
-                setFriends(tempFriends)
-              })
+            tempFriends.push({
+              uid: friend_uid,
+              email: friend_email,
+              displayName: friend_name || "",
+              lastMessage: documentSnapshot.data().lastMessage
+            })
+            setFriends(tempFriends)
           })
         })
     }
