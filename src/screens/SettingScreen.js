@@ -24,6 +24,11 @@ export default function SettingScreen({ navigation }) {
                   logout();
                 }}
             >Log out</Button>
+            <Button
+                mode="contained"
+                style={styles.button}
+                onPress={async () => navigation.navigate('FriendRequest')}
+            >Add friends</Button>
         </View>
     );
 }
