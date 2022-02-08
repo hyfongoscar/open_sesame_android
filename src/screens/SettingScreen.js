@@ -23,6 +23,7 @@ export default function SettingScreen({ navigation }) {
             >Change Profile Picture </Button>
             <Button
                 mode="contained"
+                uppercase={false}
                 style={styles.button}
                 onPress={() => navigation.navigate('VoiceEnroll')}
             > Enroll Voiceprint </Button>
