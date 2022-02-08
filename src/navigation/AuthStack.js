@@ -34,7 +34,7 @@ export default function AuthStack() {
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
-            <Stack.Screen name="Forgot" component={ForgotPasswordScreen}/>
+            <Stack.Screen name="Reset Password" component={ForgotPasswordScreen}/>
           </>
         ) : (
           <>
@@ -62,7 +62,7 @@ export default function AuthStack() {
             />
             <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
             <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
-            <Stack.Screen name="ChangeUsername" component={ChangeUsernameScreen}/>
+            <Stack.Screen name="Change Username" component={ChangeUsernameScreen}/>
             <Stack.Screen name="FriendRequest" component={FriendRequestScreen}/>
             <Stack.Screen name="ChangeProfilePic" component={ChangeProfilePicScreen}/>
             <Stack.Screen name="Setting" component={SettingScreen}/>

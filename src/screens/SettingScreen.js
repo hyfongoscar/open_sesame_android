@@ -10,7 +10,7 @@ export default function SettingScreen({ navigation }) {
             <Button
                 mode="contained"
                 style={styles.button}
-                onPress={() => navigation.navigate('ChangeUsername')}
+                onPress={() => navigation.navigate('Change Username')}
             > Change username </Button>
             <Button
                 mode="contained"
@@ -20,17 +20,17 @@ export default function SettingScreen({ navigation }) {
             <Button
                 mode="contained"
                 style={styles.button}
-                onPress={async () => {
-                  logout();
-                }}
-            >Log out</Button>
-            <Button
-                mode="contained"
-                style={styles.button}
                 contentStyle={styles.buttonContainer}
                 labelStyle={styles.navButtonText}
                 onPress={() => navigation.navigate('ChangeProfilePic')}
             >Change Profile Picture </Button>
+            <Button
+                mode="contained"
+                style={styles.button}
+                onPress={async () => {
+                    logout();
+                }}
+            >Log out</Button>
         </View>
     );
 }
