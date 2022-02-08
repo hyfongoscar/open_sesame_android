@@ -68,14 +68,6 @@ export default function SettingScreen({ navigation }) {
                 mode="contained"
                 uppercase={false}
                 style={styles.button}
-                contentStyle={styles.buttonContainer}
-                labelStyle={styles.navButtonText}
-                onPress={() => navigation.navigate('ChangeProfilePic')}
-            >Change Profile Picture </Button>
-            <Button
-                mode="contained"
-                uppercase={false}
-                style={styles.button}
                 onPress={async () => {
                   logout();
                 }}
