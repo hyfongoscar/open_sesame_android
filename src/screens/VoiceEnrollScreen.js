@@ -39,10 +39,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   instructions: {
+    color: "black",
     margin: 10,
     fontSize: 18,
   },
   titleText: {
+    color: "purple",
     fontSize: 32,
     marginBottom: 10,
   },

@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import { Alert, Dimensions, StyleSheet, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import React, { useContext } from 'react'
+import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore';
 import prompt from 'react-native-prompt-android';
@@ -11,16 +10,14 @@ export default function SettingScreen({ navigation }) {
     const { user, logout } = useContext(AccountAuthContext)
     return(
         <View style={styles.container}>
-            <Button
-                mode="contained"
+            <Text
                 uppercase={false}
-                style={styles.button}
+                style={styles.text}
                 onPress={async () => navigation.navigate('FriendRequest')}
-            >Add friends</Button>
-            <Button
-                mode="contained"
+            >Add friends</Text>
+            <Text
                 uppercase={false}
-                style={styles.button}
+                style={styles.text}
                 onPress={() => {
                   prompt("Enter new username", "",
                     [
@@ -49,29 +46,24 @@ export default function SettingScreen({ navigation }) {
                     }
                 );
                 }}
-            > Change Username </Button>
-            <Button
-                mode="contained"
+            >Change Username </Text>
+            <Text
                 uppercase={false}
-                style={styles.button}
-                contentStyle={styles.buttonContainer}
-                labelStyle={styles.navButtonText}
+                style={styles.text}
                 onPress={() => navigation.navigate('ChangeProfilePic')}
-            >Change Profile Picture </Button>
-            <Button
-                mode="contained"
+            >Change Profile Picture </Text>
+            <Text
                 uppercase={false}
-                style={styles.button}
+                style={styles.text}
                 onPress={() => navigation.navigate('VoiceEnroll')}
-            > Enroll Voiceprint </Button>
-            <Button
-                mode="contained"
+            >Enroll Voiceprint </Text>
+            <Text
                 uppercase={false}
-                style={styles.button}
+                style={styles.redText}
                 onPress={async () => {
                   logout();
                 }}
-            >Log out</Button>
+            >Log out</Text>
         </View>
     );
 }
@@ -79,15 +71,25 @@ export default function SettingScreen({ navigation }) {
 const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
-  button: {
-    marginTop: 10,
-    borderBottomStyle: "solid"
+  text: {
+    margin: 15,
+    paddingBottom: 15,
+    color: "black",
+    fontSize: 20,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+  },
+  redText: {
+    margin: 15,
+    paddingBottom: 15,
+    color: "red",
+    fontSize: 20,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
   },
   container: {
     flex: 1, 
     paddingLeft: 20,
     paddingRight: 20,
-    alignItems: 'center', 
-    justifyContent: 'center'
   },
 });

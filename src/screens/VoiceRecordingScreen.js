@@ -52,13 +52,11 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                   if (Object.values(results).every(item => item == true)) {
                     Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
-                      // TODO: after binding the verification with locaked message, set message to unlocked
                     ])
                   }
                   else if (!results.networkSuccess) {
                     Alert.alert(`Verification failed`, "This is probably a problem on our side. Please try again.", [
                       { text: "OK", onPress: () => setRecordText("") } 
-                      // TODO: after binding the verification with locaked message, set message to unlocked
                     ]) 
                   }
                   // else if (!results.speechPassed) {
@@ -70,7 +68,6 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                   else {
                     Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
-                      // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                     ]) 
                   }
                 }
@@ -120,10 +117,11 @@ const styles = StyleSheet.create({
   },
   recordText: {
     fontSize: 18,
-    color: '#006400',
+    color: 'purple',
   },
   titleText: {
     fontSize: 32,
     marginBottom: 10,
+    color: 'purple',
   },
 });
