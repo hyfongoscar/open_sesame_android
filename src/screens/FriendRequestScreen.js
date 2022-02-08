@@ -39,7 +39,7 @@ export default function FriendRequestScreen({ navigation }){
 
     const friendQuery = await firestore()
       .collection('friendList')
-      .where('friend_email_pair', 'array-contains', email)
+      .where('friend_email_pair', 'in', [[email, user.email], [user.email, email]])
       .get()
 
     const sentQuery = await firestore()
