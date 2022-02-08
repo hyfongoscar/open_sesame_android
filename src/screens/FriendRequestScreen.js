@@ -6,9 +6,15 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export default function FriendRequestScreen({ navigation }){
   const { user } = useContext(AccountAuthContext)
+  const { themeColor } = useContext(ThemeContext)
+
+  const themeStyle = {
+    color: themeColor
+  }
 
   const [email, setEmail] = useState('')
   const [requestList, setRequestList] = useState();
@@ -91,7 +97,7 @@ export default function FriendRequestScreen({ navigation }){
         onPress={ () => {sendFriendRequest()}}
       >Send Friend request</Button>
 
-      <Text>Pending requests:</Text>
+      <Text style = {StyleSheet.flatten([styles.label, themeStyle])}>{"\n"}Pending requests{"\n"}</Text>
       <FlatList
         data ={requestList}
         keyExtractor={request => request.s_email}
@@ -123,6 +129,9 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     alignItems: 'center', 
     justifyContent: 'center'
+  },
+  label: {
+    fontSize: 17
   },
   profile:{
     width:'100%',
