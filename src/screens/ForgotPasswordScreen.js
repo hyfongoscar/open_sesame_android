@@ -1,7 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Alert, Dimensions, StyleSheet, View } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View } from 'react-native';
 import { Button, Text, Title, TextInput } from 'react-native-paper';
-import firestore from '@react-native-firebase/firestore';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import auth from '@react-native-firebase/auth';
 
