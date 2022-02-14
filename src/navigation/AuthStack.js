@@ -12,6 +12,8 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'
 import SettingScreen from '../screens/SettingScreen'
 import FriendRequestScreen from '../screens/FriendRequestScreen';
 import ChangeProfilePicScreen from '../screens/ChangeProfilePicScreen';
+import ChangeBackgroundPictureScreen from '../screens/ChangeBackgroundPictureScreen';
+import ChangeFontSizeScreen from '../screens/ChangeFontSizeScreen';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
@@ -64,6 +66,8 @@ export default function AuthStack() {
             <Stack.Screen name="FriendRequest" component={FriendRequestScreen}/>
             <Stack.Screen name="ChangeProfilePic" component={ChangeProfilePicScreen}/>
             <Stack.Screen name="Setting" component={SettingScreen}/>
+            <Stack.Screen name="Change Background Picture" component={ChangeBackgroundPictureScreen}/>
+            <Stack.Screen name="Change Font Size" component={ChangeFontSizeScreen}/>
           </>
         )}
       </Stack.Navigator>
