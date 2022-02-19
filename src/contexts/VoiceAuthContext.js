@@ -67,7 +67,7 @@ const VoiceAuthContextProvider = ({ children }) => {
       },
       body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
     }).then(async (response) => {
-      returnResults = await response.json()
+      const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
         success = true
     }).catch((err) => {
@@ -76,7 +76,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     return success
   }
 
-  const onStopVerify = async () => {
+  const onStopVerify = async (digits) => {
     const audioFile = await AudioRecord.stop();
     setRecording(false)
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
@@ -96,6 +96,8 @@ const VoiceAuthContextProvider = ({ children }) => {
       body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
     }).then(async (response) => {
       const returnResults = await response.json()
+      console.log(returnResults.score)
+      // TODO: why tfis the score so high bruh
       if (returnResults.url === downloadUrl)
         returnObj.networkSuccess = true
       if (parseFloat(returnResults.score) > THRESHOLD)

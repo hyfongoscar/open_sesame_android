@@ -48,7 +48,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                     ]) 
                 }
                 else if (option === "verify") {
-                  const results = await onStopVerify()
+                  const results = await onStopVerify(randNum)
                   if (Object.values(results).every(item => item == true)) {
                     Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
