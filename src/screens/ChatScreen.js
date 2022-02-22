@@ -265,6 +265,9 @@ export default function ChatScreen({ navigation, route }) {
                 right: {
                     backgroundColor: theme.color,
                 },
+                left: {
+                    backgroundColor: 'yellow',
+                }
             }}
         />
     );
