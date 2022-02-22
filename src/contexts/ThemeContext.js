@@ -10,7 +10,7 @@ const ThemeContextProvider = ({ children }) => {
     const { user } = useContext(AccountAuthContext)
 
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchData = async () => {
             if (user) {
                 await firestore()
                 .collection('profiles')
@@ -18,26 +18,24 @@ const ThemeContextProvider = ({ children }) => {
                 .get()
                 .then(documentSnapshot => {
                     if (documentSnapshot.exists) {
-                        var tempTheme = []
                         const temp_font = documentSnapshot.data().fontSize
                         const temp_color = documentSnapshot.data().color
                         const temp_displayName = documentSnapshot.data().displayName
                         const temp_profile = documentSnapshot.data().photoURL
                         const temp_background = documentSnapshot.data().backgroundURL
-                        tempTheme.push({
+                        setTheme({
                             font: temp_font,
                             color: temp_color,
                             displayName: temp_displayName,
                             profile: temp_profile,
                             background: temp_background
                         })
-                    setTheme(tempTheme)
                     }
                 })
             }
         }
         fetchData()
-      },[])
+      }, [user])
 
     return (
         <ThemeContext.Provider

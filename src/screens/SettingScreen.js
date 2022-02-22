@@ -11,7 +11,6 @@ export default function SettingScreen({ navigation }) {
     const { user, logout } = useContext(AccountAuthContext)
     const { theme } = useContext(ThemeContext)
     const image = { uri: theme.background };
-    console.log(theme)
     return(
         <View style={styles.container}>
             <ImageBackground source={image} resizeMode="cover" style={styles.image}>
