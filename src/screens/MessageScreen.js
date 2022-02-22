@@ -31,19 +31,19 @@ export default function MessageScreen({ navigation }) {
               style={styles.lockMessageIcon}
               source={require('../../assets/lock.jpeg')}
             />
-            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
         )
       else
         return (
           <>
-            <Text style = {styles.messageText}>{message.text}</Text>
-            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.messageText(theme)}>{message.text}</Text>
+            <Text style = {styles.postTime(theme)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
         )
     }
     return (
-      <Text style = {styles.nothingText}>You have not chatted with them yet!</Text>
+      <Text style = {styles.nothingText(theme)}>You have not chatted with them yet!</Text>
     )
   }
 
@@ -69,7 +69,7 @@ export default function MessageScreen({ navigation }) {
                                 />
                             </View>
                             <View style={styles.textSection}>
-                                <Text style = {styles.userName}> {item.displayName}</Text>
+                                <Text style = {styles.userName(theme)}> {item.displayName}</Text>
                                 <LastMessage message = {item.lastMessage}/>
                             </View>
                         </View>
@@ -109,24 +109,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 5,
   },
-  userName:{
-    fontSize: 20,
+  userName: (theme) => ({
+    fontSize: theme.font,
     fontWeight: 'bold',
-    color: "#0000ff",
-  },
-  postTime:{
-    fontSize: 15,
-    color: '#666',
-  },
-  messageText:{
-    fontSize: 14,
+    color: theme.color,
+  }),
+  postTime: (theme) => ({
+    fontSize: (theme.font * 0.75),
+    color: theme.color,
+  }),
+  messageText: (theme) => ({
+    fontSize: (theme.font * 0.7),
     color: '#333333',
-  },
-  nothingText:{
-    fontSize: 14,
+  }),
+  nothingText: (theme) => ({
+    fontSize: (theme.font * 0.7),
     color: '#333333',
     fontStyle: 'italic',
-  },
+  }),
   lockMessageIcon:{
     width: 30,
     height: 30
