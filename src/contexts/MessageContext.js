@@ -27,6 +27,15 @@ const MessageContextProvider = ({ children }) => {
     return doc.data().displayName
   }
 
+  const fetchProfilePic = async (email) => {
+    const doc = await firestore()  
+      .collection('profiles')
+      .doc(email)
+      .get()
+    return doc.data().photoURL
+  }
+
+
   // friend lists and their last messages
   useLayoutEffect(() => {
     if (user) {
@@ -40,11 +49,13 @@ const MessageContextProvider = ({ children }) => {
             const friend_email = email_pair[0] == user.email ? email_pair[1] : email_pair[0]
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
+            const friend_profile = await fetchProfilePic(friend_email)
             // TODO: friend lists spazzing out after having new meesage in chat, subscribers are colliding
             tempFriends.push({
               uid: friend_uid,
               email: friend_email,
               displayName: friend_name || "",
+              profilePic : friend_profile,
               lastMessage: documentSnapshot.data().lastMessage
             })
             setFriends(tempFriends)

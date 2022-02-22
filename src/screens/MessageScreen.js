@@ -66,6 +66,9 @@ export default function MessageScreen({ navigation }) {
                             <View style={styles.imgWrapper}>
                                 <Image
                                 style={styles.userImg}
+                                source={{
+                                  uri: item.profilePic,
+                             }}
                                 />
                             </View>
                             <View style={styles.textSection}>
