@@ -5,7 +5,6 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import DocumentPicker  from 'react-native-document-picker';
-import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
 
 export default function ChangeBackgroundPictureScreen({ navigation }) {

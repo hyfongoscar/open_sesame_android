@@ -5,7 +5,6 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import DocumentPicker  from 'react-native-document-picker';
-import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
 
 
@@ -80,12 +79,14 @@ export default function ChangeProfilePicScreen({ navigation }) {
   }
     return (
       <View>
-        <Image
-            style={styles.userImg}
-            source={{
-              uri: url,
-            }}
-        />
+        <View style={styles.imgWrapper}>
+          <Image
+              style={styles.userImg}
+              source={{
+                uri: url,
+              }}
+          />
+        </View>
         <Button onPress={()=>{uploadProfilePic()}}
         >Upload Profile Picture</Button>
       </View>
@@ -97,6 +98,11 @@ const styles = StyleSheet.create({
       width: 100,
       height: 100,
       borderRadius: 50,
+    },
+    imgWrapper:{
+      padding: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
 });
   
