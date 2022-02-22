@@ -48,7 +48,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                     ]) 
                 }
                 else if (option === "verify") {
-                  const results = await onStopVerify()
+                  const results = await onStopVerify(randNum)
                   if (Object.values(results).every(item => item == true)) {
                     Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
@@ -59,12 +59,12 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                       { text: "OK", onPress: () => setRecordText("") } 
                     ]) 
                   }
-                  // else if (!results.speechPassed) {
-                  //   Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again", [
-                  //     { text: "OK", onPress: () => setRecordText("") } 
-                  //     // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
-                  //   ]) 
-                  // }
+                  else if (!results.speechPassed) {
+                    Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again", [
+                      { text: "OK", onPress: () => setRecordText("") } 
+                      // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
+                    ]) 
+                  }
                   else {
                     Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
                       { text: "OK", onPress: () => navigation.goBack() } 

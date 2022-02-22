@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { Alert, PermissionsAndroid, Platform } from 'react-native';
 import AudioRecord from 'react-native-audio-record'
 import storage from '@react-native-firebase/storage'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
 export const VoiceAuthContext = createContext();
-const THRESHOLD = 10
+const SVTHRESHOLD = 10
+const SRTHRESHOLD = 50
 
 const VoiceAuthContextProvider = ({ children }) => {
   const { user } = useContext(AccountAuthContext)
@@ -67,16 +68,16 @@ const VoiceAuthContextProvider = ({ children }) => {
       },
       body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
     }).then(async (response) => {
-      returnResults = await response.json()
+      const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
         success = true
     }).catch((err) => {
-      console.log(err)
+      Alert.alert("Network Error", err.toString())
     })
     return success
   }
 
-  const onStopVerify = async () => {
+  const onStopVerify = async (digits) => {
     const audioFile = await AudioRecord.stop();
     setRecording(false)
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
@@ -84,7 +85,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     var returnObj = {
       networkSuccess: false,
       thresholdPassed: false,
-      // speechPassed: false
+      speechPassed: false
     }
     
     // Speaker Verification
@@ -93,16 +94,19 @@ const VoiceAuthContextProvider = ({ children }) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
+      body: `{"url": "${downloadUrl}", "user": "${user.uid}", "digits": "${digits}"}`
     }).then(async (response) => {
       const returnResults = await response.json()
+      // TODO: why tfis the score so high bruh
       if (returnResults.url === downloadUrl)
         returnObj.networkSuccess = true
-      if (parseFloat(returnResults.score) > THRESHOLD)
+      if (parseFloat(returnResults.svScore) > SVTHRESHOLD)
         returnObj.thresholdPassed = true
-      console.log(returnResults.digits)
+      if (parseFloat(returnResults.srScore) < SRTHRESHOLD)
+        returnObj.speechPassed = true
+      console.log(returnResults.srScore)
     }).catch((err) => {
-      console.log(err)
+      Alert.alert("Network Error", err.toString())
     })
 
     if (Object.values(returnObj).every(item => item == true)) {
