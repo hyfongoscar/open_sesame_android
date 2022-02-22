@@ -5,37 +5,28 @@ import { AccountAuthContext } from '../contexts/AccountAuthContext'
 export const ThemeContext = createContext();
 
 const ThemeContextProvider = ({ children }) => {
-    const [theme, setTheme] = useState([])
-    const [font, setFont] = useState(20)
-    const { user } = useContext(AccountAuthContext)
+  const [theme, setTheme] = useState([])
+  const [font, setFont] = useState(20)
+  const { user } = useContext(AccountAuthContext)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (user) {
-                await firestore()
-                .collection('profiles')
-                .doc(user.email)
-                .get()
-                .then(documentSnapshot => {
-                    if (documentSnapshot.exists) {
-                        const temp_font = documentSnapshot.data().fontSize
-                        const temp_color = documentSnapshot.data().color
-                        const temp_displayName = documentSnapshot.data().displayName
-                        const temp_profile = documentSnapshot.data().photoURL
-                        const temp_background = documentSnapshot.data().backgroundURL
-                        setTheme({
-                            font: temp_font,
-                            color: temp_color,
-                            displayName: temp_displayName,
-                            profile: temp_profile,
-                            background: temp_background
-                        })
-                    }
-                })
-            }
-        }
-        fetchData()
-      }, [user])
+  useEffect(() => {
+    if (user) {
+      const subscriber = firestore()
+        .collection('profiles')
+        .doc(user.email)
+        .onSnapshot(documentSnapshot => {
+          setTheme({
+              font: documentSnapshot.data().fontSize || 20,
+              color: documentSnapshot.data().color || "purple",
+              displayName: documentSnapshot.data().displayName || "User",
+              profile: documentSnapshot.data().photoURL,
+              background: documentSnapshot.data().backgroundURL
+          })
+      })
+
+      return () => subscriber();
+    }
+  }, [user])
 
     return (
         <ThemeContext.Provider

@@ -215,6 +215,14 @@ export default function ChatScreen({ navigation, route }) {
       return (
         <Bubble
           {...props}
+          wrapperStyle={{
+            right: {
+              backgroundColor: theme.color,
+            },
+            left: {
+              backgroundColor: 'white',
+            }
+          }}
           renderMessageText={() => (
             <TouchableOpacity 
               onPress={ () => {
@@ -237,6 +245,14 @@ export default function ChatScreen({ navigation, route }) {
       return (
         <Bubble
           {...props}
+          wrapperStyle={{
+            right: {
+              backgroundColor: theme.color,
+            },
+            left: {
+              backgroundColor: 'yellow',
+            }
+          }}
           touchableProps={{ disabled: true }}
           renderCustomView={() => (
             <TouchableOpacity 
@@ -247,7 +263,7 @@ export default function ChatScreen({ navigation, route }) {
                 ])
               }}
             >
-              <View style={{ width: 50, height: 50 }}>
+              <View style={{ width: 50, height: 50}}>
                 <Image
                   style={styles.largerLogo}
                   source={require('../../assets/file.jpeg')}
@@ -262,12 +278,12 @@ export default function ChatScreen({ navigation, route }) {
         <Bubble
             {...props}
             wrapperStyle={{
-                right: {
-                    backgroundColor: theme.color,
-                },
-                left: {
-                    backgroundColor: 'yellow',
-                }
+              right: {
+                backgroundColor: theme.color,
+              },
+              left: {
+                backgroundColor: 'yellow',
+              }
             }}
         />
     );
