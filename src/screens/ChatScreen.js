@@ -214,7 +214,7 @@ export default function ChatScreen({ navigation, route }) {
     if (currentMessage._rid == user.uid && currentMessage.locked && !verified) {
       return (
         <Bubble
-          {...props} 
+          {...props}
           renderMessageText={() => (
             <TouchableOpacity 
               onPress={ () => {
@@ -258,7 +258,16 @@ export default function ChatScreen({ navigation, route }) {
         />
       )
     }
-    return <Bubble {...props} />
+    return (
+        <Bubble
+            {...props}
+            wrapperStyle={{
+                right: {
+                    backgroundColor: theme.color,
+                },
+            }}
+        />
+    );
   }
 
   // Custom Send bar at the bottom
