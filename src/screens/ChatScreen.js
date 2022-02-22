@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react'
-import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
 import { GiftedChat, Bubble, MessageText, Send, Actions} from 'react-native-gifted-chat'
@@ -17,6 +17,7 @@ var locked = false
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
+import { ThemeContext } from '../contexts/ThemeContext'
 
 
 export default function ChatScreen({ navigation, route }) {
@@ -24,6 +25,8 @@ export default function ChatScreen({ navigation, route }) {
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
   const { messages, setMessages } = useContext(MessageContext)
+  const { theme } = useContext(ThemeContext)
+  const image = { uri: theme.background };
 
   const onSend = useCallback(async (messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, ScrollView } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore';
 import prompt from 'react-native-prompt-android';
@@ -13,6 +13,7 @@ export default function SettingScreen({ navigation }) {
     const image = { uri: theme.background };
     return(
         <View style={styles.container}>
+            <ScrollView>
             <ImageBackground source={image} resizeMode="cover" style={styles.image}>
                 <Image
                     style={styles.userImg}
@@ -21,19 +22,19 @@ export default function SettingScreen({ navigation }) {
                     }}
                 />
                 <Text
-                    style={styles.text}
+                    style={styles.text(theme)}
                 >Username: { theme.displayName }</Text>
                 <Text
-                    style={styles.text}
+                    style={styles.text(theme)}
                 >Email: { user.email }</Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={async () => navigation.navigate('FriendRequest')}
                 >Add friends</Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={() => {
                     prompt("Enter new username", "",
                         [
@@ -65,37 +66,38 @@ export default function SettingScreen({ navigation }) {
                 >Change Username </Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={() => navigation.navigate('ChangeProfilePic')}
                 >Change Profile Picture </Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={() => navigation.navigate('VoiceEnroll')}
                 >Enroll Voiceprint </Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={() => navigation.navigate('Change Background Picture')}
                 >Change Background Picture</Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={() => navigation.navigate('Change Color')}
                 >Change Color Theme</Text>
                 <Text
                     uppercase={false}
-                    style={styles.text}
+                    style={styles.text(theme)}
                     onPress={() => navigation.navigate('Change Font Size')}
                 >Change Font Size </Text>
                 <Text
                     uppercase={false}
-                    style={styles.redText}
+                    style={styles.redText(theme)}
                     onPress={async () => {
                         logout();
                     }}
                 >Log out</Text>
             </ImageBackground>
+        </ScrollView>
         </View>
     );
 }
@@ -103,22 +105,22 @@ export default function SettingScreen({ navigation }) {
 const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
-  text: {
+  text: (theme) => ({
     margin: 15,
     paddingBottom: 15,
     color: "black",
-    fontSize: 20,
+    fontSize: theme.font,
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1,
-  },
-  redText: {
+  }),
+  redText: (theme) => ({
     margin: 15,
     paddingBottom: 15,
     color: "red",
-    fontSize: 20,
+    fontSize: theme.font,
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1,
-  },
+  }),
   container: {
     flex: 1, 
     paddingLeft: 20,

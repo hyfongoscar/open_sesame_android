@@ -17,18 +17,20 @@ import ChangeFontSizeScreen from '../screens/ChangeFontSizeScreen';
 import ChangeColorScreen from '../screens/ChangeColorScreen';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { ThemeContext } from '../contexts/ThemeContext'
 
 
 const Stack = createNativeStackNavigator();
 
-const globalScreenOptions = {
-  headerStyle: {backgroundColor: "purple"},
-  headerTitleStyle: {color: "white"},
-  headerTintColor:"white",
-}
-
 export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
+  const { theme } = useContext(ThemeContext)
+
+  const globalScreenOptions = {
+    headerStyle: {backgroundColor: theme.color},
+    headerTitleStyle: {color: "white"},
+    headerTintColor:"white",
+  }
 
   return (
       <Stack.Navigator screenOptions={globalScreenOptions}>

@@ -7,14 +7,14 @@ import auth from '@react-native-firebase/auth';
 
 export default function ChangeFontSizeScreen({ navigation }) {
     const user = auth().currentUser;
-    const [newFontSize, setFontSize] = useState('')
+    const [newFontSize, setFontSize] = useState(0)
 
     const changeFontSize = async () => {
         await firestore()
             .collection('profiles')
             .doc(user.email)
             .update({
-                fontSize: newFontSize,
+                fontSize: Number(newFontSize),
             })
         Alert.alert("", "Font size changed!", [
             { text: "OK"}

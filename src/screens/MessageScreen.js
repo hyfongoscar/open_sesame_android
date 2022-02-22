@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native';
 import { Button } from 'react-native-paper'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export default function MessageScreen({ navigation }) {
   const { friends, setChatter } = useContext(MessageContext)
   const { user, logout } = useContext(AccountAuthContext)
   const { verified } = useContext(VoiceAuthContext)
+  const { theme } = useContext(ThemeContext)
+  const image = { uri: theme.background };
 
   useEffect(() => {
     if (!user)
@@ -46,32 +49,34 @@ export default function MessageScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data ={friends}
-        keyExtractor={friend=>friend.uid}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style = {styles.profile}
-            onPress={() => {
-              const chatter = {userName: item.displayName,  userID: item.uid}
-              setChatter(chatter)
-              navigation.navigate('Chat', chatter)
-            }}
-          >
-            <View style={styles.userInfo}>
-              <View style={styles.imgWrapper}>
-                <Image
-                  style={styles.userImg}
-                />
-              </View>
-              <View style={styles.textSection}>
-                <Text style = {styles.userName}> {item.displayName}</Text>
-                <LastMessage message = {item.lastMessage}/>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      ></FlatList>
+        <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+            <FlatList
+                data ={friends}
+                keyExtractor={friend=>friend.uid}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        style = {styles.profile}
+                        onPress={() => {
+                            const chatter = {userName: item.displayName,  userID: item.uid}
+                            setChatter(chatter)
+                            navigation.navigate('Chat', chatter)
+                        }}
+                    >
+                        <View style={styles.userInfo}>
+                            <View style={styles.imgWrapper}>
+                                <Image
+                                style={styles.userImg}
+                                />
+                            </View>
+                            <View style={styles.textSection}>
+                                <Text style = {styles.userName}> {item.displayName}</Text>
+                                <LastMessage message = {item.lastMessage}/>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            ></FlatList>
+        </ImageBackground>
     </View>
   );
 };
@@ -138,5 +143,9 @@ const styles = StyleSheet.create({
   userInfo:{
     flexDirection:'column',
     justifyContent:'space-between',
+  },
+  image: {
+    flex: 1,
+    justifyContent: "center"
   },
 });

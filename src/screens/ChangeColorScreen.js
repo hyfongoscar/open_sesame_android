@@ -33,18 +33,6 @@ export default function ChangeColorScreen({ navigation }) {
         ])
     }
 
-    const changeColorYellow = async () => {
-        await firestore()
-            .collection('profiles')
-            .doc(user.email)
-            .update({
-                color: 'yellow',
-            })
-        Alert.alert("", "Color theme changed!", [
-            { text: "OK"}
-        ])
-    }
-
     const changeColorGreen = async () => {
         await firestore()
             .collection('profiles')
@@ -128,10 +116,6 @@ export default function ChangeColorScreen({ navigation }) {
                 uppercase={false}
                 onPress={ () => changeColorOrange() }
             >Orange </Button>
-            <Button
-                uppercase={false}
-                onPress={ () => changeColorYellow() }
-            >Yellow </Button>
             <Button
                 uppercase={false}
                 onPress={ () => changeColorGreen() }
