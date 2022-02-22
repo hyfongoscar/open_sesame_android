@@ -28,7 +28,6 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED){
             const result = await RNFetchBlob.fs.readFile(res[0].uri, 'base64')
-            console.log(result)
             uploadFileToFirebase(result, res[0])
           }
         } catch(e){
@@ -65,13 +64,20 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
             })
         }
 
-      const updateBackgroundPic = async (downloadURL) => {
-        await firestore().collection('profiles').doc(user.email).update({
-            backgroundURL: downloadURL,
-        });
-        setURL(downloadURL);
-        Alert.alert("Successfully Change Background Picture");
-      }
+    const updateBackgroundPic = async (downloadURL) => {
+      await firestore().collection('profiles').doc(user.email).update({
+          backgroundURL: downloadURL,
+      });
+      setURL(downloadURL);
+      Alert.alert("Successfully Changed Background Picture");
+    }
+
+    const removeBackgroundPic = async () => {
+      await firestore().collection('profiles').doc(user.email).update({
+        backgroundURL: firestore.FieldValue.delete(),
+      });
+      Alert.alert("Successfully Removed Background Picture");
+    }
 
 
     return (
@@ -79,8 +85,13 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
         <ImageBackground source={image} resizeMode="cover" style={styles.image}>
             <Button
                 uppercase={false}
-                onPress={()=>{uploadBackgroundPic()}}
+                onPress={()=>{ uploadBackgroundPic() }}
             >Upload Background Picture</Button>
+
+            <Button
+                uppercase={false}
+                onPress={()=>{ removeBackgroundPic() }}
+            >Remove Background Picture</Button>
         </ImageBackground>
       </View>
     );

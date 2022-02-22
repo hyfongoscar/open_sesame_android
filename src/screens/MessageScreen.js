@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native';
-import { Button } from 'react-native-paper'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
@@ -64,16 +63,18 @@ export default function MessageScreen({ navigation }) {
                     >
                         <View style={styles.userInfo}>
                             <View style={styles.imgWrapper}>
-                                <Image
-                                style={styles.userImg}
-                                source={{
-                                  uri: item.profilePic,
-                             }}
-                                />
                             </View>
                             <View style={styles.textSection}>
-                                <Text style = {styles.userName(theme)}> {item.displayName}</Text>
-                                <LastMessage message = {item.lastMessage}/>
+                              <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+                                <Image
+                                    style={styles.userImg}
+                                    source={{
+                                      uri: item.profilePic,
+                                    }}
+                                  />
+                                <Text style = {styles.userName(theme)}> {item.displayName} </Text>
+                              </View>
+                              <LastMessage message = {item.lastMessage}/>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -122,8 +123,9 @@ const styles = StyleSheet.create({
     color: theme.color,
   }),
   messageText: (theme) => ({
-    fontSize: (theme.font * 0.7),
-    color: '#333333',
+    fontSize: (theme.font * 0.8),
+    color: "black",
+    padding: 5,
   }),
   nothingText: (theme) => ({
     fontSize: (theme.font * 0.7),
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   }),
   lockMessageIcon:{
     width: 30,
-    height: 30
+    height: 30,
   },
   imgWrapper:{
     paddingTop: 15,

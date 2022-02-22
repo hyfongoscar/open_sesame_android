@@ -83,9 +83,8 @@ export default function ChangeProfilePicScreen({ navigation }) {
         <Image
             style={styles.userImg}
             source={{
-             uri: url,
-        }}
-            
+              uri: url,
+            }}
         />
         <Button onPress={()=>{uploadProfilePic()}}
         >Upload Profile Picture</Button>

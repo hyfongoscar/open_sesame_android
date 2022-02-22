@@ -23,7 +23,6 @@ const ThemeContextProvider = ({ children }) => {
               background: documentSnapshot.data().backgroundURL
           })
       })
-
       return () => subscriber();
     }
   }, [user])

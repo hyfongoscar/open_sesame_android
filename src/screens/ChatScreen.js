@@ -250,7 +250,7 @@ export default function ChatScreen({ navigation, route }) {
               backgroundColor: theme.color,
             },
             left: {
-              backgroundColor: 'yellow',
+              backgroundColor: '#FFFFE0',
             }
           }}
           touchableProps={{ disabled: true }}
@@ -282,7 +282,7 @@ export default function ChatScreen({ navigation, route }) {
                 backgroundColor: theme.color,
               },
               left: {
-                backgroundColor: 'yellow',
+                backgroundColor: '#FFFFE0',
               }
             }}
         />

@@ -23,6 +23,35 @@ export default function SettingScreen({ navigation }) {
                 />
                 <Text
                     style={styles.text(theme)}
+                    onPress={() => {
+                      prompt("Edit username", "",
+                        [
+                          {text: 'Cancel'},
+                          {text: 'OK', onPress: async (newUserName) => {
+                              if (!newUserName) {
+                                Alert.alert("", "Please enter a username")
+                                return
+                              }
+                              const profile = {
+                                  displayName: newUserName,
+                                  photoURL: user.photoURL,
+                              }
+                              await user.updateProfile(profile)
+                              await firestore()
+                                  .collection('profiles')
+                                  .doc(user.email)
+                                  .update({
+                                      displayName: newUserName,
+                                  })
+                              Alert.alert("", "Username changed!")
+                          }},
+                        ],
+                        {
+                          type: 'plain-text',
+                          placeholder: 'Username'
+                        }
+                      );
+                    }}
                 >Username: { theme.displayName }</Text>
                 <Text
                     style={styles.text(theme)}
@@ -32,38 +61,6 @@ export default function SettingScreen({ navigation }) {
                     style={styles.text(theme)}
                     onPress={async () => navigation.navigate('FriendRequest')}
                 >Add friends</Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={() => {
-                    prompt("Enter new username", "",
-                        [
-                        {text: 'Cancel'},
-                        {text: 'OK', onPress: async (newUserName) => {
-                            if (!newUserName) {
-                            Alert.alert("", "Please enter a username")
-                            return
-                            }
-                            const profile = {
-                                displayName: newUserName,
-                                photoURL: user.photoURL,
-                            }
-                            await user.updateProfile(profile)
-                            await firestore()
-                                .collection('profiles')
-                                .doc(user.email)
-                                .update({
-                                    displayName: newUserName,
-                                })
-                        }},
-                        ],
-                        {
-                            type: 'plain-text',
-                            placeholder: 'Username'
-                        }
-                    );
-                    }}
-                >Change Username </Text>
                 <Text
                     uppercase={false}
                     style={styles.text(theme)}
@@ -87,7 +84,30 @@ export default function SettingScreen({ navigation }) {
                 <Text
                     uppercase={false}
                     style={styles.text(theme)}
-                    onPress={() => navigation.navigate('Change Font Size')}
+                    onPress={() => {
+                      prompt("Edit font size", "",
+                        [
+                          {text: 'Cancel'},
+                          {text: 'OK', onPress: async (newFontSize) => {
+                              if (!newFontSize || isNaN(newFontSize)) {
+                                Alert.alert("", "Please enter a number")
+                                return
+                              }
+                              await firestore()
+                                .collection('profiles')
+                                .doc(user.email)
+                                .update({
+                                  fontSize: Number(newFontSize),
+                                })
+                              Alert.alert("", "Font size changed!")
+                          }},
+                        ],
+                        {
+                          type: 'plain-text',
+                          placeholder: 'Font Size'
+                        }
+                    );
+                    }}
                 >Change Font Size </Text>
                 <Text
                     uppercase={false}
