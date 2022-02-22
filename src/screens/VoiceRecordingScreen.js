@@ -13,11 +13,13 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   useEffect(() => {
 
     var digits = [0,1,2,3,4,5,6,7,8,9],
-    randNums = [],
-    j = 0;
+      randNums = [],
+      j = 0,
+      numDigits = Math.floor(Math.random()*4 + 5)
+    
 
     // generate non-repeating 6-digit number
-    while (digits.length > 4) {
+    while (digits.length > numDigits) {
       j = Math.floor(Math.random() * (digits.length + 1));
       randNums.push(digits[j]);
       digits.splice(j,1);
