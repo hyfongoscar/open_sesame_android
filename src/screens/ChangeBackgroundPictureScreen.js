@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Alert, Dimensions, StyleSheet, View, Image,  PermissionsAndroid } from 'react-native';
+import { Alert, Dimensions, StyleSheet, View, Image,  PermissionsAndroid, ImageBackground } from 'react-native';
 import { Button, Text, Title, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -11,6 +11,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 export default function ChangeBackgroundPictureScreen({ navigation }) {
     const { user } = useContext(AccountAuthContext)
     const [url, setURL] = useState(user.backgroundURL)
+
+    const image = { uri: url };
 
     const uploadBackgroundPic = async() =>{
         try {
@@ -73,26 +75,27 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
 
 
     return (
-      <View>
-        <Image
-            style={styles.userImg}
-            source={{
-             uri: url,
-        }}
-
-        />
-        <Button
-            uppercase={false}
-            onPress={()=>{uploadBackgroundPic()}}
-        >Upload Background Picture</Button>
+      <View style={styles.container}>
+        <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+            <Button
+                uppercase={false}
+                onPress={()=>{uploadBackgroundPic()}}
+            >Upload Background Picture</Button>
+        </ImageBackground>
       </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     userImg:{
       width: 100,
       height: 100,
-      borderRadius: 50,
+    },
+    image: {
+        flex: 1,
+        justifyContent: "center"
     },
 });

@@ -43,6 +43,9 @@ const AccountAuthContextProvider = ({ children }) => {
           .doc(email)
           .set({
             uid: user.uid,
+            color: 'purple',
+            fontSize: 20,
+            backgroundURL: '',
             displayName,
             photoURL:  'https://firebasestorage.googleapis.com/v0/b/open-sesame-ebca1.appspot.com/o/profilePic%2Fdefault.jpeg?alt=media&token=4851efe0-4063-4bd4-a647-20a72b7cc0ac',
           })
