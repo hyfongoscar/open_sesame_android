@@ -11,6 +11,7 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
     const { user } = useContext(AccountAuthContext)
     const [url, setURL] = useState(user.backgroundURL)
 
+
     const image = { uri: url };
 
     const uploadBackgroundPic = async() =>{
@@ -38,6 +39,7 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
     }
 
     const uploadFileToFirebase = async (result, file) => {
+            Alert.alert("Uploading New Wallpaper");
             const uploadTask = storage().ref(`backgroundPic/${file.name}`).putString(result, 'base64',{contentType: file.type});
             uploadTask.on('state_changed',
             (snapshot) => {
@@ -68,14 +70,14 @@ export default function ChangeBackgroundPictureScreen({ navigation }) {
           backgroundURL: downloadURL,
       });
       setURL(downloadURL);
-      Alert.alert("Successfully Changed Background Picture");
+      Alert.alert("Successfully Changed Wallpaper");
     }
 
     const removeBackgroundPic = async () => {
       await firestore().collection('profiles').doc(user.email).update({
         backgroundURL: firestore.FieldValue.delete(),
       });
-      Alert.alert("Successfully Removed Background Picture");
+      Alert.alert("Successfully Removed Current Wallpaper");
     }
 
 

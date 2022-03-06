@@ -39,6 +39,7 @@ export default function ChangeProfilePicScreen({ navigation }) {
     }
 
     const uploadFileToFirebase = async (result, file) => {
+        Alert.alert("Uploading New Profile Picture");
         const uploadTask = storage().ref(`profilePic/${file.name}`).putString(result, 'base64',{contentType: file.type});
         uploadTask.on('state_changed', 
         (snapshot) => {
