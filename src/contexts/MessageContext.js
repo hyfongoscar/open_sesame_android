@@ -9,6 +9,7 @@ const MessageContextProvider = ({ children }) => {
   const [messages, setMessages] = useState([])
   const [friends, setFriends] = useState([])
   const [chatter, setChatter] = useState(null)
+  const [recipient, setRecipient] = useState()
   const { user } = useContext(AccountAuthContext)
 
   const fetchUID = async (email) =>{
@@ -50,7 +51,7 @@ const MessageContextProvider = ({ children }) => {
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
             const friend_profile = await fetchProfilePic(friend_email)
-            // TODO: friend lists spazzing out after having new meesage in chat, subscribers are colliding
+            // TODO: friend lists spanning out after having new message in chat, subscribers are colliding
             tempFriends.push({
               uid: friend_uid,
               email: friend_email,
@@ -96,7 +97,8 @@ const MessageContextProvider = ({ children }) => {
     <MessageContext.Provider
       value={{
         friends, messages, chatter, 
-        setChatter, setMessages
+        setChatter, setMessages,
+        recipient, setRecipient,
       }}>
       {children}
     </MessageContext.Provider>

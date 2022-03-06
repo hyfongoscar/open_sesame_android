@@ -17,6 +17,7 @@ import ChangeColorScreen from '../screens/ChangeColorScreen';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
+import { MessageContext } from '../contexts/MessageContext';
 
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,7 @@ const Stack = createNativeStackNavigator();
 export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
   const { theme } = useContext(ThemeContext)
+  const { recipient } = useContext(MessageContext)
 
   const globalScreenOptions = {
     headerStyle: {backgroundColor: theme.color},
@@ -56,6 +58,7 @@ export default function AuthStack() {
                 name="Chat"
                 component={ChatScreen}
                 options={({navigation}) => ({
+                    title: JSON.stringify(recipient).replace(/^"(.*)"$/, '$1'),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
                             <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
