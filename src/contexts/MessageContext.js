@@ -10,6 +10,7 @@ const MessageContextProvider = ({ children }) => {
   const [friends, setFriends] = useState([])
   const [chatter, setChatter] = useState(null)
   const [recipient, setRecipient] = useState()
+  const [recipientIcon, setRecipientIcon] = useState()
   const { user } = useContext(AccountAuthContext)
 
   const fetchUID = async (email) =>{
@@ -99,6 +100,7 @@ const MessageContextProvider = ({ children }) => {
         friends, messages, chatter, 
         setChatter, setMessages,
         recipient, setRecipient,
+        recipientIcon, setRecipientIcon,
       }}>
       {children}
     </MessageContext.Provider>

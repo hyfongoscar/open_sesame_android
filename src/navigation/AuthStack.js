@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useContext } from 'react'
-import { TouchableOpacity, Image } from 'react-native';
+import { TouchableOpacity, Image, Text, View } from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -26,6 +26,7 @@ export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
   const { theme } = useContext(ThemeContext)
   const { recipient } = useContext(MessageContext)
+  const { recipientIcon } = useContext(MessageContext)
 
   const globalScreenOptions = {
     headerStyle: {backgroundColor: theme.color},
@@ -47,6 +48,7 @@ export default function AuthStack() {
                 name="Message"
                 component={MessageScreen}
                 options={({navigation}) => ({
+                    title: "Open Sesame",
                     headerRight: () => (
                         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
                             <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
@@ -58,7 +60,19 @@ export default function AuthStack() {
                 name="Chat"
                 component={ChatScreen}
                 options={({navigation}) => ({
-                    title: JSON.stringify(recipient).replace(/^"(.*)"$/, '$1'),
+                    headerTitle: () => (
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image
+                                style={{ width: 30, height: 30, borderRadius: 15, tintColor: "#FFFFFF" }}
+                                source={{
+                                    uri: JSON.stringify(recipientIcon).replace(/^"(.*)"$/, '$1')
+                                }}
+                            />
+                            <Text
+                                style={{ fontSize: 30, color: "white" }}
+                            > {JSON.stringify(recipient).replace(/^"(.*)"$/, '$1')} </Text>
+                        </View>
+                    ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
                             <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>

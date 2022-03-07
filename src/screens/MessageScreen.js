@@ -12,6 +12,7 @@ export default function MessageScreen({ navigation }) {
   const { verified } = useContext(VoiceAuthContext)
   const { theme } = useContext(ThemeContext)
   const { recipient, setRecipient } = useContext(MessageContext)
+  const { recipientIcon, setRecipientIcon } = useContext(MessageContext)
   const image = { uri: theme.background };
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function MessageScreen({ navigation }) {
                             const chatter = {userName: item.displayName,  userID: item.uid}
                             setChatter(chatter)
                             setRecipient(item.displayName)
+                            setRecipientIcon(item.profilePic)
                             navigation.navigate('Chat', chatter)
                         }}
                     >

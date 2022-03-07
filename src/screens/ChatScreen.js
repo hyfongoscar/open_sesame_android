@@ -197,7 +197,7 @@ export default function ChatScreen({ navigation, route }) {
         icon={() => (
           <Image
               style={styles.smallerLogo}
-              source={require('../../assets/file.jpeg')}
+              source={require('../../assets/file.png')}
             />
 
         )}
@@ -234,7 +234,7 @@ export default function ChatScreen({ navigation, route }) {
             >
               <Image
                 style={styles.largerLogo}
-                source={require('../../assets/lock.jpeg')}
+                source={require('../../assets/lock.png')}
               />
             </TouchableOpacity>
           )}
@@ -266,7 +266,7 @@ export default function ChatScreen({ navigation, route }) {
               <View style={{ width: 50, height: 50}}>
                 <Image
                   style={styles.largerLogo}
-                  source={require('../../assets/file.jpeg')}
+                  source={require('../../assets/file.png')}
                 />
               </View>
             </TouchableOpacity>
