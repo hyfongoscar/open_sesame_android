@@ -3,12 +3,16 @@ import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
-  const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
+  
   const [ recordText, setRecordText ] = useState('')
   const [ randNum, setRandNum ] = useState('')
+
+  const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
+  const { theme, getSecondaryColor } = useContext(ThemeContext)
 
   useEffect(() => {
     var digits = [0,1,2,3,4,5,6,7,8,9],
@@ -16,7 +20,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
       j = 0
 
     // generate non-repeating 6-digit number
-    while (randNums.length < 6) {
+    while (randNums.length < 4) {
       j = Math.floor(Math.random() * digits.length);
       randNums.push(digits[j]);
       digits.splice(j,1);
@@ -31,7 +35,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
         <TouchableOpacity style={styles.recordOverlay} >
           <Button
             mode="contained"
-            style={styles.recordButton}
+            style={styles.recordButton(getSecondaryColor(theme.color))}
             labelStyle={styles.recordButtonLabel}
             onPress={ async () => {
               if (!recording){
@@ -83,7 +87,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "f5f5f5",
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -93,13 +97,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "black"
   },
-  recordButton: {
+  recordButton: (color) => ({
     width: 100,  
     height: 100,   
     borderRadius: 50,
-    backgroundColor: '#00ffff',
+    backgroundColor: color,
     position: 'absolute',
-  },
+  }),
   recordButtonLabel: {
     paddingTop: 33,
     color: '#000000',

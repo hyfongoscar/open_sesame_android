@@ -10,7 +10,7 @@ export default function MessageScreen({ navigation }) {
   const { friends, setChatter } = useContext(MessageContext)
   const { user } = useContext(AccountAuthContext)
   const { verified } = useContext(VoiceAuthContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme, getSecondaryColor } = useContext(ThemeContext)
 
   useEffect(() => {
     if (!user)
@@ -29,14 +29,14 @@ export default function MessageScreen({ navigation }) {
               style={styles.lockMessageIcon}
               source={require('../../assets/lock.png')}
             />
-            <Text style = {styles.postTime(theme)}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
         )
       else
         return (
           <>
             <Text style = {styles.messageText(theme)}>{message.text}</Text>
-            <Text style = {styles.postTime(theme)}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
         )
     }
@@ -146,9 +146,9 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     paddingLeft: theme.font / 3
   }),
-  postTime: (theme) => ({
+  postTime: (theme, getSecondaryColor) => ({
     fontSize: (theme.font * 0.75),
-    color: theme.color,
+    color: getSecondaryColor(theme.color),
   }),
   profile:{
     width:'100%',

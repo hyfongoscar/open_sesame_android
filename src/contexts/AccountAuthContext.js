@@ -43,7 +43,7 @@ const AccountAuthContextProvider = ({ children }) => {
           .doc(email)
           .set({
             uid: user.uid,
-            color: 'purple',
+            color: '#9C27B0',
             fontSize: 20,
             backgroundURL: '',
             displayName,

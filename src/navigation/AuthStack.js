@@ -70,7 +70,7 @@ export default function AuthStack() {
                 headerTitle: () => (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image
-                      style={{ width: 30, height: 30, borderRadius: 15 }}
+                      style={{ width: 30, height: 30, borderRadius: 15}}
                       source={{
                         uri: chatter.profilePic
                       }}

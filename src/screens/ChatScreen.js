@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useContext, useState } from 'react'
 import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
-import { GiftedChat, Actions, Bubble, Message, MessageText, Send } from 'react-native-gifted-chat'
+import { GiftedChat, Actions, Bubble, Message, MessageText, Send, Time } from 'react-native-gifted-chat'
 import DocumentPicker  from 'react-native-document-picker';
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
@@ -26,7 +26,7 @@ export default function ChatScreen({ navigation, route }) {
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
   const { messages, setMessages } = useContext(MessageContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme, getSecondaryColor } = useContext(ThemeContext)
 
   const image = { uri: theme.background };
 
@@ -215,7 +215,7 @@ export default function ChatScreen({ navigation, route }) {
             backgroundColor: theme.color,
           },
           left: {
-            backgroundColor: '#FFFFE0',
+            backgroundColor: getSecondaryColor(theme.color),
           }
         }}
         renderMessageText={() => {
@@ -272,6 +272,22 @@ export default function ChatScreen({ navigation, route }) {
     )
   }
 
+  const renderTime = (props) => (
+    <Time
+      timeTextStyle={{
+        right: {
+          color: "#CCCCCC",
+          fontSize: theme.font / 2
+        },
+        left: {
+          color: "#444444",
+          fontSize: theme.font / 2
+        }
+      }}
+      { ...props }
+    />
+  )
+
   // Custom Send bar at the bottom
   const renderSend = (props) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', height: 45 }}>
@@ -299,8 +315,10 @@ export default function ChatScreen({ navigation, route }) {
       renderActions = {renderActions}
       renderBubble = {renderBubble}
       renderSend = {renderSend}
+      renderTime = {renderTime}
       messages = {messages}
       onSend = {messages => onSend(messages)}
+      textStyle={styles.messageText(theme, 1)}
       user = {{
         _id: user.uid,
       }}

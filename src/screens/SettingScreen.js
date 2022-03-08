@@ -15,14 +15,15 @@ export default function SettingScreen({ navigation }) {
         <View style={styles.container}>
             <ScrollView>
             <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-                <Image
-                    style={styles.userImg}
-                    source={{
-                        uri:  theme.profile ,
-                    }}
-                />
-                <Text
-                    style={styles.text(theme)}
+                <View style={styles.profile(theme)}>
+                  <Image
+                      style={styles.userImg}
+                      source={{
+                          uri:  theme.profile ,
+                      }}
+                  />
+                  <Text
+                    style={styles.username(theme)}
                     onPress={() => {
                       prompt("Edit username", "",
                         [
@@ -52,7 +53,8 @@ export default function SettingScreen({ navigation }) {
                         }
                       );
                     }}
-                >Username: { theme.displayName }</Text>
+                  >Username: { theme.displayName }</Text>
+                </View>
                 <Text
                     style={styles.text(theme)}
                 >Email: { user.email }</Text>
@@ -125,6 +127,19 @@ export default function SettingScreen({ navigation }) {
 const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
+  profile: (theme) => ({
+    flexDirection:'row',
+    flexWrap:'wrap',
+    paddingBottom: theme.font / 2
+  }),
+  username: (theme) => ({
+    margin: 15,
+    paddingBottom: 15,
+    color: "black",
+    fontSize: theme.font,
+    textAlignVertical: "center",
+    paddingLeft: theme.font / 3
+  }),
   text: (theme) => ({
     margin: 15,
     paddingBottom: 15,
@@ -150,6 +165,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    margin: 10
   },
   image: {
     flex: 1,
