@@ -15,12 +15,10 @@ import ChangeProfilePicScreen from '../screens/ChangeProfilePicScreen';
 import ChangeBackgroundPictureScreen from '../screens/ChangeBackgroundPictureScreen';
 import ChangeColorScreen from '../screens/ChangeColorScreen';
 
-import Loading from '../components/Loading'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { MessageContext } from '../contexts/MessageContext'
-import { LoadingContext } from '../contexts/LoadingContext'
 
 
 const Stack = createNativeStackNavigator();
@@ -29,7 +27,6 @@ export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
   const { theme } = useContext(ThemeContext)
   const { chatter } = useContext(MessageContext)
-  const { loading } = useContext(LoadingContext)
 
   const globalScreenOptions = {
     headerStyle: {backgroundColor: theme.color},
@@ -39,11 +36,7 @@ export default function AuthStack() {
 
   return (
       <Stack.Navigator screenOptions={globalScreenOptions}>
-        { 
-          loading == true ? (
-            {/* <Stack.Screen name="OpenSesame" component={Loading} /> */}
-          ) : 
-          user == null ? (
+        {user == null ? (
             <>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Signup" component={SignupScreen} />

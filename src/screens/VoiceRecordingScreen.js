@@ -4,6 +4,9 @@ import { Button, Title } from 'react-native-paper'
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
+import { LoadingContext } from '../contexts/LoadingContext'
+
+import Loading from '../components/Loading'
 
 export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
@@ -13,6 +16,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
 
   const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
   const { theme, getSecondaryColor } = useContext(ThemeContext)
+  const { loading, setLoading } = useContext(LoadingContext)
 
   useEffect(() => {
     var digits = [0,1,2,3,4,5,6,7,8,9],
@@ -31,7 +35,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   return (
       <View style={styles.container}>
         <Text style={styles.instructions}>Record yourself saying the following numbers:</Text>
-        <Text style={styles.titleText}> { randNum } </Text>
+        <Text style={styles.titleText(theme)}> { randNum } </Text>
         <TouchableOpacity style={styles.recordOverlay} >
           <Button
             mode="contained"
@@ -43,15 +47,20 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 setRecordText("Recording...")
               } else {
                 setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
-                
+                setLoading(true)
                 if (option === "enroll") {
-                  if (await onStopEnroll())
+                  if (await onStopEnroll()) {
+                    setRecordText("")
+                    setLoading(false)
                     Alert.alert("Enrollment complete", "Your voice will be saved in your account. You can always enroll again for a different voiceprint", [
                       { text: "OK", onPress: () => navigation.navigate('Message') }
                     ]) 
+                  }
                 }
                 else if (option === "verify") {
                   const results = await onStopVerify(randNum)
+                  setRecordText("")
+                  setLoading(false)
                   if (Object.values(results).every(item => item == true)) {
                     Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
                       { text: "OK", onPress: () => navigation.goBack() } 
@@ -79,8 +88,9 @@ export default function VoiceEnrollScreen({ route, navigation }) {
           >{recording ? "Stop" : "Start"}</Button>
         </TouchableOpacity>
         <Text
-          style={styles.recordText}
+          style={styles.recordText(theme)}
         >{ recordText }</Text>
+        { loading ?  (<Loading/>) :  (<></>)}
       </View>
   );
 }
@@ -118,13 +128,13 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     backgroundColor:'#fff',
   },
-  recordText: {
+  recordText: (theme) => ({
     fontSize: 18,
-    color: 'purple',
-  },
-  titleText: {
+    color: theme.color,
+  }),
+  titleText: (theme) => ({
     fontSize: 32,
     marginBottom: 10,
-    color: 'purple',
-  },
+    color: theme.color,
+  }),
 });
