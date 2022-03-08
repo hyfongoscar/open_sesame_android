@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Alert, Dimensions, StyleSheet, View,  ScrollView } from 'react-native';
+import { Alert, Dimensions, StyleSheet, View,  ScrollView, TouchableOpacity } from 'react-native';
 import { Button, Text, Title, TextInput } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
@@ -238,129 +238,210 @@ export default function ChangeColorScreen({ navigation }) {
     }
 
     return(
-        <View>
+        <View style = {styles.main}>
             <ScrollView>
             <Text> Choose your new color theme by pressing the following buttons </Text>
-            <Button
-                color="#ff0000"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorRed() }
-            >Red </Button>
-            <Button
-                color="#ffa500"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorOrange() }
-            >Orange </Button>
-            <Button
-                color="#008000"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorGreen() }
-            >Green </Button>
-            <Button
-                color="#0000ff"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorBlue() }
-            >Blue </Button>
-            <Button
-                color="#800080"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorPurple() }
-            >Purple </Button>
-            <Button
-                color="#808080"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorGrey() }
-            >Grey </Button>
-            <Button
-                color="#000000"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorBlack() }
-            >Black </Button>
-            <Button
-                color="#a52a2a"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorBrown() }
-            >Brown </Button>
-            <Button
-                color="#9acd32"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorYellowGreen() }
-            >Yellow Green </Button>
-            <Button
-                color="#ffd700"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorGold() }
-            >Gold </Button>
-            <Button
-                color="#000080"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorNavy() }
-            >Navy </Button>
-            <Button
-                color="#ffc0cb"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorPink() }
-            >Pink </Button>
-            <Button
-                color="#dc143c"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorCrimson() }
-            >Crimson </Button>
-            <Button
-                color="#808000"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorOlive() }
-            >Olive </Button>
-            <Button
-                color="#228b22"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorForestGreen() }
-            >Forest Green </Button>
-            <Button
-                color="#d2691e"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorChocolate() }
-            >Chocolate </Button>
-            <Button
-                color="#ff6347"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorTomato() }
-            >Tomato </Button>
-            <Button
-                color="#00ffff"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorAqua() }
-            >Aqua </Button>
-            <Button
-                color="#ee82ee"
-                labelStyle={styles.ButtonLabel}
-                uppercase={false}
-                onPress={ () => changeColorViolet() }
-            >Violet </Button>
+            <TouchableOpacity onPress={() => changeColorRed()}>
+                <View style = {styles.red}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorOrange()}>
+                <View style = {styles.orange}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorGreen()}>
+                <View style = {styles.green}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorBlue()}>
+                <View style = {styles.blue}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorPurple()}>
+                <View style = {styles.purple}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorGrey()}>
+                <View style = {styles.grey}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorBlack()}>
+                <View style = {styles.black}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorBrown()}>
+                <View style = {styles.brown}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorYellowGreen()}>
+                <View style = {styles.yellowgreen}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorGold()}>
+                <View style = {styles.gold}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorNavy()}>
+                <View style = {styles.navy}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorPink()}>
+                <View style = {styles.pink}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorCrimson()}>
+                <View style = {styles.crimson}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorOlive()}>
+                <View style = {styles.olive}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorForestGreen()}>
+                <View style = {styles.forestgreen}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorChocolate()}>
+                <View style = {styles.chocolate}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorTomato()}>
+                <View style = {styles.tomato}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorAqua()}>
+                <View style = {styles.aqua}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => changeColorViolet()}>
+                <View style = {styles.violet}>
+                </View>
+            </TouchableOpacity>
             </ScrollView>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    main: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    red: {
+        backgroundColor: 'red',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    orange: {
+        backgroundColor: 'orange',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    green: {
+        backgroundColor: 'green',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    blue: {
+        backgroundColor: 'blue',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    purple: {
+        backgroundColor: 'purple',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    grey: {
+        backgroundColor: 'grey',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    black: {
+        backgroundColor: 'black',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    brown: {
+        backgroundColor: 'brown',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    yellowgreen: {
+        backgroundColor: 'yellowgreen',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    gold: {
+        backgroundColor: 'gold',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    navy: {
+        backgroundColor: 'navy',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    pink: {
+        backgroundColor: 'pink',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    crimson: {
+        backgroundColor: 'crimson',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    olive: {
+        backgroundColor: 'olive',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    forestgreen: {
+        backgroundColor: 'forestgreen',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    chocolate: {
+        backgroundColor: 'chocolate',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    aqua: {
+        backgroundColor: 'aqua',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    violet: {
+        backgroundColor: 'violet',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
+    tomato: {
+        backgroundColor: 'tomato',
+        height: 40,
+        width: 40,
+        marginBottom: 10,
+    },
     ButtonLabel: {
         fontSize: 20,
     },
