@@ -102,9 +102,10 @@ const VoiceAuthContextProvider = ({ children }) => {
         returnObj.networkSuccess = true
       if (parseFloat(returnResults.svScore) > SVTHRESHOLD)
         returnObj.thresholdPassed = true
-      if (parseFloat(returnResults.srScore) < SRTHRESHOLD)
+      if (parseFloat(returnResults.srError) < SRTHRESHOLD)
         returnObj.speechPassed = true
-      console.log(returnResults.srScore)
+      console.log(returnResults.srError)
+      console.log(returnResults.decodedDigits)
     }).catch((err) => {
       Alert.alert("Network Error", err.toString())
     })
