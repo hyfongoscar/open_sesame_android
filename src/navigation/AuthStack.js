@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { TouchableOpacity, Image, Text, View } from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen'
@@ -15,9 +15,12 @@ import ChangeProfilePicScreen from '../screens/ChangeProfilePicScreen';
 import ChangeBackgroundPictureScreen from '../screens/ChangeBackgroundPictureScreen';
 import ChangeColorScreen from '../screens/ChangeColorScreen';
 
+import Loading from '../components/Loading'
+
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
-import { MessageContext } from '../contexts/MessageContext';
+import { MessageContext } from '../contexts/MessageContext'
+import { LoadingContext } from '../contexts/LoadingContext'
 
 
 const Stack = createNativeStackNavigator();
@@ -25,8 +28,8 @@ const Stack = createNativeStackNavigator();
 export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
   const { theme } = useContext(ThemeContext)
-  const { recipient } = useContext(MessageContext)
-  const { recipientIcon } = useContext(MessageContext)
+  const { recipient, recipientIcon } = useContext(MessageContext)
+  const { loading } = useContext(LoadingContext)
 
   const globalScreenOptions = {
     headerStyle: {backgroundColor: theme.color},
@@ -36,49 +39,57 @@ export default function AuthStack() {
 
   return (
       <Stack.Navigator screenOptions={globalScreenOptions}>
-        {user == null ? (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Signup" component={SignupScreen} />
-            <Stack.Screen name="Reset Password" component={ForgotPasswordScreen}/>
-          </>
-        ) : (
+        { 
+          loading == true ? (
+            <Stack.Screen name="OpenSesame" component={Loading} />
+          ) : 
+          user == null ? (
+            <>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Signup" component={SignupScreen} />
+              <Stack.Screen name="Reset Password" component={ForgotPasswordScreen}/>
+            </>
+          ) : (
           <>
             <Stack.Screen
-                name="Message"
-                component={MessageScreen}
-                options={({navigation}) => ({
-                    title: "Open Sesame",
-                    headerRight: () => (
-                        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
-                            <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
-                        </TouchableOpacity>
-                    ),
-                })}
+              name="Message"
+              component={MessageScreen}
+              options={({navigation}) => ({
+                  title: "Open Sesame",
+                  headerRight: () => (
+                      <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+                          <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
+                      </TouchableOpacity>
+                  ),
+              })}
             />
             <Stack.Screen
-                name="Chat"
-                component={ChatScreen}
-                options={({navigation}) => ({
-                    headerTitle: () => (
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Image
-                                style={{ width: 30, height: 30, borderRadius: 15, tintColor: "#FFFFFF" }}
-                                source={{
-                                    uri: JSON.stringify(recipientIcon).replace(/^"(.*)"$/, '$1')
-                                }}
-                            />
-                            <Text
-                                style={{ fontSize: 30, color: "white" }}
-                            > {JSON.stringify(recipient).replace(/^"(.*)"$/, '$1')} </Text>
-                        </View>
-                    ),
-                    headerRight: () => (
-                        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
-                            <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
-                        </TouchableOpacity>
-                    ),
-                })}
+              name="Chat"
+              component={ChatScreen}
+              options={({navigation}) => ({
+                headerTitle: () => (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Image
+                      style={{ width: 30, height: 30, borderRadius: 15, tintColor: "#FFFFFF" }}
+                      source={{
+                        // uri: JSON.stringify(recipientIcon).replace(/^"(.*)"$/, '$1')
+                        uri: recipientIcon
+                      }}
+                    />
+                    <Text
+                      style={{ fontSize: 20, color: "white" }}
+                    > {JSON.stringify(recipient).replace(/^"(.*)"$/, '$1')} </Text>
+                  </View>
+                ),
+                headerRight: () => (
+                  <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+                    <Image 
+                      style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
+                      source={require("../../assets/setting.png")}
+                    />
+                  </TouchableOpacity>
+                ),
+              })}
             />
             <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
             <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
@@ -89,6 +100,7 @@ export default function AuthStack() {
             <Stack.Screen name="Change Color" component={ChangeColorScreen}/>
           </>
         )}
+        
       </Stack.Navigator>
   );
 }

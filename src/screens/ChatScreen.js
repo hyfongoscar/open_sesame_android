@@ -45,17 +45,12 @@ export default function ChatScreen({ navigation, route }) {
     }
 
     firestore().collection('chats').doc(_id).set(messageObj)
-
-    var friendPairID
-    await firestore()
-      .collection('friendList')
-      .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
-      .get()
-      .then(querySnapshot => {
-        friendPairID = querySnapshot.docs[0].id
-      })
     
-    await firestore().collection('friendList').doc(friendPairID)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.userEmail)
+      .update({
+        lastMessage: messageObj
+      })
+    await firestore().collection('profiles').doc(route.params.userEmail).collection("friends").doc(user.email)
       .update({
         lastMessage: messageObj
       })
@@ -110,20 +105,24 @@ export default function ChatScreen({ navigation, route }) {
 
     firestore().collection('chats').doc(randomID).set(messageObj)
 
-    var friendPairID
-    await firestore()
-      .collection('friendList')
-      .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
-      .get()
-      .then(querySnapshot => {
-        friendPairID = querySnapshot.docs[0].id
-      })
+    // var friendPairID
+    // await firestore()
+    //   .collection('friendList')
+    //   .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
+    //   .get()
+    //   .then(querySnapshot => {
+    //     friendPairID = querySnapshot.docs[0].id
+    //   })
     
-    firestore().collection('friendList').doc(friendPairID)
+    
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.userEmail)
       .update({
         lastMessage: messageObj
       })
-    console.log("Done");
+    await firestore().collection('profiles').doc(route.params.userEmail).collection("friends").doc(user.email)
+      .update({
+        lastMessage: messageObj
+      })
   }
   
   const saveFileToDevice = (downloadURL, path) => {

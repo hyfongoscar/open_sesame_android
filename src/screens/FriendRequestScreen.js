@@ -44,21 +44,24 @@ export default function FriendRequestScreen({ navigation }){
     })
 
     const friendQuery = await firestore()
-      .collection('friendList')
-      .where('friend_email_pair', 'in', [[email, user.email], [user.email, email]])
+      .collection('profiles')
+      .doc(user.email)
+      .collection("friends")
+      .doc(email)
       .get()
 
     const sentQuery = await firestore()
       .collection('friendRequest')
       .where('r_email', '==', email)
+      .where('confirmed','==',false)  
       .get()
 
     if (email == user.email) 
       Alert.alert("", "You cannot add yourself as friend.")
-    else if (friendQuery.docs.length > 0) 
+    else if (friendQuery.data()) 
       Alert.alert("", "You have already added this user.")
     else if (sentQuery.docs.length > 0) 
-      Alert.alert("", "You have already sent a request to this user.")
+      Alert.alert("", "You have already sent a request to this user. Please wait for them to accept. :)")
     else if (emailExists) {
       firestore().collection('friendRequest').doc().set({
         s_email: user.email,
@@ -79,10 +82,15 @@ export default function FriendRequestScreen({ navigation }){
       .where('r_email','==',r_email)
       .get()
     await query.docs[0].ref.update({confirmed: true})
-
-    await firestore().collection('friendList').doc().set({
-      friend_email_pair: [r_email, s_email]
-    })
+    
+    await firestore().collection('profiles').doc(s_email).collection("friends").doc(r_email)
+      .set({
+        lastMessage: null
+      })
+    await firestore().collection('profiles').doc(r_email).collection("friends").doc(s_email)
+      .set({
+        lastMessage: null
+      })
     Alert.alert("Success", s_email + " is now your friend!")
   }
   

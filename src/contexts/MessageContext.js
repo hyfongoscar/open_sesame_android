@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useContext, useState, createContext 
 import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { LoadingContext } from '../contexts/LoadingContext'
 
 export const MessageContext = createContext();
 
@@ -11,7 +12,9 @@ const MessageContextProvider = ({ children }) => {
   const [chatter, setChatter] = useState(null)
   const [recipient, setRecipient] = useState()
   const [recipientIcon, setRecipientIcon] = useState()
+
   const { user } = useContext(AccountAuthContext)
+  const { setLoading } = useContext(LoadingContext)
 
   const fetchUID = async (email) =>{
     const doc = await firestore()
@@ -39,35 +42,35 @@ const MessageContextProvider = ({ children }) => {
 
 
   // friend lists and their last messages
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (user) {
-      firestore()
-        .collection('friendList')
-        .where('friend_email_pair', 'array-contains', user.email)
-        .onSnapshot(querySnapshot => {
-          var tempFriends = []
-          querySnapshot.forEach( async (documentSnapshot) => {
-            const email_pair = documentSnapshot.data().friend_email_pair
-            const friend_email = email_pair[0] == user.email ? email_pair[1] : email_pair[0]
+      const subscriber = firestore()
+        .collection('profiles').doc(user.email)
+        .collection('friends')
+        .onSnapshot(async querySnapshot => {
+          // setLoading(true)
+          const tempFriends = querySnapshot.docs.map(async doc => {
+            const friend_email = doc.id
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
-            const friend_profile = await fetchProfilePic(friend_email)
-            // TODO: friend lists spanning out after having new message in chat, subscribers are colliding
-            tempFriends.push({
+            const friend_profilePic = await fetchProfilePic(friend_email)
+            return {
               uid: friend_uid,
               email: friend_email,
               displayName: friend_name || "",
-              profilePic : friend_profile,
-              lastMessage: documentSnapshot.data().lastMessage
-            })
-            setFriends(tempFriends)
+              profilePic : friend_profilePic,
+              lastMessage: doc.data().lastMessage
+            }
           })
+          setFriends(await Promise.all(tempFriends))
+          // setLoading(false)
         })
+      return subscriber
     }
-  }, [user, messages])
+  }, [user])
 
   // each chat messages when clicked on a user
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (chatter) {
       firestore()
         .collection('chats')
@@ -105,6 +108,6 @@ const MessageContextProvider = ({ children }) => {
       {children}
     </MessageContext.Provider>
   )
-  }
+}
   
 export default MessageContextProvider
