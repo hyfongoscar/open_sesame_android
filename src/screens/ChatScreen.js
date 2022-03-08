@@ -291,17 +291,21 @@ export default function ChatScreen({ navigation, route }) {
 
   // Custom Send bar at the bottom
   const renderSend = (props) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', height: 60 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', height: 45 }}>
       <View style={styles.checkboxContainer}>
-        <Checkbox
-          status={checked ? 'checked' : 'unchecked'}
-          onPress={() => {
-            setChecked(!checked)
-            locked = !locked
-          }}
-          style={styles.checkbox}
-        />
-        <Text style={styles.label}>{locked ? "Unlock" : "Lock"}</Text>
+        <View style={{ flex: 1, }}>
+            <Checkbox
+                status={checked ? 'checked' : 'unchecked'}
+                onPress={() => {
+                    setChecked(!checked)
+                    locked = !locked
+                }}
+                style={styles.checkbox}
+            />
+        </View>
+        <View style={{ flex: 1 }}>
+            <Text style={styles.label}>{locked ? "Unlock" : "Lock"}</Text>
+        </View>
       </View>
       <Send {...props}></Send>
     </View>
@@ -339,10 +343,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   checkbox: {
-    alignSelf: "center",
   },
   label: {
-    margin: 5,
     color: "#000000",
   },
 })
