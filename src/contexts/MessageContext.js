@@ -71,13 +71,13 @@ const MessageContextProvider = ({ children }) => {
 
   // each chat messages when clicked on a user
   useEffect(() => {
-    if (chatter) {
+    if (chatter && user) {
       firestore()
         .collection('chats')
         .where('sender_id_pair', 'in',[[chatter.uid, user.uid], [user.uid, chatter.uid]])
         .orderBy('createdAt','desc')
         .onSnapshot(querySnapshot => {
-          if (querySnapshot.size)
+          if (querySnapshot && querySnapshot.size)
             setMessages(
               querySnapshot.docs.map(doc => ({
                 _id: doc.data()._id,
