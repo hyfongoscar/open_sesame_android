@@ -22,10 +22,12 @@ import { ThemeContext } from '../contexts/ThemeContext'
 
 export default function ChatScreen({ navigation, route }) {
   const [checked, setChecked] = useState(false)
+
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
   const { messages, setMessages } = useContext(MessageContext)
   const { theme } = useContext(ThemeContext)
+
   const image = { uri: theme.background };
 
   const onSend = useCallback(async (messages = []) => {
@@ -35,8 +37,8 @@ export default function ChatScreen({ navigation, route }) {
     const messageObj = {
       _id,
       sender_id: messages[0].user._id,
-      _rid: route.params.userID,
-      sender_id_pair: [messages[0].user._id, route.params.userID],
+      _rid: route.params.uid,
+      sender_id_pair: [messages[0].user._id, route.params.uid],
       createdAt,
       text,
       s_user: messages[0].user,
@@ -46,11 +48,11 @@ export default function ChatScreen({ navigation, route }) {
 
     firestore().collection('chats').doc(_id).set(messageObj)
     
-    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.userEmail)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.email)
       .update({
         lastMessage: messageObj
       })
-    await firestore().collection('profiles').doc(route.params.userEmail).collection("friends").doc(user.email)
+    await firestore().collection('profiles').doc(route.params.email).collection("friends").doc(user.email)
       .update({
         lastMessage: messageObj
       })
@@ -92,11 +94,11 @@ export default function ChatScreen({ navigation, route }) {
     }
     const messageObj = {
       _id: randomID,
-      _rid: route.params.userID,
+      _rid: route.params.uid,
       createdAt: new Date(),
       locked,
       sender_id: user.uid,
-      sender_id_pair: [user.uid,route.params.userID],
+      sender_id_pair: [user.uid, route.params.uid],
       s_user: s_user,
       text: file.name,
       file_url: downloadURL,
@@ -105,21 +107,11 @@ export default function ChatScreen({ navigation, route }) {
 
     firestore().collection('chats').doc(randomID).set(messageObj)
 
-    // var friendPairID
-    // await firestore()
-    //   .collection('friendList')
-    //   .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
-    //   .get()
-    //   .then(querySnapshot => {
-    //     friendPairID = querySnapshot.docs[0].id
-    //   })
-    
-    
-    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.userEmail)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.email)
       .update({
         lastMessage: messageObj
       })
-    await firestore().collection('profiles').doc(route.params.userEmail).collection("friends").doc(user.email)
+    await firestore().collection('profiles').doc(route.params.email).collection("friends").doc(user.email)
       .update({
         lastMessage: messageObj
       })

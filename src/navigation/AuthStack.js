@@ -28,7 +28,7 @@ const Stack = createNativeStackNavigator();
 export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
   const { theme } = useContext(ThemeContext)
-  const { recipient, recipientIcon } = useContext(MessageContext)
+  const { chatter } = useContext(MessageContext)
   const { loading } = useContext(LoadingContext)
 
   const globalScreenOptions = {
@@ -41,7 +41,7 @@ export default function AuthStack() {
       <Stack.Navigator screenOptions={globalScreenOptions}>
         { 
           loading == true ? (
-            <Stack.Screen name="OpenSesame" component={Loading} />
+            {/* <Stack.Screen name="OpenSesame" component={Loading} /> */}
           ) : 
           user == null ? (
             <>
@@ -70,15 +70,14 @@ export default function AuthStack() {
                 headerTitle: () => (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image
-                      style={{ width: 30, height: 30, borderRadius: 15, tintColor: "#FFFFFF" }}
+                      style={{ width: 30, height: 30, borderRadius: 15 }}
                       source={{
-                        // uri: JSON.stringify(recipientIcon).replace(/^"(.*)"$/, '$1')
-                        uri: recipientIcon
+                        uri: chatter.profilePic
                       }}
                     />
                     <Text
                       style={{ fontSize: 20, color: "white" }}
-                    > {JSON.stringify(recipient).replace(/^"(.*)"$/, '$1')} </Text>
+                    > {chatter.displayName} </Text>
                   </View>
                 ),
                 headerRight: () => (

@@ -10,11 +10,11 @@ const MessageContextProvider = ({ children }) => {
   const [messages, setMessages] = useState([])
   const [friends, setFriends] = useState([])
   const [chatter, setChatter] = useState(null)
-  const [recipient, setRecipient] = useState()
-  const [recipientIcon, setRecipientIcon] = useState()
 
   const { user } = useContext(AccountAuthContext)
   const { setLoading } = useContext(LoadingContext)
+
+
 
   const fetchUID = async (email) =>{
     const doc = await firestore()
@@ -74,7 +74,7 @@ const MessageContextProvider = ({ children }) => {
     if (chatter) {
       firestore()
         .collection('chats')
-        .where('sender_id_pair', 'in',[[chatter.userID, user.uid], [user.uid, chatter.userID]])
+        .where('sender_id_pair', 'in',[[chatter.uid, user.uid], [user.uid, chatter.uid]])
         .orderBy('createdAt','desc')
         .onSnapshot(querySnapshot => {
           if (querySnapshot.size)
@@ -95,15 +95,13 @@ const MessageContextProvider = ({ children }) => {
             setMessages([])
         });
       }
-  }, [chatter])
+  }, [chatter, setChatter])
 
   return (
     <MessageContext.Provider
       value={{
         friends, messages, chatter, 
         setChatter, setMessages,
-        recipient, setRecipient,
-        recipientIcon, setRecipientIcon,
       }}>
       {children}
     </MessageContext.Provider>

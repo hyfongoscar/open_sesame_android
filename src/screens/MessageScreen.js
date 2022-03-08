@@ -11,7 +11,6 @@ export default function MessageScreen({ navigation }) {
   const { user } = useContext(AccountAuthContext)
   const { verified } = useContext(VoiceAuthContext)
   const { theme } = useContext(ThemeContext)
-  const { setRecipientIcon, setRecipient } = useContext(MessageContext)
 
   useEffect(() => {
     if (!user)
@@ -60,11 +59,8 @@ export default function MessageScreen({ navigation }) {
                 <TouchableOpacity
                   style = {styles.profile}
                   onPress={() => {
-                      const chatter = {userName: item.displayName, userID: item.uid, userEmail: item.email}
-                      setChatter(chatter)
-                      setRecipient(item.displayName)
-                      setRecipientIcon(item.profilePic)
-                      navigation.navigate('Chat', chatter)
+                      setChatter(item)
+                      navigation.navigate('Chat', { chatter: item })
                   }}
                 >
                   <View style={styles.friend(index == friends.length - 1)}>
