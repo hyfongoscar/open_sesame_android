@@ -72,7 +72,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                     ]) 
                   }
                   else if (!results.speechPassed) {
-                    Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again", [
+                    Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Maybe try talking closer to your mic)", [
                       { text: "OK", onPress: () => setRecordText("") } 
                       // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                     ]) 
