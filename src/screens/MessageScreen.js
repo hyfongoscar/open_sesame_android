@@ -30,7 +30,7 @@ export default function MessageScreen({ navigation }) {
           <>
             <Image
               style={styles.lockMessageIcon}
-              source={require('../../assets/lock.jpeg')}
+              source={require('../../assets/lock.png')}
             />
             <Text style = {styles.postTime(theme)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
