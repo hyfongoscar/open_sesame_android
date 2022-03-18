@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react'
-import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 
-import { GiftedChat, Bubble, MessageText, Send, Actions} from 'react-native-gifted-chat'
+import { GiftedChat, Actions, Bubble, Message, MessageText, Send, Time } from 'react-native-gifted-chat'
 import DocumentPicker  from 'react-native-document-picker';
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
@@ -17,42 +17,47 @@ var locked = false
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
+import { ThemeContext } from '../contexts/ThemeContext'
 
 
 export default function ChatScreen({ navigation, route }) {
   const [checked, setChecked] = useState(false)
+
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
   const { messages, setMessages } = useContext(MessageContext)
+  const { theme, getSecondaryColor } = useContext(ThemeContext)
+
+  const image = { uri: theme.background };
 
   const onSend = useCallback(async (messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    const { _id, createdAt, text} = messages[0];
+    console.log(messages)
+    const { _id, createdAt, text } = messages[0];
 
     const messageObj = {
       _id,
-      sender_id: messages[0].user._id,
-      _rid: route.params.userID,
-      sender_id_pair: [messages[0].user._id, route.params.userID],
+      _rid: route.params.uid,
       createdAt,
-      text,
-      s_user: messages[0].user,
       locked,
+      sender_id: user.uid,
+      sender_id_pair: [user._id, route.params.uid],
+      text,
+      user: { 
+        _id: user.uid,
+        name: user.displayName,
+        avatar: user.profilePic
+      },
       is_file: false,
     }
 
     firestore().collection('chats').doc(_id).set(messageObj)
-
-    var friendPairID
-    await firestore()
-      .collection('friendList')
-      .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
-      .get()
-      .then(querySnapshot => {
-        friendPairID = querySnapshot.docs[0].id
-      })
     
-    firestore().collection('friendList').doc(friendPairID)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.email)
+      .update({
+        lastMessage: messageObj
+      })
+    await firestore().collection('profiles').doc(route.params.email).collection("friends").doc(user.email)
       .update({
         lastMessage: messageObj
       })
@@ -88,39 +93,33 @@ export default function ChatScreen({ navigation, route }) {
   }
 
   const saveFileToDatabase = async (downloadURL, file) => {
-    const randomID = uuid.v4();
-    const s_user = {
-      _id: user.uid,
-    }
     const messageObj = {
-      _id: randomID,
-      _rid: route.params.userID,
+      _id: uuid.v4(),
+      _rid: route.params.uid,
       createdAt: new Date(),
-      locked,
-      sender_id: user.uid,
-      sender_id_pair: [user.uid,route.params.userID],
-      s_user: s_user,
-      text: file.name,
       file_url: downloadURL,
       is_file: true,
+      locked,
+      sender_id: user.uid,
+      sender_id_pair: [user.uid, route.params.uid],
+      text: file.name,
+      user: { 
+        _id: user.uid,
+        name: user.displayName,
+        avatar: user.profilePic
+      },
     }
 
     firestore().collection('chats').doc(randomID).set(messageObj)
 
-    var friendPairID
-    await firestore()
-      .collection('friendList')
-      .where('friend_email_pair', 'in',[[route.params.userEmail, user.email], [user.email, route.params.userEmail]])
-      .get()
-      .then(querySnapshot => {
-        friendPairID = querySnapshot.docs[0].id
-      })
-    
-    firestore().collection('friendList').doc(friendPairID)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.email)
       .update({
         lastMessage: messageObj
       })
-    console.log("Done");
+    await firestore().collection('profiles').doc(route.params.email).collection("friends").doc(user.email)
+      .update({
+        lastMessage: messageObj
+      })
   }
   
   const saveFileToDevice = (downloadURL, path) => {
@@ -194,7 +193,7 @@ export default function ChatScreen({ navigation, route }) {
         icon={() => (
           <Image
               style={styles.smallerLogo}
-              source={require('../../assets/file.jpeg')}
+              source={require('../../assets/file.png')}
             />
 
         )}
@@ -208,69 +207,104 @@ export default function ChatScreen({ navigation, route }) {
   // Overrides View for files
   const renderBubble = (props) => {
     const { currentMessage } = props;
-    if (currentMessage._rid == user.uid && currentMessage.locked && !verified) {
-      return (
-        <Bubble
-          {...props} 
-          renderMessageText={() => (
-            <TouchableOpacity 
-              onPress={ () => {
-                Alert.alert("Locked!", "Unlock this message with your voiceprint", [
-                  { text: "Unlock", onPress: () => navigation.navigate("VoiceRecording", {option: "verify"}) },
-                  { text: "Cancel" }
-                ])
-              }}
-            >
-              <Image
-                style={styles.largerLogo}
-                source={require('../../assets/lock.jpeg')}
-              />
-            </TouchableOpacity>
-          )}
-        />
-      )
-    }
-    else if (currentMessage.is_file == true){
-      return (
-        <Bubble
-          {...props}
-          touchableProps={{ disabled: true }}
-          renderCustomView={() => (
-            <TouchableOpacity 
-              onPress={ async () => { 
-                Alert.alert("", `Do you wish to download ${currentMessage.text}?`, [
-                  { text: "Download", onPress: () => filePressed(currentMessage)},
-                  { text: "Cancel" }
-                ])
-              }}
-            >
-              <View style={{ width: 50, height: 50 }}>
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: theme.color,
+          },
+          left: {
+            backgroundColor: getSecondaryColor(theme.color),
+          }
+        }}
+        renderMessageText={() => {
+          if (currentMessage._rid == user.uid && currentMessage.locked && !verified) {
+            return (
+              <TouchableOpacity 
+                style={{ padding: 10}}
+                onPress={ () => {
+                  Alert.alert("Locked!", "Unlock this message with your voiceprint", [
+                    { text: "Unlock", onPress: () => navigation.navigate("VoiceRecording", {option: "verify"}) },
+                    { text: "Cancel" }
+                  ])
+                }}
+              >
                 <Image
-                  style={styles.largerLogo}
-                  source={require('../../assets/file.jpeg')}
+                  style={styles.messageLogo(theme, currentMessage._rid == user.uid)}
+                  source={require('../../assets/lock.png')}
                 />
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      )
-    }
-    return <Bubble {...props} />
+              </TouchableOpacity>
+            )
+          }
+          else if (currentMessage.is_file) {
+            return (
+              <TouchableOpacity 
+                style={{ padding: 5}}
+                onPress={ async () => { 
+                  Alert.alert("", `Do you wish to download ${currentMessage.text}?`, [
+                    { text: "Download", onPress: () => filePressed(currentMessage)},
+                    { text: "Cancel" }
+                  ])
+                }}
+              >
+                <View style={styles.fileBubble(theme)}>
+                  <Image
+                    style={styles.messageLogo(theme, currentMessage._rid == user.uid)}
+                    source={require('../../assets/file.png')}
+                  />
+                  <Text style={styles.fileText(theme, currentMessage._rid == user.uid)}>{currentMessage.text}</Text>
+                </View>
+              </TouchableOpacity>
+            )
+          }
+          else if (currentMessage && currentMessage.text) {
+            return <MessageText 
+              textStyle={{ 
+                left: styles.messageText(theme, 1),
+                right: styles.messageText(theme, 0)
+              }}
+              {...props}
+            />
+          }
+        }}
+      />
+    )
   }
+
+  const renderTime = (props) => (
+    <Time
+      timeTextStyle={{
+        right: {
+          color: "#CCCCCC",
+          fontSize: theme.font / 2
+        },
+        left: {
+          color: "#444444",
+          fontSize: theme.font / 2
+        }
+      }}
+      { ...props }
+    />
+  )
 
   // Custom Send bar at the bottom
   const renderSend = (props) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', height: 60 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', height: 45 }}>
       <View style={styles.checkboxContainer}>
-        <Checkbox
-          status={checked ? 'checked' : 'unchecked'}
-          onPress={() => {
-            setChecked(!checked)
-            locked = !locked
-          }}
-          style={styles.checkbox}
-        />
-        <Text style={styles.label}>{locked ? "Unlock" : "Lock"}</Text>
+        <View style={{ flex: 1, }}>
+            <Checkbox
+                status={checked ? 'checked' : 'unchecked'}
+                onPress={() => {
+                    setChecked(!checked)
+                    locked = !locked
+                }}
+                style={styles.checkbox}
+            />
+        </View>
+        <View style={{ flex: 1 }}>
+            <Text style={styles.label}>{locked ? "Unlock" : "Lock"}</Text>
+        </View>
       </View>
       <Send {...props}></Send>
     </View>
@@ -281,8 +315,10 @@ export default function ChatScreen({ navigation, route }) {
       renderActions = {renderActions}
       renderBubble = {renderBubble}
       renderSend = {renderSend}
+      renderTime = {renderTime}
       messages = {messages}
       onSend = {messages => onSend(messages)}
+      textStyle={styles.messageText(theme, 1)}
       user = {{
         _id: user.uid,
       }}
@@ -291,14 +327,6 @@ export default function ChatScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  largerLogo: {
-    width: 50,
-    height: 50,
-  },
-  smallerLogo:{
-    width: 30,
-    height: 30
-  },
   button: {
     alignItems: "center",
     backgroundColor: "#DDDDDD",
@@ -308,10 +336,31 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   checkbox: {
-    alignSelf: "center",
   },
+  fileBubble: (theme) => ({
+    flexDirection:'row',
+    flexWrap:'wrap',
+  }),
+  fileText: (theme, left) => ({
+    color: left ? "black" : "white",
+    fontSize: theme.font - 5,
+    textAlignVertical: "center",
+  }),
   label: {
-    margin: 5,
     color: "#000000",
+  },
+  messageLogo: (theme, left) => ({
+    width: theme.font * 2,
+    height: theme.font * 2,
+    tintColor: left ? "#000000" : "#FFFFFF",
+  }),
+  messageText: (theme, left) => ({
+    color: left ? "black" : "white",
+    fontSize: theme.font - 5,
+    padding: 2
+  }),
+  smallerLogo:{
+    width: 30,
+    height: 30
   },
 })

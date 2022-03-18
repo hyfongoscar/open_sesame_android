@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button } from 'react-native-paper'
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Dimensions } from 'react-native';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export default function MessageScreen({ navigation }) {
   const { friends, setChatter } = useContext(MessageContext)
-  const { user, logout } = useContext(AccountAuthContext)
+  const { user } = useContext(AccountAuthContext)
   const { verified } = useContext(VoiceAuthContext)
+  const { theme, getSecondaryColor } = useContext(ThemeContext)
 
   useEffect(() => {
     if (!user)
@@ -26,63 +27,63 @@ export default function MessageScreen({ navigation }) {
           <>
             <Image
               style={styles.lockMessageIcon}
-              source={require('../../assets/lock.jpeg')}
+              source={require('../../assets/lock.png')}
             />
-            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
         )
       else
         return (
           <>
-            <Text style = {styles.messageText}>{message.text}</Text>
-            <Text style = {styles.postTime}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.messageText(theme)}>{message.text}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
           </>
         )
     }
     return (
-      <Text style = {styles.nothingText}>You have not chatted with them yet!</Text>
+      <Text style = {styles.nothingText(theme)}>You have not chatted with them yet!</Text>
     )
   }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data ={friends}
-        keyExtractor={friend=>friend.uid}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style = {styles.profile}
-            onPress={() => {
-              const chatter = {userName: item.displayName,  userID: item.uid, userEmail: item.email}
-              setChatter(chatter)
-              navigation.navigate('Chat', chatter)
-            }}
-          >
-            <View style={styles.userInfo}>
-              <View style={styles.imgWrapper}>
-                <Image
-                  style={styles.userImg}
-                />
-              </View>
-              <View style={styles.textSection}>
-                <Text style = {styles.userName}> {item.displayName}</Text>
-                <LastMessage message = {item.lastMessage}/>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      ></FlatList>
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('Setting')}
-      > Settings </Button>
+        <ImageBackground 
+          source={{ uri: theme.background }}
+          resizeMode="cover"
+          style={styles.image}
+        >
+            <FlatList
+              data ={friends}
+              keyExtractor={friend=>friend.uid}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  style = {styles.profile}
+                  onPress={() => {
+                      setChatter(item)
+                      navigation.navigate('Chat', { chatter: item })
+                  }}
+                >
+                  <View style={styles.friend(index == friends.length - 1)}>
+                    <View style={styles.friendInfo(theme)}>
+                      <Image
+                          style={styles.userImg(theme)}
+                          source={{
+                            uri: item.profilePic,
+                          }}
+                        />
+                      <Text style = {styles.userName(theme)}> {item.displayName} </Text>
+                    </View>
+                    <LastMessage message = {item.lastMessage}/>
+                  </View>
+                </TouchableOpacity>
+              )}
+          ></FlatList>
+        </ImageBackground>
     </View>
   );
 };
 
+const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   button: {
@@ -95,55 +96,61 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
-  profile:{
-    width:'100%',
+  friend: (last) => ({
+    flexDirection:'column',
+    justifyContent:'space-between',
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderBottomWidth: last ? 0 : 1,
+    borderColor: "lightgrey",
+    width
+  }),
+  friendInfo: (theme) => ({
+    flexDirection:'row',
+    flexWrap:'wrap',
+    paddingBottom: theme.font / 2
+  }),
+  image: {
+    flex: 1,
+    justifyContent: "center"
   },
-  textSection:{
-    flexDirection: 'column',
-    justifyContent: 'center',
-    padding: 15,
-    paddingLeft: 0,
-    marginLeft: 10,
-    width: 399
+  lockMessageIcon:{
+    width: 30,
+    height: 30,
   },
+  messageText: (theme) => ({
+    fontSize: (theme.font * 0.8),
+    color: "black",
+  }),
+  nothingText: (theme) => ({
+    fontSize: (theme.font * 0.7),
+    color: '#333333',
+    fontStyle: 'italic',
+  }),
+  userImg: (theme) => ({
+    width: theme.font * 2,
+    height: theme.font * 2,
+    borderRadius: theme.font,
+  }),
   userInfoText:{
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 5,
   },
-  userName:{
-    fontSize: 20,
+  userName: (theme) => ({
+    fontSize: theme.font,
     fontWeight: 'bold',
-    color: "#0000ff",
-  },
-  postTime:{
-    fontSize: 15,
-    color: '#666',
-  },
-  messageText:{
-    fontSize: 14,
-    color: '#333333',
-  },
-  nothingText:{
-    fontSize: 14,
-    color: '#333333',
-    fontStyle: 'italic',
-  },
-  lockMessageIcon:{
-    width: 30,
-    height: 30
-  },
-  imgWrapper:{
-    paddingTop: 15,
-    paddingBottom: 15,
-  },
-  userImg:{
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  userInfo:{
-    flexDirection:'column',
-    justifyContent:'space-between',
+    color: theme.color,
+    textAlignVertical: "center",
+    paddingLeft: theme.font / 3
+  }),
+  postTime: (theme, getSecondaryColor) => ({
+    fontSize: (theme.font * 0.75),
+    color: getSecondaryColor(theme.color),
+  }),
+  profile:{
+    width:'100%',
   },
 });

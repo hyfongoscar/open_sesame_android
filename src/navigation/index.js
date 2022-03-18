@@ -4,18 +4,24 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import AccountAuthContextProvider from '../contexts/AccountAuthContext';
 import VoiceAuthContextProvider from '../contexts/VoiceAuthContext';
 import MessageContextProvider from '../contexts/MessageContext';
+import ThemeContextProvider from '../contexts/ThemeContext';
+import LoadingContextProvider from '../contexts/LoadingContext';
 import Routes from './Routes';
 
 export default function Providers() {
   return (
       <PaperProvider theme={theme}>
-        <AccountAuthContextProvider>
-          <VoiceAuthContextProvider>
-            <MessageContextProvider>
-              <Routes />
-            </MessageContextProvider>
-          </VoiceAuthContextProvider>
-        </AccountAuthContextProvider>
+        <LoadingContextProvider>
+          <AccountAuthContextProvider>
+            <VoiceAuthContextProvider>
+              <MessageContextProvider>
+                <ThemeContextProvider>
+                  <Routes />
+                </ThemeContextProvider>
+              </MessageContextProvider>
+            </VoiceAuthContextProvider>
+          </AccountAuthContextProvider>
+        </LoadingContextProvider>
       </PaperProvider>
   );
 }

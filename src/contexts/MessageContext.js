@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useContext, useState, createContext 
 import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { LoadingContext } from '../contexts/LoadingContext'
 
 export const MessageContext = createContext();
 
@@ -9,7 +10,11 @@ const MessageContextProvider = ({ children }) => {
   const [messages, setMessages] = useState([])
   const [friends, setFriends] = useState([])
   const [chatter, setChatter] = useState(null)
+
   const { user } = useContext(AccountAuthContext)
+  const { setLoading } = useContext(LoadingContext)
+
+
 
   const fetchUID = async (email) =>{
     const doc = await firestore()
@@ -27,41 +32,52 @@ const MessageContextProvider = ({ children }) => {
     return doc.data().displayName
   }
 
+  const fetchProfilePic = async (email) => {
+    const doc = await firestore()  
+      .collection('profiles')
+      .doc(email)
+      .get()
+    return doc.data().photoURL
+  }
+
+
   // friend lists and their last messages
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (user) {
-      firestore()
-        .collection('friendList')
-        .where('friend_email_pair', 'array-contains', user.email)
-        .onSnapshot(querySnapshot => {
-          var tempFriends = []
-          querySnapshot.forEach( async (documentSnapshot) => {
-            const email_pair = documentSnapshot.data().friend_email_pair
-            const friend_email = email_pair[0] == user.email ? email_pair[1] : email_pair[0]
+      const subscriber = firestore()
+        .collection('profiles').doc(user.email)
+        .collection('friends')
+        .onSnapshot(async querySnapshot => {
+          // setLoading(true)
+          const tempFriends = querySnapshot.docs.map(async doc => {
+            const friend_email = doc.id
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
-            // TODO: friend lists spazzing out after having new meesage in chat, subscribers are colliding
-            tempFriends.push({
+            const friend_profilePic = await fetchProfilePic(friend_email)
+            return {
               uid: friend_uid,
               email: friend_email,
               displayName: friend_name || "",
-              lastMessage: documentSnapshot.data().lastMessage
-            })
-            setFriends(tempFriends)
+              profilePic : friend_profilePic,
+              lastMessage: doc.data().lastMessage
+            }
           })
+          setFriends(await Promise.all(tempFriends))
+          // setLoading(false)
         })
+      return subscriber
     }
-  }, [user, messages])
+  }, [user])
 
   // each chat messages when clicked on a user
-  useLayoutEffect(() => {
-    if (chatter) {
+  useEffect(() => {
+    if (chatter && user) {
       firestore()
         .collection('chats')
-        .where('sender_id_pair', 'in',[[chatter.userID, user.uid], [user.uid, chatter.userID]])
+        .where('sender_id_pair', 'in',[[chatter.uid, user.uid], [user.uid, chatter.uid]])
         .orderBy('createdAt','desc')
         .onSnapshot(querySnapshot => {
-          if (querySnapshot.size)
+          if (querySnapshot && querySnapshot.size)
             setMessages(
               querySnapshot.docs.map(doc => ({
                 _id: doc.data()._id,
@@ -79,17 +95,17 @@ const MessageContextProvider = ({ children }) => {
             setMessages([])
         });
       }
-  }, [chatter])
+  }, [chatter, setChatter])
 
   return (
     <MessageContext.Provider
       value={{
         friends, messages, chatter, 
-        setChatter, setMessages
+        setChatter, setMessages,
       }}>
       {children}
     </MessageContext.Provider>
   )
-  }
+}
   
 export default MessageContextProvider
