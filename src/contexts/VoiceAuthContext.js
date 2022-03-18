@@ -61,7 +61,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/enroll.wav`)
 
     var success = false
-    await fetch(`http://35.215.162.230:8080/enroll`, {
+    await fetch(`http://35.215.151.189:8080/enroll`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -89,7 +89,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     }
     
     // Speaker Verification
-    await fetch(`http://35.215.162.230:8080/verify`, {
+    await fetch(`http://35.215.151.189:8080/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
