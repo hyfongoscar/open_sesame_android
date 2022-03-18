@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { Alert, PermissionsAndroid, Platform } from 'react-native';
 import AudioRecord from 'react-native-audio-record'
 import storage from '@react-native-firebase/storage'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
 export const VoiceAuthContext = createContext();
-const THRESHOLD = 10
+const SVTHRESHOLD = 10
+const SRTHRESHOLD = 50
 
 const VoiceAuthContextProvider = ({ children }) => {
   const { user } = useContext(AccountAuthContext)
@@ -60,35 +61,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/enroll.wav`)
 
     var success = false
-    await fetch(`http://35.215.162.230:8080/enroll`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: `{"url": "${downloadUrl}", "user": "${user.uid}"}`
-    }).then(async (response) => {
-      returnResults = await response.json()
-      if (returnResults.url === downloadUrl)
-        success = true
-    }).catch((err) => {
-      console.log(err)
-    })
-    return success
-  }
-
-  const onStopVerify = async () => {
-    const audioFile = await AudioRecord.stop();
-    setRecording(false)
-    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
-
-    var returnObj = {
-      networkSuccess: false,
-      thresholdPassed: false,
-      // speechPassed: false
-    }
-    
-    // Speaker Verification
-    await fetch(`http://35.215.162.230:8080/verify`, {
+    await fetch(`http://35.215.151.189:8080/enroll`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -97,12 +70,44 @@ const VoiceAuthContextProvider = ({ children }) => {
     }).then(async (response) => {
       const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
-        returnObj.networkSuccess = true
-      if (parseFloat(returnResults.score) > THRESHOLD)
-        returnObj.thresholdPassed = true
-      console.log(returnResults.digits)
+        success = true
     }).catch((err) => {
-      console.log(err)
+      Alert.alert("Network Error", err.toString())
+    })
+    return success
+  }
+
+  const onStopVerify = async (digits) => {
+    const audioFile = await AudioRecord.stop();
+    setRecording(false)
+    const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
+
+    var returnObj = {
+      networkSuccess: false,
+      thresholdPassed: false,
+      speechPassed: false
+    }
+    
+    // Speaker Verification
+    await fetch(`http://35.215.151.189:8080/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: `{"url": "${downloadUrl}", "user": "${user.uid}", "digits": "${digits}"}`
+    }).then(async (response) => {
+      const returnResults = await response.json()
+      // TODO: why tfis the score so high bruh
+      if (returnResults.url === downloadUrl)
+        returnObj.networkSuccess = true
+      if (parseFloat(returnResults.svScore) > SVTHRESHOLD)
+        returnObj.thresholdPassed = true
+      if (parseFloat(returnResults.srError) < SRTHRESHOLD)
+        returnObj.speechPassed = true
+      console.log(returnResults.srError)
+      console.log(returnResults.decodedDigits)
+    }).catch((err) => {
+      Alert.alert("Network Error", err.toString())
     })
 
     if (Object.values(returnObj).every(item => item == true)) {

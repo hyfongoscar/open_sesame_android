@@ -6,9 +6,15 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export default function FriendRequestScreen({ navigation }){
   const { user } = useContext(AccountAuthContext)
+  const { themeColor } = useContext(ThemeContext)
+
+  const themeStyle = {
+    color: themeColor
+  }
 
   const [email, setEmail] = useState('')
   const [requestList, setRequestList] = useState();
@@ -38,21 +44,24 @@ export default function FriendRequestScreen({ navigation }){
     })
 
     const friendQuery = await firestore()
-      .collection('friendList')
-      .where('friend_email_pair', 'array-contains', email)
+      .collection('profiles')
+      .doc(user.email)
+      .collection("friends")
+      .doc(email)
       .get()
 
     const sentQuery = await firestore()
       .collection('friendRequest')
       .where('r_email', '==', email)
+      .where('confirmed','==',false)  
       .get()
 
     if (email == user.email) 
       Alert.alert("", "You cannot add yourself as friend.")
-    else if (friendQuery.docs.length > 0) 
+    else if (friendQuery.data()) 
       Alert.alert("", "You have already added this user.")
     else if (sentQuery.docs.length > 0) 
-      Alert.alert("", "You have already sent a request to this user.")
+      Alert.alert("", "You have already sent a request to this user. Please wait for them to accept. :)")
     else if (emailExists) {
       firestore().collection('friendRequest').doc().set({
         s_email: user.email,
@@ -73,10 +82,15 @@ export default function FriendRequestScreen({ navigation }){
       .where('r_email','==',r_email)
       .get()
     await query.docs[0].ref.update({confirmed: true})
-
-    await firestore().collection('friendList').doc().set({
-      friend_email_pair: [r_email, s_email]
-    })
+    
+    await firestore().collection('profiles').doc(s_email).collection("friends").doc(r_email)
+      .set({
+        lastMessage: null
+      })
+    await firestore().collection('profiles').doc(r_email).collection("friends").doc(s_email)
+      .set({
+        lastMessage: null
+      })
     Alert.alert("Success", s_email + " is now your friend!")
   }
   
@@ -91,7 +105,7 @@ export default function FriendRequestScreen({ navigation }){
         onPress={ () => {sendFriendRequest()}}
       >Send Friend request</Button>
 
-      <Text>Pending requests:</Text>
+      <Text style = {StyleSheet.flatten([styles.label, themeStyle])}>{"\n"}Pending requests{"\n"}</Text>
       <FlatList
         data ={requestList}
         keyExtractor={request => request.s_email}
@@ -123,6 +137,9 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     alignItems: 'center', 
     justifyContent: 'center'
+  },
+  label: {
+    fontSize: 17
   },
   profile:{
     width:'100%',
