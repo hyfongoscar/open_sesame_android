@@ -88,7 +88,7 @@ export default function SettingScreen({ navigation }) {
                   <Text
                       uppercase={false}
                       style={styles.text(theme)}
-                      onPress={() => navigation.navigate('Change Background Picture')}
+                      onPress={() => navigation.navigate('ChangeBackground')}
                   >Change Background Picture</Text>
                 </View>
                 <View style={styles.row(theme)}>
@@ -96,7 +96,7 @@ export default function SettingScreen({ navigation }) {
                   <Text
                       uppercase={false}
                       style={styles.text(theme)}
-                      onPress={() => navigation.navigate('Change Color')}
+                      onPress={() => navigation.navigate('ChangeColor')}
                   >Change Color Theme</Text>
                 </View>
                 <View style={styles.row(theme)}>
