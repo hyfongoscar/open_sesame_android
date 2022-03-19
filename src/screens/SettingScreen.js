@@ -3,11 +3,7 @@ import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, Scro
 
 import firestore from '@react-native-firebase/firestore';
 import prompt from 'react-native-prompt-android';
-import EvilIcon from 'react-native-vector-icons/EvilIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Fontisto from  'react-native-vector-icons/Fontisto';
-import Ionicons from  'react-native-vector-icons/Ionicons';
-import MaterialIcons from  'react-native-vector-icons/MaterialIcons';
+import { EvilIcons, FontAwesome5, Fontisto, Ionicons, MaterialIcons } from '../components/Icons';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
@@ -62,14 +58,14 @@ export default function SettingScreen({ navigation }) {
                       );
                     }}
                   >{ theme.displayName }</Text>
-                  <EvilIcon name="pencil" size={theme.font * 1.5} color="#000000"style={styles.icon(theme)} />
+                  <EvilIcons name="pencil" size={theme.font * 1.5} color="#000000"style={styles.icon(theme)} />
                 </View>
                 <View style={styles.row(theme)}>
                   <MaterialIcons name="email" size={theme.font * 1.5} style={styles.icon(theme)} />
                   <Text
                       style={styles.text(theme)}
                   >{ user.email }</Text>
-                  <EvilIcon name="pencil" size={theme.font * 1.5} style={styles.icon(theme)} />
+                  <EvilIcons name="pencil" size={theme.font * 1.5} style={styles.icon(theme)} />
                 </View>
                 <View style={styles.row(theme)}>
                   <FontAwesome5 name="user-friends" size={theme.font} style={styles.icon(theme)} />
