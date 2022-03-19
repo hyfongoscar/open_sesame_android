@@ -4,8 +4,6 @@
 // import EvilIcons from '../components/Icon';
 // <EvilIcons name="pencil" size={30} color="#4F8EF7" />
 
-import { pipe, toPairs, groupBy, map } from 'ramda';
-
 import AntD from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -20,39 +18,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Octicons from 'react-native-vector-icons/Octicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Zocial from 'react-native-vector-icons/Zocial';
-import AntDGlyphs from 'react-native-vector-icons/glyphmaps/AntDesign.json';
-import EntypoGlyphs from 'react-native-vector-icons/glyphmaps/Entypo.json';
-import EvilIconsGlyphs from 'react-native-vector-icons/glyphmaps/EvilIcons.json';
-import FeatherGlyphs from 'react-native-vector-icons/glyphmaps/Feather.json';
-import FontAwesomeGlyphs from 'react-native-vector-icons/glyphmaps/FontAwesome.json';
-import FontAwesome5Glyphs from 'react-native-vector-icons/glyphmaps/FontAwesome5Free.json';
-import FontistoGlyphs from 'react-native-vector-icons/glyphmaps/Fontisto.json';
-import FoundationGlyphs from 'react-native-vector-icons/glyphmaps/Foundation.json';
-import IoniconsGlyphs from 'react-native-vector-icons/glyphmaps/Ionicons.json';
-import MaterialIconsGlyphs from 'react-native-vector-icons/glyphmaps/MaterialIcons.json';
-import MaterialCommunityIconsGlyphs from 'react-native-vector-icons/glyphmaps/MaterialCommunityIcons.json';
-import OcticonsGlyphs from 'react-native-vector-icons/glyphmaps/Octicons.json';
-import SimpleLineIconsGlyphs from 'react-native-vector-icons/glyphmaps/SimpleLineIcons.json';
-import ZocialGlyphs from 'react-native-vector-icons/glyphmaps/Zocial.json';
 
-const GLYPH_MAPS = {
-  AntD: AntDGlyphs,
-  Entypo: EntypoGlyphs,
-  EvilIcons: EvilIconsGlyphs,
-  Feather: FeatherGlyphs,
-  FontAwesome: FontAwesomeGlyphs,
-  FontAwesome5: FontAwesome5Glyphs,
-  Fontisto: FontistoGlyphs,
-  Foundation: FoundationGlyphs,
-  Ionicons: IoniconsGlyphs,
-  MaterialIcons: MaterialIconsGlyphs,
-  MaterialCommunityIcons: MaterialCommunityIconsGlyphs,
-  Octicons: OcticonsGlyphs,
-  SimpleLineIcons: SimpleLineIconsGlyphs,
-  Zocial: ZocialGlyphs,
-};
-
-const ICON_SETS = {
+export {
   AntD,
   Entypo,
   EvilIcons,
@@ -67,18 +34,4 @@ const ICON_SETS = {
   Octicons,
   SimpleLineIcons,
   Zocial,
-};
-
-const groupGlyphNames = glyphMap =>
-  Object.values(groupBy(name => glyphMap[name])(Object.keys(glyphMap)));
-
-const transformIconSets = pipe(
-  toPairs,
-  map(([name, component]) => ({
-    name,
-    component,
-    glyphNames: groupGlyphNames(GLYPH_MAPS[name]),
-  }))
-);
-
-export default transformIconSets(ICON_SETS);
+}
