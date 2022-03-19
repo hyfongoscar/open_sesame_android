@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, ScrollView } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, ScrollView, TouchableOpacity } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore';
 import prompt from 'react-native-prompt-android';
+import { EvilIcons, FontAwesome5, Fontisto, Ionicons, MaterialIcons } from '../components/Icons';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
@@ -16,12 +17,15 @@ export default function SettingScreen({ navigation }) {
             <ScrollView>
             <ImageBackground source={image} resizeMode="cover" style={styles.image}>
                 <View style={styles.profile(theme)}>
-                  <Image
-                      style={styles.userImg}
-                      source={{
-                          uri:  theme.profile ,
-                      }}
-                  />
+                  <TouchableOpacity onPress={() => navigation.navigate('ChangeProfilePic')}>
+                    <Image
+                        style={styles.userImg}
+                        source={{
+                            uri:  theme.profile ,
+                        }}
+                    />
+                  </TouchableOpacity>
+                  <FontAwesome5 name="user-alt" size={theme.font} style={styles.icon(theme)} />
                   <Text
                     style={styles.username(theme)}
                     onPress={() => {
@@ -53,71 +57,89 @@ export default function SettingScreen({ navigation }) {
                         }
                       );
                     }}
-                  >Username: { theme.displayName }</Text>
+                  >{ theme.displayName }</Text>
+                  <EvilIcons name="pencil" size={theme.font * 1.5} color="#000000"style={styles.icon(theme)} />
                 </View>
-                <Text
-                    style={styles.text(theme)}
-                >Email: { user.email }</Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={async () => navigation.navigate('FriendRequest')}
-                >Add friends</Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={() => navigation.navigate('ChangeProfilePic')}
-                >Change Profile Picture </Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={() => navigation.navigate('VoiceEnroll')}
-                >Enroll Voiceprint </Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={() => navigation.navigate('Change Background Picture')}
-                >Change Background Picture</Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={() => navigation.navigate('Change Color')}
-                >Change Color Theme</Text>
-                <Text
-                    uppercase={false}
-                    style={styles.text(theme)}
-                    onPress={() => {
-                      prompt("Edit font size", "",
-                        [
-                          {text: 'Cancel'},
-                          {text: 'OK', onPress: async (newFontSize) => {
-                              if (!newFontSize || isNaN(newFontSize)) {
-                                Alert.alert("", "Please enter a number")
-                                return
-                              }
-                              await firestore()
-                                .collection('profiles')
-                                .doc(user.email)
-                                .update({
-                                  fontSize: Number(newFontSize),
-                                })
-                              Alert.alert("", "Font size changed!")
-                          }},
-                        ],
-                        {
-                          type: 'plain-text',
-                          placeholder: 'Font Size'
-                        }
-                    );
-                    }}
-                >Change Font Size </Text>
-                <Text
-                    uppercase={false}
-                    style={styles.redText(theme)}
-                    onPress={async () => {
-                        logout();
-                    }}
-                >Log out</Text>
+                <View style={styles.row(theme)}>
+                  <MaterialIcons name="email" size={theme.font * 1.5} style={styles.icon(theme)} />
+                  <Text
+                      style={styles.text(theme)}
+                  >{ user.email }</Text>
+                  <EvilIcons name="pencil" size={theme.font * 1.5} style={styles.icon(theme)} />
+                </View>
+                <View style={styles.row(theme)}>
+                  <FontAwesome5 name="user-friends" size={theme.font} style={styles.icon(theme)} />
+                  <Text
+                      uppercase={false}
+                      style={styles.text(theme)}
+                      onPress={async () => navigation.navigate('FriendRequest')}
+                  >Add friends</Text>
+                </View>
+                <View style={styles.row(theme)}>
+                  <MaterialIcons name="keyboard-voice" size={theme.font * 1.5} style={styles.icon(theme)} />
+                  <Text
+                      uppercase={false}
+                      style={styles.text(theme)}
+                      onPress={() => navigation.navigate('VoiceEnroll')}
+                  >Enroll Voiceprint </Text>
+                </View>
+                <View style={styles.row(theme)}>
+                  <Fontisto name="picture" size={theme.font} style={styles.icon(theme)} />
+                  <Text
+                      uppercase={false}
+                      style={styles.text(theme)}
+                      onPress={() => navigation.navigate('ChangeBackground')}
+                  >Change Background Picture</Text>
+                </View>
+                <View style={styles.row(theme)}>
+                  <Ionicons name="color-palette-outline" size={theme.font * 1.5} style={styles.icon(theme)} />
+                  <Text
+                      uppercase={false}
+                      style={styles.text(theme)}
+                      onPress={() => navigation.navigate('ChangeColor')}
+                  >Change Color Theme</Text>
+                </View>
+                <View style={styles.row(theme)}>
+                  <FontAwesome5 name="font" size={theme.font} style={styles.specialIcon(theme)} />
+                  <Text
+                      uppercase={false}
+                      style={styles.text(theme)}
+                      onPress={() => {
+                        prompt("Edit font size", "",
+                          [
+                            {text: 'Cancel'},
+                            {text: 'OK', onPress: async (newFontSize) => {
+                                if (!newFontSize || isNaN(newFontSize)) {
+                                  Alert.alert("", "Please enter a number")
+                                  return
+                                }
+                                await firestore()
+                                  .collection('profiles')
+                                  .doc(user.email)
+                                  .update({
+                                    fontSize: Number(newFontSize),
+                                  })
+                                Alert.alert("", "Font size changed!")
+                            }},
+                          ],
+                          {
+                            type: 'plain-text',
+                            placeholder: 'Font Size'
+                          }
+                      );
+                      }}
+                  >Change Font Size </Text>
+                </View>
+                <View style={styles.row(theme)}>
+                  <Ionicons name="log-out-outline" size={theme.font * 1.5} style={styles.redIcon(theme)} />
+                  <Text
+                      uppercase={false}
+                      style={styles.redText(theme)}
+                      onPress={async () => {
+                          logout();
+                      }}
+                  >Log out</Text>
+                </View>
             </ImageBackground>
         </ScrollView>
         </View>
@@ -132,29 +154,46 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     paddingBottom: theme.font / 2
   }),
+  row: (theme) => ({
+    margin: theme.font * 2 / 3,
+    flexDirection:'row',
+    flexWrap:'wrap',
+    paddingBottom: theme.font,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+  }),
   username: (theme) => ({
-    margin: 15,
-    paddingBottom: 15,
     color: "black",
     fontSize: theme.font,
     textAlignVertical: "center",
-    paddingLeft: theme.font / 3
+  }),
+  icon: (theme) => ({
+    color: "black",
+    textAlignVertical: "center",
+    marginLeft: theme.font * 1.8 / 3,
+    marginRight: theme.font * 1.8 / 3,
+  }),
+  specialIcon: (theme) => ({
+    color: "black",
+    textAlignVertical: "center",
+    marginLeft: theme.font * 2.8 / 3,
+    marginRight: theme.font * 2.8 / 3,
+  }),
+  redIcon: (theme) => ({
+    color: "red",
+    textAlignVertical: "center",
+    marginLeft: theme.font * 2 / 3,
+    marginRight: theme.font * 2 / 3,
   }),
   text: (theme) => ({
-    margin: 15,
-    paddingBottom: 15,
     color: "black",
     fontSize: theme.font,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1,
+    textAlignVertical: "center",
   }),
   redText: (theme) => ({
-    margin: 15,
-    paddingBottom: 15,
     color: "red",
     fontSize: theme.font,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1,
+    textAlignVertical: "center",
   }),
   container: {
     flex: 1, 
