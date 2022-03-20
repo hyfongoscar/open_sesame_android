@@ -116,6 +116,11 @@ export default function SettingScreen({ navigation }) {
                         logout();
                     }}
                 >Log out</Text>
+                <Text
+                    uppercase={false}
+                    style={styles.text(theme)}
+                    onPress={async () => navigation.navigate('Test SearchBar')}
+                >Test</Text>
             </ImageBackground>
         </ScrollView>
         </View>
