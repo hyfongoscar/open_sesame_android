@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useContext } from 'react'
-import { TouchableOpacity, Image, Text, View } from 'react-native';
+import { TouchableOpacity, Image, Text, View, Alert } from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -18,10 +18,12 @@ import TestSearchBarScreen from '../screens/TestSearchBarScreen';
 
 import Loading from '../components/Loading'
 
+import firestore from '@react-native-firebase/firestore';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { MessageContext } from '../contexts/MessageContext'
 import { LoadingContext } from '../contexts/LoadingContext'
+
 
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +38,18 @@ export default function AuthStack() {
     headerStyle: {backgroundColor: theme.color},
     headerTitleStyle: {color: "white"},
     headerTintColor:"white",
+  }
+
+  const changePinUser = async ()  => {
+    await firestore()
+        .collection('profiles')
+        .doc(user.email)
+        .update({
+            pin: chatter.uid,
+        })
+    Alert.alert("", "Pinned User changed!", [
+        { text: "OK"}
+    ])
   }
 
   return (
@@ -79,6 +93,12 @@ export default function AuthStack() {
                     <Text
                       style={{ fontSize: 20, color: "white" }}
                     > {chatter.displayName} </Text>
+                    <TouchableOpacity onPress={() => changePinUser()}>
+                        <Image
+                            style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
+                            source={require("../../assets/pin.png")}
+                        />
+                    </TouchableOpacity>
                   </View>
                 ),
                 headerRight: () => (

@@ -54,8 +54,38 @@ export default function TestSearchBarScreen({ navigation }) {
           resizeMode="cover"
           style={styles.image}
         >
+            <FlatList
+              data ={friends}
+              keyExtractor={friend=>friend.uid}
+              renderItem={({ item, index }) => {
+                if (theme.pin === item.uid){
+                    return (
+                        <TouchableOpacity
+                            style = {styles.profile}
+                            onPress={() => {
+                                setChatter(item)
+                                navigation.navigate('Chat', { chatter: item })
+                            }}
+                        >
+                        <View style={styles.friend(index == friends.length - 1)}>
+                            <View style={styles.friendInfo(theme)}>
+                                <Image
+                                    style={styles.userImg(theme)}
+                                    source={{
+                                        uri: item.profilePic,
+                                    }}
+                                />
+                                <Text style = {styles.userName(theme)}> {item.displayName} </Text>
+                            </View>
+                            <LastMessage message = {item.lastMessage}/>
+                        </View>
+                        </TouchableOpacity>
+                    )
+                }
+              }}
+            ></FlatList>
             <TextInput
-                label="Search"
+                label="Search Here"
                 value={search}
                 onChangeText={(search) => setSearch(search)}
             />
@@ -126,6 +156,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   friend: (last) => ({
     flexDirection:'column',

@@ -20,7 +20,8 @@ const ThemeContextProvider = ({ children }) => {
               color: documentSnapshot.data().color || "purple",
               displayName: documentSnapshot.data().displayName || "User",
               profile: documentSnapshot.data().photoURL,
-              background: documentSnapshot.data().backgroundURL
+              background: documentSnapshot.data().backgroundURL,
+              pin: documentSnapshot.data().pin
           })
       })
       return () => subscriber();
