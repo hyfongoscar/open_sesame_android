@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react'
 import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native'
 import { Checkbox } from 'react-native-paper'
+import NetInfo from "@react-native-community/netinfo";
 
 import { GiftedChat, Actions, Bubble, Message, MessageText, Send, Time } from 'react-native-gifted-chat'
 import DocumentPicker  from 'react-native-document-picker';
@@ -29,6 +30,18 @@ export default function ChatScreen({ navigation, route }) {
   const { theme, getSecondaryColor } = useContext(ThemeContext)
 
   const image = { uri: theme.background };
+
+  useEffect(() => {
+    if (!user)
+      Alert.alert("Error", "User not found!", [
+        { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
+      ])
+    
+    NetInfo.fetch().then(networkState => {
+      if (!networkState.isConnected)
+        Alert.alert("You are now offline.", "Please check your network connection.")
+    });
+  }, [])
 
   const onSend = useCallback(async (messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, ImageBackground, Dimensions } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
@@ -17,6 +18,11 @@ export default function MessageScreen({ navigation }) {
       Alert.alert("Error", "User not found!", [
         { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
       ])
+    
+    NetInfo.fetch().then(networkState => {
+      if (!networkState.isConnected)
+        Alert.alert("You are now offline.", "Please check your network connection.")
+    });
   }, [])
 
   const LastMessage = (props) => {

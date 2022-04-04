@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
-import { Button, Title } from 'react-native-paper'
+import { Button } from 'react-native-paper'
+import NetInfo from "@react-native-community/netinfo";
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
@@ -19,6 +20,11 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   const { loading, setLoading } = useContext(LoadingContext)
 
   useEffect(() => {
+    NetInfo.fetch().then(networkState => {
+      if (!networkState.isConnected)
+        Alert.alert("You are now offline.", "You will not be able to upload your voiceprint.")
+    });
+
     var digits = [0,1,2,3,4,5,6,7,8,9],
       randNums = [],
       j = 0
