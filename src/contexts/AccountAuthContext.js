@@ -7,7 +7,6 @@ export const AccountAuthContext = createContext();
 
 const AccountAuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged((user) => {
@@ -15,15 +14,12 @@ const AccountAuthContextProvider = ({ children }) => {
         setUser(user)
       }
     })
-    return subscriber; // unsubscribe on unmount
+    return subscriber
   }, [])
 
   const login = async (email, password) => {
     await auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        setUser(userCredential.user)
-      })
+      .signInWithEmailAndPassword(email.trim(), password)
       .catch(error => {
         throw error
       })
@@ -31,28 +27,26 @@ const AccountAuthContextProvider = ({ children }) => {
 
   const register = async (displayName, email, password) => {
     await auth()
-      .createUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email.trim(), password)
       .then(async (userCredential) => {
         const user = userCredential.user
         const profile = {
           displayName,
-          photoURL: 'https://avatars.dicebear.com/api/bottts/' + uuid.v4() + '.svg',
+          photoURL: 'https://avatars.dicebear.com/api/avataaars/' + uuid.v4() + '.svg',
         }
         await user.updateProfile(profile)
         await firestore()
           .collection('profiles')
-          .doc(email)
+          .doc(email.trim())
           .set({
             uid: user.uid,
             color: '#9C27B0',
             fontSize: 20,
             backgroundURL: '',
             displayName,
-            photoURL: 'https://avatars.dicebear.com/api/bottts/' + uuid.v4() + '.svg',
+            photoURL: 'https://avatars.dicebear.com/api/avataaars/' + uuid.v4() + '.svg',
           })
-        setUser(userCredential.user)
       })
-
       .catch(error => {
         throw error
       })
@@ -78,7 +72,7 @@ const AccountAuthContextProvider = ({ children }) => {
   return (
     <AccountAuthContext.Provider
       value={{
-        user, loading,
+        user,
         login, register, logout, reset
       }}
     >

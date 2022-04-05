@@ -44,13 +44,24 @@ const ThemeContextProvider = ({ children }) => {
         .collection('profiles')
         .doc(user.email)
         .onSnapshot(documentSnapshot => {
-          setTheme({
+          if (!documentSnapshot.data()) {
+            setTheme({
+              font: 20,
+              color: "#9C27B0",
+              displayName: "User",
+              photoURL: "",
+              background: ""
+            })
+          } else {
+            setTheme({
               font: documentSnapshot.data().fontSize || 20,
               color: documentSnapshot.data().color || "#9C27B0",
               displayName: documentSnapshot.data().displayName || "User",
-              profile: documentSnapshot.data().photoURL,
-              background: documentSnapshot.data().backgroundURL
-          })
+              photoURL: documentSnapshot.data().photoURL,
+              background: documentSnapshot.data().backgroundURL,
+              pin: documentSnapshot.data().pin
+            })
+          }
       })
       return () => subscriber();
     }

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Title, TextInput } from 'react-native-paper';
 import NetInfo from "@react-native-community/netinfo";
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
@@ -12,6 +13,7 @@ export default function MessageScreen({ navigation }) {
   const { user } = useContext(AccountAuthContext)
   const { verified } = useContext(VoiceAuthContext)
   const { theme, getSecondaryColor } = useContext(ThemeContext)
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
     if (!user)
@@ -28,6 +30,8 @@ export default function MessageScreen({ navigation }) {
   const LastMessage = (props) => {
     const message = props.message
     if (message) {
+      var date = message.createdAt.toDate().toLocaleString().slice(4,16)
+      date = date.slice(0,3) + date.slice(4,12)
       if (message.locked && !verified && message._rid == user.uid)
         return (
           <>
@@ -35,14 +39,14 @@ export default function MessageScreen({ navigation }) {
               style={styles.lockMessageIcon}
               source={require('../../assets/lock.png')}
             />
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
           </>
         )
       else
         return (
           <>
             <Text style = {styles.messageText(theme)}>{message.text}</Text>
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
           </>
         )
     }
@@ -53,20 +57,57 @@ export default function MessageScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-        <ImageBackground 
-          source={{ uri: theme.background }}
-          resizeMode="cover"
-          style={styles.image}
-        >
-            <FlatList
-              data ={friends}
-              keyExtractor={friend=>friend.uid}
-              renderItem={({ item, index }) => (
+      <ImageBackground
+        source={{ uri: theme.background }}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <FlatList
+          data ={friends}
+          keyExtractor={friend=>friend.uid}
+          renderItem={({ item, index }) => {
+            if (theme.pin === item.uid){
+              return (
                 <TouchableOpacity
                   style = {styles.profile}
                   onPress={() => {
-                      setChatter(item)
-                      navigation.navigate('Chat', { chatter: item })
+                    setChatter(item)
+                    navigation.navigate('Chat', { chatter: item })
+                  }}
+                >
+                  <View style={styles.friend(index == friends.length - 1)}>
+                    <View style={styles.friendInfo(theme)}>
+                      <Image
+                        style={styles.userImg(theme)}
+                        source={{
+                          uri: item.profilePic,
+                        }}
+                      />
+                      <Text style = {styles.userName(theme)}> {item.displayName} </Text>
+                    </View>
+                    <LastMessage message = {item.lastMessage}/>
+                  </View>
+                </TouchableOpacity>
+              )
+            }
+          }}
+        ></FlatList>
+        <TextInput
+            label="Search Here"
+            value={search}
+            onChangeText={(search) => setSearch(search)}
+        />
+        <FlatList
+          data ={friends}
+          keyExtractor={friend=>friend.uid}
+          renderItem={({ item, index }) => {
+            if (search === ""){
+              return (
+                <TouchableOpacity
+                  style = {styles.profile}
+                  onPress={() => {
+                    setChatter(item)
+                    navigation.navigate('Chat', { chatter: item })
                   }}
                 >
                   <View style={styles.friend(index == friends.length - 1)}>
@@ -74,17 +115,43 @@ export default function MessageScreen({ navigation }) {
                       <Image
                           style={styles.userImg(theme)}
                           source={{
-                            uri: item.photoURL,
+                              uri: item.photoURL,
                           }}
-                        />
+                      />
                       <Text style = {styles.userName(theme)}> {item.displayName} </Text>
                     </View>
                     <LastMessage message = {item.lastMessage}/>
                   </View>
                 </TouchableOpacity>
-              )}
-          ></FlatList>
-        </ImageBackground>
+              )
+            }
+            if (item.displayName.toUpperCase().includes(search.toUpperCase().trim().replace(/\s/g, ""))){
+              return (
+                <TouchableOpacity
+                  style = {styles.profile}
+                  onPress={() => {
+                    setChatter(item)
+                    navigation.navigate('Chat', { chatter: item })
+                  }}
+                >
+                  <View style={styles.friend(index == friends.length - 1)}>
+                    <View style={styles.friendInfo(theme)}>
+                      <Image
+                        style={styles.userImg(theme)}
+                        source={{
+                          uri: item.profilePic,
+                        }}
+                      />
+                      <Text style = {styles.userName(theme)}> {item.displayName} </Text>
+                    </View>
+                    <LastMessage message = {item.lastMessage}/>
+                  </View>
+                </TouchableOpacity>
+              )
+            }
+          }}
+        ></FlatList>
+      </ImageBackground>
     </View>
   );
 };
@@ -96,11 +163,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   container: {
-    flex: 1, 
+    flex: 1,
     paddingLeft: 20,
     paddingRight: 20,
-    alignItems: 'center', 
-    justifyContent: 'center'
   },
   friend: (last) => ({
     flexDirection:'column',
