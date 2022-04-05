@@ -58,7 +58,8 @@ const ThemeContextProvider = ({ children }) => {
               color: documentSnapshot.data().color || "#9C27B0",
               displayName: documentSnapshot.data().displayName || "User",
               photoURL: documentSnapshot.data().photoURL,
-              background: documentSnapshot.data().backgroundURL
+              background: documentSnapshot.data().backgroundURL,
+              pin: documentSnapshot.data().pin
             })
           }
       })
