@@ -1,8 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, ScrollView, TouchableOpacity } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore';
 import prompt from 'react-native-prompt-android';
+import { SvgUri } from 'react-native-svg';
 import { EvilIcons, FontAwesome5, Fontisto, Ionicons, MaterialIcons } from '../components/Icons';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
@@ -11,7 +12,6 @@ import { ThemeContext } from '../contexts/ThemeContext'
 export default function SettingScreen({ navigation }) {
   const { user, logout } = useContext(AccountAuthContext)
   const { theme } = useContext(ThemeContext)
-  const image = { uri: theme.background };
 
   const changeUsername = () => {
     prompt("Edit username", "",
@@ -46,18 +46,34 @@ export default function SettingScreen({ navigation }) {
   return(
     <View style={styles.container}>
       <ScrollView>
-        <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <ImageBackground 
+          source={{
+            uri: theme.background
+          }}
+          resizeMode="cover"
+          style={styles.image}
+        >
           <View style={styles.firstRow(theme)}>
             <TouchableOpacity onPress={() => navigation.navigate('ChangeProfilePic')}>
-              <Image
-                style={styles.userImg}
-                source={{
-                  uri:  theme.profile ,
-                }}
-              />
+              { theme.photoURL.split('.').pop() == 'svg' ? (
+                  <SvgUri
+                    width={100}
+                    height={100}
+                    style={styles.userImg}
+                    uri={theme.photoURL}
+                  />
+                ) : ( 
+                  <Image
+                    style={styles.userImg}
+                    source={{
+                      uri:  theme.photoURL,
+                    }}
+                  />
+                )
+              }
             </TouchableOpacity>
             <TouchableOpacity onPress={() => changeUsername()}>
-              <View style={styles.username(theme)} >
+              <View style={styles.username} >
                 <FontAwesome5 name="user-alt" size={theme.font} style={styles.icon(theme)} />
                 <Text
                   style={styles.usernameText(theme)}
@@ -161,11 +177,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: theme.font / 2,
   }),
-  username: (theme) => ({
+  username: {
     flexDirection:'row',
     flexWrap:'wrap',
     justifyContent: "center",
-  }),
+  },
   row: (theme) => ({
     margin: theme.font * 2 / 3,
     flexDirection:'row',

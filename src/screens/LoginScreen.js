@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }) {
   }, [])
 
   const handleLogin = () => {
-    login(email, password)
+    login(email.trim(), password)
       .catch(({ code, message }) => {
         switch (code) {
           case "auth/invalid-email":

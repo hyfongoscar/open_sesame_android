@@ -13,19 +13,6 @@ export default function SignupScreen({ navigation }) {
 
   const { register } = useContext(AccountAuthContext)
 
-  const validateEmail = () => {
-    if (email == '') {
-      Alert.alert("", "Please enter an email address.")
-      return false;
-    }
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(email) === false) {
-      Alert.alert("", "Please enter a valid email address.")
-      return false;
-    }
-    return true;
-  }
-
   const validatePassword = () => {
     if (password1 == '' || password2 == '') {
       Alert.alert("", "Please enter your passwords")
@@ -47,9 +34,9 @@ export default function SignupScreen({ navigation }) {
   }
 
   const handleRegister = () => {
-    if (!validateName() || !validateEmail() || !validatePassword())
+    if (!validateName() || !validatePassword())
       return false
-    register(displayName, email, password1)
+    register(displayName, email.trim(), password1)
       .then(() => {
         Alert.alert("Sign up success", "You are now logged in")
       })
