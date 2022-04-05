@@ -38,25 +38,25 @@ export default function AuthStack() {
 
   const changePinUser = async ()  => {
     await firestore()
-        .collection('profiles')
-        .doc(user.email)
-        .update({
-            pin: chatter.uid,
-        })
+      .collection('profiles')
+      .doc(user.email)
+      .update({
+        pin: chatter,
+      })
     Alert.alert("", "Pinned User changed!", [
-        { text: "OK"}
+      { text: "OK"}
     ])
   }
 
   const clearPinUser = async ()  => {
-      await firestore()
-          .collection('profiles')
-          .doc(user.email)
-          .update({
-              pin: "",
-          })
+    await firestore()
+      .collection('profiles')
+      .doc(user.email)
+      .update({
+        pin: firestore.FieldValue.delete(),
+      })
       Alert.alert("", "Cleared Pinned User!", [
-          { text: "OK"}
+        { text: "OK"}
       ])
     }
 

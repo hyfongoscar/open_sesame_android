@@ -34,20 +34,20 @@ export default function MessageScreen({ navigation }) {
       date = date.slice(0,3) + date.slice(4,12)
       if (message.locked && !verified && message._rid == user.uid)
         return (
-          <>
+          <View style={styles.messageContainer}>
             <Image
               style={styles.lockMessageIcon}
               source={require('../../assets/lock.png')}
             />
             <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
-          </>
+          </View>
         )
       else
         return (
-          <>
+          <View style={styles.messageContainer}>
             <Text style = {styles.messageText(theme)}>{message.text}</Text>
             <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
-          </>
+          </View>
         )
     }
     return (
@@ -62,36 +62,28 @@ export default function MessageScreen({ navigation }) {
         resizeMode="cover"
         style={styles.image}
       >
-        <FlatList
-          data ={friends}
-          keyExtractor={friend=>friend.uid}
-          renderItem={({ item, index }) => {
-            if (theme.pin === item.uid){
-              return (
-                <TouchableOpacity
-                  style = {styles.profile}
-                  onPress={() => {
-                    setChatter(item)
-                    navigation.navigate('Chat', { chatter: item })
-                  }}
-                >
-                  <View style={styles.friend(index == friends.length - 1)}>
-                    <View style={styles.friendInfo(theme)}>
-                      <Image
-                        style={styles.userImg(theme)}
-                        source={{
-                          uri: item.profilePic,
-                        }}
-                      />
-                      <Text style = {styles.userName(theme)}> {item.displayName} </Text>
-                    </View>
-                    <LastMessage message = {item.lastMessage}/>
-                  </View>
-                </TouchableOpacity>
-              )
-            }
-          }}
-        ></FlatList>
+        { (theme.pin) ? (
+            <TouchableOpacity
+              onPress={() => {
+                setChatter(theme.pin)
+                navigation.navigate('Chat', { chatter: theme.pin })
+              }}
+            >
+              <View style={styles.pinnedFriend}>
+                <View style={styles.friendInfo(theme)}>
+                  <Image
+                    style={styles.userImg(theme)}
+                    source={{
+                      uri: theme.pin.photoURL,
+                    }}
+                  />
+                  <Text style = {styles.userName(theme)}> {theme.pin.displayName} </Text>
+                </View>
+                <LastMessage message = {theme.pin.lastMessage}/>
+              </View>
+            </TouchableOpacity>
+          ) : (<></>)
+        }
         <TextInput
             label="Search Here"
             value={search}
@@ -104,7 +96,6 @@ export default function MessageScreen({ navigation }) {
             if (search === ""){
               return (
                 <TouchableOpacity
-                  style = {styles.profile}
                   onPress={() => {
                     setChatter(item)
                     navigation.navigate('Chat', { chatter: item })
@@ -156,7 +147,7 @@ export default function MessageScreen({ navigation }) {
   );
 };
 
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   button: {
@@ -168,28 +159,39 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   friend: (last) => ({
-    flexDirection:'column',
-    justifyContent:'space-between',
-    paddingTop: 30,
+    paddingTop: 20,
     paddingBottom: 30,
     paddingLeft: 15,
     paddingRight: 15,
     borderBottomWidth: last ? 0 : 1,
     borderColor: "lightgrey",
-    width
+    width: width - 40,
   }),
+  pinnedFriend: {
+    marginTop: 10,
+    marginBottom: 10,
+    paddingTop: 20,
+    paddingBottom: 40,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderWidth: 2,
+    borderColor: "lightgrey",
+    width: width - 40,
+  },
   friendInfo: (theme) => ({
     flexDirection:'row',
     flexWrap:'wrap',
     paddingBottom: theme.font / 2
   }),
-  image: {
-    flex: 1,
-    justifyContent: "center"
-  },
   lockMessageIcon:{
     width: 30,
     height: 30,
+  },
+  messageContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap:'wrap',
+    justifyContent: "space-between"
   },
   messageText: (theme) => ({
     fontSize: (theme.font * 0.8),
@@ -220,8 +222,6 @@ const styles = StyleSheet.create({
   postTime: (theme, getSecondaryColor) => ({
     fontSize: (theme.font * 0.75),
     color: getSecondaryColor(theme.color),
+    textAlign: 'right'
   }),
-  profile:{
-    width:'100%',
-  },
 });
