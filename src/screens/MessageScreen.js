@@ -28,7 +28,7 @@ export default function MessageScreen({ navigation }) {
   const LastMessage = (props) => {
     const message = props.message
     if (message) {
-      if (message.locked && !verified)
+      if (message.locked && !verified && message._rid == user.uid)
         return (
           <>
             <Image
@@ -74,7 +74,7 @@ export default function MessageScreen({ navigation }) {
                       <Image
                           style={styles.userImg(theme)}
                           source={{
-                            uri: item.profilePic,
+                            uri: item.photoURL,
                           }}
                         />
                       <Text style = {styles.userName(theme)}> {item.displayName} </Text>

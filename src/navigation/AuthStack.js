@@ -65,7 +65,7 @@ export default function AuthStack() {
                     <Image
                       style={{ width: 30, height: 30, borderRadius: 15}}
                       source={{
-                        uri: chatter.profilePic
+                        uri: chatter.photoURL
                       }}
                     />
                     <Text

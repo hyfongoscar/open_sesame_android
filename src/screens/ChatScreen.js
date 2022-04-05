@@ -29,6 +29,8 @@ export default function ChatScreen({ navigation, route }) {
   const { messages, setMessages } = useContext(MessageContext)
   const { theme, getSecondaryColor } = useContext(ThemeContext)
 
+  const { chatter } = route.params
+
   const image = { uri: theme.background };
 
   useEffect(() => {
@@ -45,34 +47,33 @@ export default function ChatScreen({ navigation, route }) {
 
   const onSend = useCallback(async (messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    console.log(messages)
-    const { _id, createdAt, text } = messages[0];
+    const { _id, createdAt, text } = messages[0]
 
     const messageObj = {
       _id,
-      _rid: route.params.uid,
+      _rid: chatter.uid,
       createdAt,
       locked,
       sender_id: user.uid,
-      sender_id_pair: [user._id, route.params.uid],
+      sender_id_pair: [user.uid, chatter.uid],
       text,
       user: { 
         _id: user.uid,
         name: user.displayName,
-        avatar: user.profilePic
+        avatar: user.photoURL
       },
       is_file: false,
     }
 
     firestore().collection('chats').doc(_id).set(messageObj)
     
-    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.email)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(chatter.email)
       .update({
-        lastMessage: messageObj
+        'lastMessage': messageObj
       })
-    await firestore().collection('profiles').doc(route.params.email).collection("friends").doc(user.email)
+    await firestore().collection('profiles').doc(chatter.email).collection("friends").doc(user.email)
       .update({
-        lastMessage: messageObj
+        'lastMessage': messageObj
       })
   }, [])
 
@@ -108,28 +109,28 @@ export default function ChatScreen({ navigation, route }) {
   const saveFileToDatabase = async (downloadURL, file) => {
     const messageObj = {
       _id: uuid.v4(),
-      _rid: route.params.uid,
+      _rid: chatter.uid,
       createdAt: new Date(),
       file_url: downloadURL,
       is_file: true,
       locked,
       sender_id: user.uid,
-      sender_id_pair: [user.uid, route.params.uid],
+      sender_id_pair: [user.uid, chatter.uid],
       text: file.name,
       user: { 
-        _id: user.uid,
-        name: user.displayName,
-        avatar: user.profilePic
+        _id: chatter.uid,
+        name: chatter.displayName,
+        avatar: chatter.photoURL
       },
     }
 
     firestore().collection('chats').doc(randomID).set(messageObj)
 
-    await firestore().collection('profiles').doc(user.email).collection("friends").doc(route.params.email)
+    await firestore().collection('profiles').doc(user.email).collection("friends").doc(chatter.email)
       .update({
         lastMessage: messageObj
       })
-    await firestore().collection('profiles').doc(route.params.email).collection("friends").doc(user.email)
+    await firestore().collection('profiles').doc(chatter.email).collection("friends").doc(user.email)
       .update({
         lastMessage: messageObj
       })
