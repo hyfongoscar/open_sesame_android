@@ -8,6 +8,8 @@ import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
 import { ThemeContext } from '../contexts/ThemeContext'
 
+import { Fontisto } from '../components/Icons';
+
 export default function MessageScreen({ navigation }) {
   const { friends, setChatter } = useContext(MessageContext)
   const { user } = useContext(AccountAuthContext)
@@ -27,26 +29,22 @@ export default function MessageScreen({ navigation }) {
     });
   }, [])
 
-  const LastMessage = (props) => {
-    const message = props.message
+  const LastMessage = ({ message }) => {
     if (message) {
       var date = message.createdAt.toDate().toLocaleString().slice(4,16)
       date = date.slice(0,3) + date.slice(4,12)
       if (message.locked && !verified && message._rid == user.uid)
         return (
           <View style={styles.messageContainer}>
-            <Image
-              style={styles.lockMessageIcon}
-              source={require('../../assets/lock.png')}
-            />
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
+            <Fontisto name="locked" size={30} color="black" />
+            <Text style = {styles.postTime(theme, getSecondaryColor)}>{date}</Text>
           </View>
         )
       else
         return (
           <View style={styles.messageContainer}>
             <Text style = {styles.messageText(theme)}>{message.text}</Text>
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}>{date}</Text>
           </View>
         )
     }
@@ -79,7 +77,7 @@ export default function MessageScreen({ navigation }) {
                   />
                   <Text style = {styles.userName(theme)}> {theme.pin.displayName} </Text>
                 </View>
-                <LastMessage message = {theme.pin.lastMessage}/>
+                <LastMessage message={theme.pin.lastMessage}/>
               </View>
             </TouchableOpacity>
           ) : (<></>)
@@ -111,7 +109,7 @@ export default function MessageScreen({ navigation }) {
                       />
                       <Text style = {styles.userName(theme)}> {item.displayName} </Text>
                     </View>
-                    <LastMessage message = {item.lastMessage}/>
+                    <LastMessage message={item.lastMessage}/>
                   </View>
                 </TouchableOpacity>
               )
@@ -183,10 +181,6 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     paddingBottom: theme.font / 2
   }),
-  lockMessageIcon:{
-    width: 30,
-    height: 30,
-  },
   messageContainer: {
     flex: 1,
     flexDirection: 'row',

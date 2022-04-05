@@ -50,7 +50,8 @@ const ThemeContextProvider = ({ children }) => {
               color: "#9C27B0",
               displayName: "User",
               photoURL: "",
-              background: ""
+              background: "",
+              pin: null
             })
           } else {
             setTheme({

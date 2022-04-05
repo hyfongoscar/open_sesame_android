@@ -13,13 +13,13 @@ export default function Providers() {
       <PaperProvider theme={theme}>
         <LoadingContextProvider>
           <AccountAuthContextProvider>
-            <VoiceAuthContextProvider>
-              <MessageContextProvider>
-                <ThemeContextProvider>
-                  <Routes />
-                </ThemeContextProvider>
-              </MessageContextProvider>
-            </VoiceAuthContextProvider>
+            <ThemeContextProvider>
+              <VoiceAuthContextProvider>
+                <MessageContextProvider>
+                    <Routes />
+                </MessageContextProvider>
+              </VoiceAuthContextProvider>
+            </ThemeContextProvider>
           </AccountAuthContextProvider>
         </LoadingContextProvider>
       </PaperProvider>

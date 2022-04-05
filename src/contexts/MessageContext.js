@@ -3,6 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { LoadingContext } from '../contexts/LoadingContext'
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export const MessageContext = createContext();
 
@@ -13,7 +14,7 @@ const MessageContextProvider = ({ children }) => {
 
   const { user } = useContext(AccountAuthContext)
   const { setLoading } = useContext(LoadingContext)
-
+  const { theme } = useContext(ThemeContext)
 
 
   const fetchUID = async (email) =>{
@@ -54,13 +55,22 @@ const MessageContextProvider = ({ children }) => {
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
             const friend_photoURL = await fetchProfilePic(friend_email)
-            return {
+            const friend_obj = {
               uid: friend_uid,
               email: friend_email,
               displayName: friend_name || "",
               photoURL : friend_photoURL,
               lastMessage: doc.data().lastMessage
             }
+            if (friend_uid == theme.pin.uid) {
+              firestore()
+                .collection('profiles')
+                .doc(user.email)
+                .update({
+                  pin: friend_obj
+                })
+            }
+            return friend_obj
           })
           setFriends(await Promise.all(tempFriends))
           // setLoading(false)

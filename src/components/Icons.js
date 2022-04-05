@@ -1,7 +1,7 @@
 // For list of icons, see https://oblador.github.io/react-native-vector-icons/
 
 // Basic usage example: 
-// import { EvilIcons } from '../components/Iconss';
+// import { EvilIcons } from '../components/Icons';
 // <EvilIcons name="pencil" size={30} color="#4F8EF7" />
 
 import AntD from 'react-native-vector-icons/AntDesign';
