@@ -52,6 +52,18 @@ export default function AuthStack() {
     ])
   }
 
+  const clearPinUser = async ()  => {
+      await firestore()
+          .collection('profiles')
+          .doc(user.email)
+          .update({
+              pin: "",
+          })
+      Alert.alert("", "Cleared Pinned User!", [
+          { text: "OK"}
+      ])
+    }
+
   return (
       <Stack.Navigator screenOptions={globalScreenOptions}>
         { 
@@ -70,7 +82,19 @@ export default function AuthStack() {
               name="Message"
               component={MessageScreen}
               options={({navigation}) => ({
-                  title: "Open Sesame",
+                headerTitle: () => (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text
+                      style={{ fontSize: 20, color: "white" }}
+                    > Open Sesame </Text>
+                    <TouchableOpacity onPress={() => clearPinUser()}>
+                        <Image
+                            style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
+                            source={require("../../assets/unpin.png")}
+                        />
+                    </TouchableOpacity>
+                  </View>
+                ),
                   headerRight: () => (
                       <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
                           <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
