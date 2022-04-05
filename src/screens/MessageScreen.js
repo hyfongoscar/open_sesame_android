@@ -35,14 +35,14 @@ export default function MessageScreen({ navigation }) {
               style={styles.lockMessageIcon}
               source={require('../../assets/lock.png')}
             />
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString().slice(4,16)}</Text>
           </>
         )
       else
         return (
           <>
             <Text style = {styles.messageText(theme)}>{message.text}</Text>
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString().slice(4,16)}</Text>
           </>
         )
     }
