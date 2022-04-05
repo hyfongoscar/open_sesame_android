@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface OpenSesameTests : XCTestCase
+@interface open_sesameTests : XCTestCase
 
 @end
 
-@implementation OpenSesameTests
+@implementation open_sesameTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

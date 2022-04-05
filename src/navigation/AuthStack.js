@@ -50,7 +50,7 @@ export default function AuthStack() {
               options={({navigation}) => ({
                   title: "Open Sesame",
                   headerRight: () => (
-                      <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+                      <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                           <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
                       </TouchableOpacity>
                   ),
@@ -65,7 +65,7 @@ export default function AuthStack() {
                     <Image
                       style={{ width: 30, height: 30, borderRadius: 15}}
                       source={{
-                        uri: chatter.profilePic
+                        uri: chatter.photoURL
                       }}
                     />
                     <Text
@@ -74,7 +74,7 @@ export default function AuthStack() {
                   </View>
                 ),
                 headerRight: () => (
-                  <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                     <Image 
                       style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
                       source={require("../../assets/setting.png")}
@@ -83,13 +83,55 @@ export default function AuthStack() {
                 ),
               })}
             />
-            <Stack.Screen name="VoiceEnroll" component={VoiceEnrollScreen} />
-            <Stack.Screen name="VoiceRecording" component={VoiceRecordingScreen} />
-            <Stack.Screen name="FriendRequest" component={FriendRequestScreen}/>
-            <Stack.Screen name="ChangeProfilePic" component={ChangeProfilePicScreen}/>
-            <Stack.Screen name="Setting" component={SettingScreen}/>
-            <Stack.Screen name="Change Background Picture" component={ChangeBackgroundPictureScreen}/>
-            <Stack.Screen name="Change Color" component={ChangeColorScreen}/>
+            <Stack.Screen
+              name="VoiceEnroll"
+              component={VoiceEnrollScreen} 
+              options={() => ({
+                title: "Enroll your voiceprint"
+              })}
+            />
+            <Stack.Screen
+              name="VoiceRecording"
+              component={VoiceRecordingScreen}
+              options={() => ({
+                title: "Recording"
+              })}
+            />
+            <Stack.Screen
+              name="FriendRequest"
+              component={FriendRequestScreen}
+              options={() => ({
+                title: "Friend Requests"
+              })}
+            />
+            <Stack.Screen
+              name="ChangeProfilePic"
+              component={ChangeProfilePicScreen}
+              options={() => ({
+                title: "Profile picture"
+              })}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingScreen}
+              // options={() => ({
+              //   title: "Settings"
+              // })}
+            />
+            <Stack.Screen
+              name="ChangeBackground"
+              component={ChangeBackgroundPictureScreen}
+              options={() => ({
+                title: "Background picture"
+              })}
+            />
+            <Stack.Screen
+              name="ChangeColor"
+              component={ChangeColorScreen}
+              options={() => ({
+                title: "Theme color"
+              })}
+            />
           </>
         )}
         

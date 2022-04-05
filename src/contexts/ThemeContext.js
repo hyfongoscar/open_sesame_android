@@ -6,7 +6,6 @@ export const ThemeContext = createContext();
 
 const ThemeContextProvider = ({ children }) => {
   const [theme, setTheme] = useState([])
-  const [font, setFont] = useState(20)
   const { user } = useContext(AccountAuthContext)
 
   const colorPairs = [

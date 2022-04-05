@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Dimensions, StyleSheet, View } from 'react-native';
 import { Button, Text, Title, TextInput } from 'react-native-paper';
+import NetInfo from "@react-native-community/netinfo";
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
@@ -9,6 +10,13 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState('');
 
   const { login } = useContext(AccountAuthContext)
+
+  useEffect(() => {
+    NetInfo.fetch().then(networkState => {
+      if (!networkState.isConnected)
+        Alert.alert("You are now offline.", "Please check your network connection.")
+    });
+  }, [])
 
   const handleLogin = () => {
     login(email, password)
@@ -25,13 +33,13 @@ export default function LoginScreen({ navigation }) {
             break
           case "auth/wrong-password":
             Alert.alert("", "Incorrect password!", [
-              // { text: "Forget password" , onPress: () => navigation.navigate("Signup")},
+              { text: "Forget password" , onPress: () => navigation.navigate("Reset Password")},
               { text: "Ok" }
             ])
             break
           case "auth/too-many-requests":
             Alert.alert("", "You have tried too many times. Please try again later or reset your password.", [
-              // { text: "Forget password" , onPress: () => navigation.navigate("Signup")},
+              { text: "Forget password" , onPress: () => navigation.navigate("Reset Password")},
               { text: "Ok" }
             ])
             break

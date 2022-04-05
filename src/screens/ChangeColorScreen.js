@@ -24,19 +24,19 @@ export default function ChangeColorScreen({ navigation }) {
 
     return(
         <View style = {styles.main}>
-          <ScrollView>
-            <Text style = {styles.label(theme)}>Choose your new color theme</Text>
-            <FlatList
-              data ={colorPairs}
-              keyExtractor={(_, index) => index}
-              numColumns={5}
-              renderItem={({item}) => (
-                <TouchableOpacity onPress={() => changeColor(item.primary)}>
-                    <View style = {styles.colorView(item.primary)}></View>
-                </TouchableOpacity>
-              )}
-            />
-          </ScrollView>
+          <Text style = {styles.label(theme)}>Choose your new color theme</Text>
+          <FlatList
+            data ={colorPairs}
+            keyExtractor={(_, index) => index}
+            numColumns={5}
+            renderItem={({item}) => (
+              <TouchableOpacity onPress={() => changeColor(item.primary)}>
+                <View style = {styles.primaryColorView(item.primary)}>
+                  <View style = {styles.secondaryColorView(item.secondary)}></View>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
         </View>
     );
 }
@@ -47,11 +47,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    colorView: (color) =>  ({
+    primaryColorView: (color) =>  ({
       backgroundColor: color,
       height: 50,
       width: 50,
+      borderRadius: 25,
       margin: 10,
+      overflow: 'hidden'
+    }),
+    secondaryColorView: (color) =>  ({
+      height: 50,
+      width: 50,
+      borderLeftColor: 'transparent',
+      borderLeftWidth: 50,
+      borderBottomColor: color,
+      borderBottomWidth: 50,
     }),
     label: (theme) =>  ({
       fontSize: theme.font,

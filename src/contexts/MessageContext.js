@@ -53,12 +53,12 @@ const MessageContextProvider = ({ children }) => {
             const friend_email = doc.id
             const friend_uid = await fetchUID(friend_email)
             const friend_name = await fetchDisplayName(friend_email)
-            const friend_profilePic = await fetchProfilePic(friend_email)
+            const friend_photoURL = await fetchProfilePic(friend_email)
             return {
               uid: friend_uid,
               email: friend_email,
               displayName: friend_name || "",
-              profilePic : friend_profilePic,
+              photoURL : friend_photoURL,
               lastMessage: doc.data().lastMessage
             }
           })
@@ -81,14 +81,15 @@ const MessageContextProvider = ({ children }) => {
             setMessages(
               querySnapshot.docs.map(doc => ({
                 _id: doc.data()._id,
-                sender_id: doc.data().sender_id,
                 _rid: doc.data()._rid,
                 createdAt: doc.data().createdAt.toDate(),
-                text: doc.data().text,
-                user: doc.data().s_user,
                 locked: doc.data().locked,
-                file_url: doc.data().file_url,
+                sender_id: doc.data().sender_id,
+                sender_id_pair: [user.uid, chatter.uid],
+                text: doc.data().text,
+                user: doc.data().user,
                 is_file : doc.data().is_file, 
+                file_url: doc.data().file_url,
               }))
             )
           else
