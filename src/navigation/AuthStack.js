@@ -21,7 +21,7 @@ import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { MessageContext } from '../contexts/MessageContext'
 
-
+import { AntD, MaterialCommunityIcons } from '../components/Icons';
 
 const Stack = createNativeStackNavigator();
 
@@ -61,14 +61,14 @@ export default function AuthStack() {
     }
 
   return (
-      <Stack.Navigator screenOptions={globalScreenOptions}>
-        {user == null ? (
-            <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Signup" component={SignupScreen} />
-              <Stack.Screen name="Reset Password" component={ForgotPasswordScreen}/>
-            </>
-          ) : (
+    <Stack.Navigator screenOptions={globalScreenOptions}>
+      {user == null ? (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen name="Reset Password" component={ForgotPasswordScreen}/>
+          </>
+        ) : (
           <>
             <Stack.Screen
               name="Message"
@@ -77,21 +77,18 @@ export default function AuthStack() {
                 headerTitle: () => (
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
-                      style={{ fontSize: 20, color: "white" }}
+                      style={{ fontSize: 20, color: "white", marginRight: 10 }}
                     > Open Sesame </Text>
                     <TouchableOpacity onPress={() => clearPinUser()}>
-                        <Image
-                            style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
-                            source={require("../../assets/unpin.png")}
-                        />
+                      <MaterialCommunityIcons name="pin-off" size={25} color="white" />
                     </TouchableOpacity>
                   </View>
                 ),
-                  headerRight: () => (
-                      <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-                          <Image style={{ width: 30, height: 30, tintColor: "#FFFFFF" }} source={require("../../assets/setting.png")}/>
-                      </TouchableOpacity>
-                  ),
+                headerRight: () => (
+                  <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                    <AntD name="setting" size={30} color="white" />
+                  </TouchableOpacity>
+                ),
               })}
             />
             <Stack.Screen
@@ -107,13 +104,10 @@ export default function AuthStack() {
                       }}
                     />
                     <Text
-                      style={{ fontSize: 20, color: "white" }}
+                      style={{ fontSize: 20, color: "white", marginRight: 10 }}
                     > {chatter.displayName} </Text>
                     <TouchableOpacity onPress={() => changePinUser()}>
-                        <Image
-                            style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
-                            source={require("../../assets/pin.png")}
-                        />
+                      <MaterialCommunityIcons name="pin" size={25} color="white" />
                     </TouchableOpacity>
                   </View>
                 ),
@@ -158,9 +152,6 @@ export default function AuthStack() {
             <Stack.Screen
               name="Settings"
               component={SettingScreen}
-              // options={() => ({
-              //   title: "Settings"
-              // })}
             />
             <Stack.Screen
               name="ChangeBackground"
