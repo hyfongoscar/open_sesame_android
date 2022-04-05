@@ -1,111 +1,95 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Button } from 'react-native-paper'
+import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
+import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
+import { MessageContext } from '../contexts/MessageContext';
+import { ThemeContext } from '../contexts/ThemeContext'
 
+export default function MessageScreen({ navigation }) {
+  const { friends, setChatter } = useContext(MessageContext)
+  const { user } = useContext(AccountAuthContext)
+  const { verified } = useContext(VoiceAuthContext)
+  const { theme, getSecondaryColor } = useContext(ThemeContext)
 
-const Messages = [
-  {
-    userName: 'Jenny Doe',
-//      userImg: require('../assets/users/user-3.jpg'),
-      message:{
-        _id: 1,
-        text: 'Hey there, this is my test for a post of my social app in React Native.',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-        locked:false,
+  useEffect(() => {
+    if (!user)
+      Alert.alert("Error", "User not found!", [
+        { text: "Go Back To Login", onPress: () => navigation.navigate("Login") }
+      ])
+    
+    NetInfo.fetch().then(networkState => {
+      if (!networkState.isConnected)
+        Alert.alert("You are now offline.", "Please check your network connection.")
+    });
+  }, [])
 
-    },
-  },
-  {
-    userName: 'John Doe',
- //     userImg: require('../assets/users/user-1.jpg'),
-    message:{
-      _id: 1,
-      text: 'Hey there, this is my test for a post of my social app in React Native.',
-      createdAt: new Date(),
-      user: {
-        _id: 3,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
-    locked:true,
-    },
-   
-  },
-]
-
-export default function MessageScreen({navigation }) {
-
-  const { logout } = useContext(AccountAuthContext)
+  const LastMessage = (props) => {
+    const message = props.message
+    if (message) {
+      if (message.locked && !verified && message._rid == user.uid)
+        return (
+          <>
+            <Image
+              style={styles.lockMessageIcon}
+              source={require('../../assets/lock.png')}
+            />
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
+          </>
+        )
+      else
+        return (
+          <>
+            <Text style = {styles.messageText(theme)}>{message.text}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString()}</Text>
+          </>
+        )
+    }
+    return (
+      <Text style = {styles.nothingText(theme)}>You have not chatted with them yet!</Text>
+    )
+  }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data ={Messages}
-        keyExtractor={item=>item.id}
-        renderItem={({item}) => (
-          <TouchableOpacity 
-            style = {styles.profile}
-            onPress={() => navigation.navigate('Chat', {userName: item.userName, messages: item.message, userID: item.message.user._id})}
-          >
-            <View style={styles.userInfo}>
-              <View style={styles.imgWrapper}>
-                <Image
-                  style={styles.userImg}
-                  source={item.message.user.avatar}
-                />
-              </View>
-              <View style={styles.textSection}>
-                <Text style = {styles.userName}> {item.userName}</Text>
-              </View>
-            </View>   
-          </TouchableOpacity>
-        )}
-      ></FlatList>
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('ChangeUsername')}
-      > Change username </Button>
-
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('VoiceEnroll')}
-      > Enroll Voiceprint </Button>
-
-      <Button
-          mode="contained"
-          style={styles.button}
-          contentStyle={styles.buttonContainer}
-          labelStyle={styles.navButtonText}
-          onPress={() => navigation.navigate('VoiceVerify')}
-      > Verify Voiceprint </Button>
-          
-      <Button
-          mode="contained"
-            style={styles.button}
-            contentStyle={styles.buttonContainer}
-            labelStyle={styles.navButtonText}
-          onPress={async () => {
-              logout();
-              navigation.navigate('Login');
-          }}
-      >Log out</Button>
+        <ImageBackground 
+          source={{ uri: theme.background }}
+          resizeMode="cover"
+          style={styles.image}
+        >
+            <FlatList
+              data ={friends}
+              keyExtractor={friend=>friend.uid}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  style = {styles.profile}
+                  onPress={() => {
+                      setChatter(item)
+                      navigation.navigate('Chat', { chatter: item })
+                  }}
+                >
+                  <View style={styles.friend(index == friends.length - 1)}>
+                    <View style={styles.friendInfo(theme)}>
+                      <Image
+                          style={styles.userImg(theme)}
+                          source={{
+                            uri: item.photoURL,
+                          }}
+                        />
+                      <Text style = {styles.userName(theme)}> {item.displayName} </Text>
+                    </View>
+                    <LastMessage message = {item.lastMessage}/>
+                  </View>
+                </TouchableOpacity>
+              )}
+          ></FlatList>
+        </ImageBackground>
     </View>
   );
 };
 
+const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   button: {
@@ -118,45 +102,61 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
-  profile:{
-    width:'100%',
+  friend: (last) => ({
+    flexDirection:'column',
+    justifyContent:'space-between',
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderBottomWidth: last ? 0 : 1,
+    borderColor: "lightgrey",
+    width
+  }),
+  friendInfo: (theme) => ({
+    flexDirection:'row',
+    flexWrap:'wrap',
+    paddingBottom: theme.font / 2
+  }),
+  image: {
+    flex: 1,
+    justifyContent: "center"
   },
-  textSection:{
-    flexDirection: 'column',
-    justifyContent: 'center',
-    padding: 15,
-    paddingLeft: 0,
-    marginLeft: 10,
-    width: 399
+  lockMessageIcon:{
+    width: 30,
+    height: 30,
   },
+  messageText: (theme) => ({
+    fontSize: (theme.font * 0.8),
+    color: "black",
+  }),
+  nothingText: (theme) => ({
+    fontSize: (theme.font * 0.7),
+    color: '#333333',
+    fontStyle: 'italic',
+  }),
+  userImg: (theme) => ({
+    width: theme.font * 2,
+    height: theme.font * 2,
+    borderRadius: theme.font,
+  }),
   userInfoText:{
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 5,
   },
-  userName:{
-    fontSize: 14,
+  userName: (theme) => ({
+    fontSize: theme.font,
     fontWeight: 'bold',
-  },
-  postTime:{
-    fontSize: 12,
-    color: '#666',
-  },
-  messageText:{
-    fontSize: 14,
-    color: '#333333',
-  },
-  imgWrapper:{
-    paddingTop: 15,
-    paddingBottom: 15,
-  },
-  userImg:{
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  userInfo:{
-    flexDirection:'column',
-    justifyContent:'space-between',
+    color: theme.color,
+    textAlignVertical: "center",
+    paddingLeft: theme.font / 3
+  }),
+  postTime: (theme, getSecondaryColor) => ({
+    fontSize: (theme.font * 0.75),
+    color: getSecondaryColor(theme.color),
+  }),
+  profile:{
+    width:'100%',
   },
 });
