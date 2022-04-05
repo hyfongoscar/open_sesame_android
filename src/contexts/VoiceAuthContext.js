@@ -6,9 +6,9 @@ import storage from '@react-native-firebase/storage'
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 
 export const VoiceAuthContext = createContext();
-const SVTHRESHOLD = 10
+const SVTHRESHOLD = -2.83208
 const SRTHRESHOLD = 50
-
+ 
 const VoiceAuthContextProvider = ({ children }) => {
   const { user } = useContext(AccountAuthContext)
 
@@ -104,6 +104,7 @@ const VoiceAuthContextProvider = ({ children }) => {
         returnObj.thresholdPassed = true
       if (parseFloat(returnResults.srError) < SRTHRESHOLD)
         returnObj.speechPassed = true
+        console.log(returnResults.svScore)
       console.log(returnResults.srError)
       console.log(returnResults.decodedDigits)
     }).catch((err) => {
