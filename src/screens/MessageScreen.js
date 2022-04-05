@@ -27,6 +27,46 @@ export default function MessageScreen({ navigation }) {
 
   const LastMessage = (props) => {
     const message = props.message
+    var date = message.createdAt.toDate().toLocaleString().slice(4,16)
+    switch(date.slice(0,3))
+    {
+        case "Jan":
+            date = date.charAt(4) + "/1" + date.slice(6)
+            break;
+        case "Feb":
+            date = date.charAt(4) + "/2" + date.slice(6)
+            break;
+        case "Mar":
+            date = date.charAt(4) + "/3" + date.slice(6)
+            break;
+        case "Apr":
+            date = date.charAt(5) + "/4" + date.slice(6)
+            break;
+        case "May":
+            date = date.charAt(4) + "/5" + date.slice(6)
+            break;
+        case "Jun":
+            date = date.charAt(4) + "/6" + date.slice(6)
+            break;
+        case "Jul":
+            date = date.charAt(4) + "/7" + date.slice(6)
+            break;
+        case "Aug":
+            date = date.charAt(4) + "/8" + date.slice(6)
+            break;
+        case "Sep":
+            date = date.charAt(4) + "/9" + date.slice(6)
+            break;
+        case "Oct":
+            date = date.charAt(4) + "/10" + date.slice(6)
+            break;
+        case "Nov":
+            date = date.charAt(4) + "/11" + date.slice(6)
+            break;
+        case "Dec":
+            date = date.charAt(4) + "/12" + date.slice(6)
+            break;
+    }
     if (message) {
       if (message.locked && !verified && message._rid == user.uid)
         return (
@@ -35,14 +75,14 @@ export default function MessageScreen({ navigation }) {
               style={styles.lockMessageIcon}
               source={require('../../assets/lock.png')}
             />
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString().slice(4,16)}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
           </>
         )
       else
         return (
           <>
             <Text style = {styles.messageText(theme)}>{message.text}</Text>
-            <Text style = {styles.postTime(theme, getSecondaryColor)}> {message.createdAt.toDate().toLocaleString().slice(4,16)}</Text>
+            <Text style = {styles.postTime(theme, getSecondaryColor)}> {date}</Text>
           </>
         )
     }
