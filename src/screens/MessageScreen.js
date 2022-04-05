@@ -80,7 +80,7 @@ export default function MessageScreen({ navigation }) {
                       <Image
                         style={styles.userImg(theme)}
                         source={{
-                          uri: item.profilePic,
+                          uri: item.photoURL,
                         }}
                       />
                       <Text style = {styles.userName(theme)}> {item.displayName} </Text>
