@@ -8,6 +8,7 @@ import DocumentPicker  from 'react-native-document-picker';
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
 import uuid from 'react-native-uuid';
+import { Fontisto } from '../components/Icons';
 
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -244,10 +245,7 @@ export default function ChatScreen({ navigation, route }) {
                   ])
                 }}
               >
-                <Image
-                  style={styles.messageLogo(theme, currentMessage._rid == user.uid)}
-                  source={require('../../assets/lock.png')}
-                />
+                <Fontisto name="locked" size={theme.font * 2} color="black" />
               </TouchableOpacity>
             )
           }
@@ -363,11 +361,6 @@ const styles = StyleSheet.create({
   label: {
     color: "#000000",
   },
-  messageLogo: (theme, left) => ({
-    width: theme.font * 2,
-    height: theme.font * 2,
-    tintColor: left ? "#000000" : "#FFFFFF",
-  }),
   messageText: (theme, left) => ({
     color: left ? "black" : "white",
     fontSize: theme.font - 5,
