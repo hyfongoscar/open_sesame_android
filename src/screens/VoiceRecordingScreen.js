@@ -6,6 +6,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { LoadingContext } from '../contexts/LoadingContext'
+import { MessageContext } from '../contexts/MessageContext'
 
 import Loading from '../components/Loading'
 
@@ -18,6 +19,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
   const { theme, getSecondaryColor } = useContext(ThemeContext)
   const { loading, setLoading } = useContext(LoadingContext)
+  const { chatter } = useContext(MessageContext)
 
   useEffect(() => {
     NetInfo.fetch().then(networkState => {
@@ -69,7 +71,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                   setLoading(false)
                   if (Object.values(results).every(item => item == true)) {
                     Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
-                      { text: "OK", onPress: () => navigation.goBack() } 
+                      { text: "OK", onPress: () => navigation.popToTop() } 
                     ])
                   }
                   else if (!results.networkSuccess) {
@@ -78,7 +80,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                     ]) 
                   }
                   else if (!results.speechPassed) {
-                    Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Maybe try talking closer to your mic)", [
+                    Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
                       { text: "OK", onPress: () => setRecordText("") } 
                       // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                     ]) 
