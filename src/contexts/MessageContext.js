@@ -62,7 +62,7 @@ const MessageContextProvider = ({ children }) => {
               photoURL : friend_photoURL,
               lastMessage: doc.data().lastMessage
             }
-            if (friend_uid == theme.pin.uid) {
+            if (theme.pin && friend_uid == theme.pin.uid) {
               firestore()
                 .collection('profiles')
                 .doc(user.email)
