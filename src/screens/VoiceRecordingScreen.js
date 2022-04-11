@@ -1,14 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
-import { Button } from 'react-native-paper'
 import NetInfo from "@react-native-community/netinfo";
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { ThemeContext } from '../contexts/ThemeContext'
 import { LoadingContext } from '../contexts/LoadingContext'
-import { MessageContext } from '../contexts/MessageContext'
 
 import Loading from '../components/Loading'
+import { MaterialCommunityIcons } from '../components/Icons'
 
 export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
@@ -19,7 +18,6 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
   const { theme, getSecondaryColor } = useContext(ThemeContext)
   const { loading, setLoading } = useContext(LoadingContext)
-  const { chatter } = useContext(MessageContext)
 
   useEffect(() => {
     NetInfo.fetch().then(networkState => {
@@ -44,56 +42,55 @@ export default function VoiceEnrollScreen({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.instructions}>Record yourself saying the following numbers:</Text>
         <Text style={styles.titleText(theme)}> { randNum } </Text>
-        <TouchableOpacity style={styles.recordOverlay} >
-          <Button
-            mode="contained"
-            style={styles.recordButton(getSecondaryColor(theme.color))}
-            labelStyle={styles.recordButtonLabel}
-            onPress={ async () => {
-              if (!recording){
-                onStartRecord()
-                setRecordText("Recording...")
-              } else {
-                setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
-                setLoading(true)
-                if (option === "enroll") {
-                  if (await onStopEnroll()) {
-                    setRecordText("")
-                    setLoading(false)
-                    Alert.alert("Enrollment complete", "Your voice will be saved in your account. You can always enroll again for a different voiceprint", [
-                      { text: "OK", onPress: () => navigation.navigate('Message') }
-                    ]) 
-                  }
-                }
-                else if (option === "verify") {
-                  const results = await onStopVerify(randNum)
+        <TouchableOpacity
+          style={styles.recordOverlay(getSecondaryColor(theme.color))} 
+          onPress={ async () => {
+            if (!recording){
+              onStartRecord()
+              setRecordText("Recording...")
+            } else {
+              setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
+              setLoading(true)
+              if (option === "enroll") {
+                if (await onStopEnroll()) {
                   setRecordText("")
                   setLoading(false)
-                  if (Object.values(results).every(item => item == true)) {
-                    Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
-                      { text: "OK", onPress: () => navigation.popToTop() } 
-                    ])
-                  }
-                  else if (!results.networkSuccess) {
-                    Alert.alert(`Verification failed`, "This is probably a problem on our side. Please try again.", [
-                      { text: "OK", onPress: () => setRecordText("") } 
-                    ]) 
-                  }
-                  else if (!results.speechPassed) {
-                    Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
-                      { text: "OK", onPress: () => setRecordText("") } 
-                      // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
-                    ]) 
-                  }
-                  else {
-                    Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
-                      { text: "OK", onPress: () => navigation.goBack() } 
-                    ]) 
-                  }
+                  Alert.alert("Enrollment complete", "Your voice will be saved in your account. You can always enroll again for a different voiceprint", [
+                    { text: "OK", onPress: () => navigation.navigate('Message') }
+                  ]) 
                 }
               }
-            }}
-          >{recording ? "Stop" : "Start"}</Button>
+              else if (option === "verify") {
+                const results = await onStopVerify(randNum)
+                setRecordText("")
+                setLoading(false)
+                if (Object.values(results).every(item => item == true)) {
+                  Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
+                    { text: "OK", onPress: () => navigation.popToTop() } 
+                  ])
+                }
+                else if (!results.networkSuccess) {
+                  Alert.alert(`Verification failed`, "This is probably a problem on our side. Please try again.", [
+                    { text: "OK", onPress: () => setRecordText("") } 
+                  ]) 
+                }
+                else if (!results.speechPassed) {
+                  Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
+                    { text: "OK", onPress: () => setRecordText("") } 
+                    // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
+                  ]) 
+                }
+                else {
+                  Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
+                    { text: "OK", onPress: () => navigation.goBack() } 
+                  ]) 
+                }
+              }
+            }
+          }}
+        >
+          {recording ? <MaterialCommunityIcons name="microphone-settings" size={30} color="black" /> 
+            : <MaterialCommunityIcons name="microphone" size={30} color="black" />}
         </TouchableOpacity>
         <Text
           style={styles.recordText(theme)}
@@ -115,27 +112,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "black"
   },
-  recordButton: (color) => ({
-    width: 100,  
-    height: 100,   
+  recordOverlay: (color) => ({
+    width: 100,
+    height: 100,
     borderRadius: 50,
     backgroundColor: color,
-    position: 'absolute',
-  }),
-  recordButtonLabel: {
-    paddingTop: 33,
-    color: '#000000',
-  },
-  recordOverlay: {
-    width:100,
-    height:100,
-    borderRadius:50,
-    borderWidth: 1,
-    borderColor:'rgba(0,0,0,0.2)',
     alignItems:'center',
     justifyContent:'center',
-    backgroundColor:'#fff',
-  },
+  }),
   recordText: (theme) => ({
     fontSize: 18,
     color: theme.color,
