@@ -52,16 +52,21 @@ export default function VoiceEnrollScreen({ route, navigation }) {
               setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
               setLoading(true)
               if (option === "enroll") {
-                if (await onStopEnroll()) {
-                  setRecordText("")
-                  setLoading(false)
+                const result = await onStopEnroll().catch((err) => {
+                  Alert.alert("Enrollment failed", err.message)
+                })
+                setRecordText("")
+                setLoading(false)
+                if (result) {
                   Alert.alert("Enrollment complete", "Your voice will be saved in your account. You can always enroll again for a different voiceprint", [
                     { text: "OK", onPress: () => navigation.navigate('Message') }
                   ]) 
                 }
               }
               else if (option === "verify") {
-                const results = await onStopVerify(randNum)
+                const results = await onStopVerify(randNum).catch((err) => {
+                  Alert.alert("Verification failed", err.message)
+                })
                 setRecordText("")
                 setLoading(false)
                 if (Object.values(results).every(item => item == true)) {
@@ -70,7 +75,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                   ])
                 }
                 else if (!results.networkSuccess) {
-                  Alert.alert(`Verification failed`, "This is probably a problem on our side. Please try again.", [
+                  Alert.alert("Verification failed", "This is probably a problem on our side. Please try again.", [
                     { text: "OK", onPress: () => setRecordText("") } 
                   ]) 
                 }

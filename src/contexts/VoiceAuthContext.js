@@ -71,8 +71,6 @@ const VoiceAuthContextProvider = ({ children }) => {
       const returnResults = await response.json()
       if (returnResults.url === downloadUrl)
         success = true
-    }).catch((err) => {
-      Alert.alert("Network Error", err.toString())
     })
     return success
   }
@@ -107,8 +105,6 @@ const VoiceAuthContextProvider = ({ children }) => {
         console.log(returnResults.svScore)
       console.log(returnResults.srError)
       console.log(returnResults.decodedDigits)
-    }).catch((err) => {
-      Alert.alert("Network Error", err.toString())
     })
 
     if (Object.values(returnObj).every(item => item == true)) {
