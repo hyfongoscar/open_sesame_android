@@ -45,6 +45,8 @@ const AccountAuthContextProvider = ({ children }) => {
             backgroundURL: '',
             displayName,
             photoURL: 'https://avatars.dicebear.com/api/avataaars/' + uuid.v4() + '.svg',
+            pin: null,
+            verificationTime: 5,
           })
       })
       .catch(error => {

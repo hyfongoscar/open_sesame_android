@@ -43,6 +43,31 @@ export default function SettingScreen({ navigation }) {
     );
   }
 
+  const changeVerificationTime = () => {
+    prompt("Verification will timeout after", "",
+      [
+        {text: 'Cancel'},
+        {text: 'OK', onPress: async (newTime) => {
+            if (!newTime) {
+              Alert.alert("", "Please enter a time")
+              return
+            }
+            await firestore()
+                .collection('profiles')
+                .doc(user.email)
+                .update({
+                    verificationTime: newTime,
+                })
+            Alert.alert("", "Time changed!")
+        }},
+      ],
+      {
+        type: 'plain-text',
+        placeholder: 'Time (in minutes, default: 5)'
+      }
+    );
+  }
+
   return(
     <View style={styles.container}>
       <ScrollView>
@@ -103,7 +128,15 @@ export default function SettingScreen({ navigation }) {
                 uppercase={false}
                 style={styles.text(theme)}
                 onPress={() => navigation.navigate('VoiceEnroll')}
-            >Enroll Voiceprint </Text>
+            >Enroll Voiceprint</Text>
+          </View>
+          <View style={styles.row(theme)}>
+            <MaterialIcons name="timer" size={theme.font * 1.5} style={styles.icon(theme)} />
+            <Text
+                uppercase={false}
+                style={styles.text(theme)}
+                onPress={() => changeVerificationTime()}
+            >Change Verification Time</Text>
           </View>
           <View style={styles.row(theme)}>
             <Fontisto name="picture" size={theme.font} style={styles.icon(theme)} />
@@ -150,7 +183,7 @@ export default function SettingScreen({ navigation }) {
                     }
                 );
                 }}
-            >Change Font Size </Text>
+            >Change Font Size</Text>
           </View>
           <View style={styles.row(theme)}>
             <Ionicons name="log-out-outline" size={theme.font * 1.5} style={styles.redIcon(theme)} />

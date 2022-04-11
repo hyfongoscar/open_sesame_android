@@ -4,6 +4,7 @@ import AudioRecord from 'react-native-audio-record'
 import storage from '@react-native-firebase/storage'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
+import { ThemeContext } from '../contexts/ThemeContext'
 
 export const VoiceAuthContext = createContext();
 const SVTHRESHOLD = -2.83208
@@ -11,6 +12,7 @@ const SRTHRESHOLD = 50
  
 const VoiceAuthContextProvider = ({ children }) => {
   const { user } = useContext(AccountAuthContext)
+  const { theme } = useContext(ThemeContext)
 
   const [recording, setRecording] = useState(false)
   const [verified, setVerified] = useState(false)
@@ -102,17 +104,15 @@ const VoiceAuthContextProvider = ({ children }) => {
         returnObj.thresholdPassed = true
       if (parseFloat(returnResults.srError) < SRTHRESHOLD)
         returnObj.speechPassed = true
-        console.log(returnResults.svScore)
+      console.log(returnResults.svScore)
       console.log(returnResults.srError)
       console.log(returnResults.decodedDigits)
     })
 
     if (Object.values(returnObj).every(item => item == true)) {
       setVerified(true)
-      setTimeout(() => setVerified(false), 5 * 60 * 1000);
+      setTimeout(() => setVerified(false), theme.verificationTime * 60 * 1000);
     }
-    // TODO: make timeout customizable when settings are ready
-
     return returnObj
   }
 

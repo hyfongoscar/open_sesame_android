@@ -51,7 +51,8 @@ const ThemeContextProvider = ({ children }) => {
               displayName: "User",
               photoURL: "",
               background: "",
-              pin: null
+              pin: null,
+              verificationTime: 5,
             })
           } else {
             setTheme({
@@ -60,7 +61,8 @@ const ThemeContextProvider = ({ children }) => {
               displayName: documentSnapshot.data().displayName || "User",
               photoURL: documentSnapshot.data().photoURL,
               background: documentSnapshot.data().backgroundURL,
-              pin: documentSnapshot.data().pin
+              pin: documentSnapshot.data().pin,
+              verificationTime: documentSnapshot.data().verificationTime || 5,
             })
           }
       })
