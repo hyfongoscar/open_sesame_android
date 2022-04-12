@@ -99,14 +99,17 @@ export default function ChatScreen({ navigation, route }) {
       (error) => {
         // Handle unsuccessful uploads
         setModalVisible(false)
+        Alert.alert("File upload failed. Please try again.")
       }, 
       () => {
         // Handle successful uploads on complete
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
           saveFileToDatabase(downloadURL, file)
         })
-        setModalVisible(false)
-        setProgress(0)
+        setTimeout(() => {
+          setModalVisible(false)
+          setProgress(0)
+        }, 1000)
       }
     )
   }
@@ -302,7 +305,7 @@ export default function ChatScreen({ navigation, route }) {
             />
         </View>
         <View style={{ flex: 1 }}>
-            <Text style={styles.label}>{locked ? "Unlock" : "Lock"}</Text>
+            <Text style={styles.checkboxLabel}>{locked ? "Unlock" : "Lock"}</Text>
         </View>
       </View>
       <Send {...props}></Send>
@@ -330,7 +333,8 @@ export default function ChatScreen({ navigation, route }) {
       > 
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Progress.Circle progress={progress} size={100} showsText={true} />
+            <Progress.Circle progress={progress} size={theme.font * 6} showsText={true} color={theme.color} />
+            { progress == 100 ? <Text style={styles.modalText(theme)}>Upload complete!</Text> : <></>}
           </View>
         </View>
       </Modal> 
@@ -363,11 +367,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
-  },
+  modalText: (theme) => ({
+    margin: 15,
+    textAlign: "center",
+    color: "black",
+    fontSize: theme.font,
+  }),
   checkboxContainer: {
     flexDirection: "column",
   },
@@ -377,10 +382,11 @@ const styles = StyleSheet.create({
   }),
   fileText: (theme, left) => ({
     color: left ? "black" : "white",
-    fontSize: theme.font - 5,
+    fontSize: theme.font - 3,
     textAlignVertical: "center",
+    padding: 2
   }),
-  label: {
+  checkboxLabel: {
     color: "#000000",
   },
   messageText: (theme, left) => ({
