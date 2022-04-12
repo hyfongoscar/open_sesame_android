@@ -78,7 +78,7 @@ export default function AuthStack() {
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text
                       style={{ fontSize: 20, color: "white", marginRight: 10 }}
-                    > Open Sesame </Text>
+                    >Open Sesame</Text>
                     <TouchableOpacity onPress={() => clearPinUser()}>
                       <MaterialCommunityIcons name="pin-off" size={25} color="white" />
                     </TouchableOpacity>
@@ -113,10 +113,7 @@ export default function AuthStack() {
                 ),
                 headerRight: () => (
                   <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-                    <Image 
-                      style={{ width: 30, height: 30, tintColor: "#FFFFFF" }}
-                      source={require("../../assets/setting.png")}
-                    />
+                    <AntD name="setting" size={30} color="white" />
                   </TouchableOpacity>
                 ),
               })}
