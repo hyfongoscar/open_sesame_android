@@ -70,7 +70,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 setRecordText("")
                 setLoading(false)
                 if (Object.values(results).every(item => item == true)) {
-                  Alert.alert("Verification success", "You can now view the message. Verification will expire after 5 minutes.", [
+                  Alert.alert("Verification success", `You can now view the message. Verification will expire after ${theme.verificationTime} minutes.`, [
                     { text: "OK", onPress: () => navigation.popToTop() } 
                   ])
                 }
