@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react'
-import { Alert, Image, PermissionsAndroid, StyleSheet, Text, Pressable, View, ImageBackground } from 'react-native'
+import { Alert, Image, PermissionsAndroid, StyleSheet, Text, Pressable, View, ImageBackground, Modal } from 'react-native'
 import { Checkbox } from 'react-native-paper'
-import NetInfo from "@react-native-community/netinfo";
 
-import { GiftedChat, Actions, Bubble, Message, MessageText, Send, Time } from 'react-native-gifted-chat'
+import { GiftedChat, Actions, Bubble, MessageText, Send, Time } from 'react-native-gifted-chat'
 import DocumentPicker  from 'react-native-document-picker';
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
 import uuid from 'react-native-uuid';
 import { Fontisto } from '../components/Icons';
+import * as Progress from 'react-native-progress';
 
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import NetInfo from "@react-native-community/netinfo";
 
 var RNFS = require('react-native-fs');
 var locked = false
@@ -24,6 +25,8 @@ import { SettingContext } from '../contexts/SettingContext'
 
 export default function ChatScreen({ navigation, route }) {
   const [checked, setChecked] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [modalVisible, setModalVisible] = useState(false)
 
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
@@ -82,10 +85,8 @@ export default function ChatScreen({ navigation, route }) {
     const uploadTask = storage().ref(`allFiles/${file.name}`).putString(result, 'base64',{contentType: file.type});
     uploadTask.on('state_changed', 
       (snapshot) => {
-      // Observe state change events such as progress, pause, and resume
-      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
+        setModalVisible(true)
+        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
         switch (snapshot.state) {
           case 'paused':
             console.log('Upload is paused');
@@ -97,19 +98,23 @@ export default function ChatScreen({ navigation, route }) {
       },
       (error) => {
         // Handle unsuccessful uploads
+        setModalVisible(false)
       }, 
       () => {
         // Handle successful uploads on complete
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
           saveFileToDatabase(downloadURL, file)
         })
+        setModalVisible(false)
+        setProgress(0)
       }
     )
   }
 
   const saveFileToDatabase = async (downloadURL, file) => {
+    const randomID = uuid.v4()
     const messageObj = {
-      _id: uuid.v4(),
+      _id: randomID,
       _rid: chatter.uid,
       createdAt: new Date(),
       file_url: downloadURL,
@@ -119,9 +124,9 @@ export default function ChatScreen({ navigation, route }) {
       sender_id_pair: [user.uid, chatter.uid],
       text: file.name,
       user: { 
-        _id: chatter.uid,
-        name: chatter.displayName,
-        avatar: chatter.photoURL
+        _id: user.uid,
+        name: user.displayName,
+        avatar: user.photoURL
       },
     }
 
@@ -137,7 +142,7 @@ export default function ChatScreen({ navigation, route }) {
       })
   }
   
-  const saveFileToDevice = (downloadURL, path) => {
+  const saveFileToDevice = async (downloadURL, path) => {
     const { config } = RNFetchBlob
     let options = {
       fileCache: true,
@@ -148,13 +153,7 @@ export default function ChatScreen({ navigation, route }) {
         description : 'Downloading file'
       }
     }
-    config(options).fetch('GET', downloadURL)
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+    await config(options).fetch('GET', downloadURL)
   }
 
   const filePressed = async (currentMessage) => {
@@ -179,7 +178,7 @@ export default function ChatScreen({ navigation, route }) {
       <Actions
         {...props}
         options={{
-          ['Document']: async (props) => {
+          ['Select document from phone']: async () => {
             try {
               const res = await DocumentPicker.pick({
                 type: [DocumentPicker.types.allFiles],
@@ -193,7 +192,6 @@ export default function ChatScreen({ navigation, route }) {
               );
               if (granted === PermissionsAndroid.RESULTS.GRANTED){
                 const result = await RNFetchBlob.fs.readFile(res[0].uri, 'base64')
-               // console.log(result)
                 uploadFileToFirebase(result, res[0])
               }
             } catch(e){
@@ -203,16 +201,9 @@ export default function ChatScreen({ navigation, route }) {
                 console.log(e);
             }
           },
-          Cancel: (props) => {console.log("Cancel")}
+          Cancel: () => {console.log("Cancel")}
         }}
-        icon={() => (
-          <Image
-              style={styles.smallerLogo}
-              source={require('../../assets/file.png')}
-            />
-
-        )}
-        onSend={args => console.log(args)}
+        icon={() => (<Fontisto name="file-1" size={25} color="black"/>)}
       />
     )
   }
@@ -261,10 +252,7 @@ export default function ChatScreen({ navigation, route }) {
                 }}
               >
                 <View style={styles.fileBubble(theme)}>
-                  <Image
-                    style={styles.messageLogo(theme, currentMessage._rid == user.uid)}
-                    source={require('../../assets/file.png')}
-                  />
+                  <Fontisto name="file-1" size={30} style={{ padding: 5, paddingRight: 10}} color="black"/>
                   <Text style={styles.fileText(theme, currentMessage._rid == user.uid)}>{currentMessage.text}</Text>
                 </View>
               </Pressable>
@@ -311,7 +299,6 @@ export default function ChatScreen({ navigation, route }) {
                     setChecked(!checked)
                     locked = !locked
                 }}
-                style={styles.checkbox}
             />
         </View>
         <View style={{ flex: 1 }}>
@@ -323,22 +310,59 @@ export default function ChatScreen({ navigation, route }) {
   )
 
   return (
-    <GiftedChat
-      renderActions = {renderActions}
-      renderBubble = {renderBubble}
-      renderSend = {renderSend}
-      renderTime = {renderTime}
-      messages = {messages}
-      onSend = {messages => onSend(messages)}
-      textStyle={styles.messageText(theme, 1)}
-      user = {{
-        _id: user.uid,
-      }}
-    />
+    <View style={styles.container}>
+      <GiftedChat
+        renderActions = {renderActions}
+        renderBubble = {renderBubble}
+        renderSend = {renderSend}
+        renderTime = {renderTime}
+        messages = {messages}
+        onSend = {messages => onSend(messages)}
+        textStyle={styles.messageText(theme, 1)}
+        user = {{
+          _id: user.uid,
+        }}
+      />
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+      > 
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Progress.Circle progress={progress} size={100} showsText={true} />
+          </View>
+        </View>
+      </Modal> 
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
   button: {
     alignItems: "center",
     backgroundColor: "#DDDDDD",
@@ -346,8 +370,6 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {
     flexDirection: "column",
-  },
-  checkbox: {
   },
   fileBubble: (theme) => ({
     flexDirection:'row',
