@@ -77,7 +77,7 @@ const VoiceAuthContextProvider = ({ children }) => {
     return success
   }
 
-  const onStopVerify = async (digits) => {
+  const onStopVerify = async (digits, navigation) => {
     const audioFile = await AudioRecord.stop();
     setRecording(false)
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
@@ -111,7 +111,11 @@ const VoiceAuthContextProvider = ({ children }) => {
 
     if (Object.values(returnObj).every(item => item == true)) {
       setVerified(true)
-      setTimeout(() => setVerified(false), theme.verificationTime * 60 * 1000);
+      setTimeout(() => {
+        setVerified(false)
+        Alert.alert("Verification time is up", "You are now redirected to the home page.")
+        navigation.popToTop()
+      }, theme.verificationTime * 60 * 1000);
     }
     return returnObj
   }

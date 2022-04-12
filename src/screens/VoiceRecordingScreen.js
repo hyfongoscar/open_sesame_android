@@ -64,7 +64,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 }
               }
               else if (option === "verify") {
-                const results = await onStopVerify(randNum).catch((err) => {
+                const results = await onStopVerify(randNum, navigation).catch((err) => {
                   Alert.alert("Verification failed", err.message)
                 })
                 setRecordText("")
