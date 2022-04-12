@@ -114,7 +114,8 @@ const VoiceAuthContextProvider = ({ children }) => {
       setTimeout(() => {
         setVerified(false)
         Alert.alert("Verification time is up", "You are now redirected to the home page.")
-        navigation.popToTop()
+        if (navigation.canGoBack())
+          navigation.popToTop()
       }, theme.verificationTime * 60 * 1000);
     }
     return returnObj
