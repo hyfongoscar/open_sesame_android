@@ -9,11 +9,11 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { SvgUri } from 'react-native-svg';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 export default function ChangeProfilePicScreen({ navigation }) {
   const { user } = useContext(AccountAuthContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useContext(SettingContext)
 
   const uploadProfilePic = async() =>{
     try {

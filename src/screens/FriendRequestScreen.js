@@ -6,11 +6,11 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 export default function FriendRequestScreen({ navigation }){
   const { user } = useContext(AccountAuthContext)
-  const { themeColor } = useContext(ThemeContext)
+  const { themeColor } = useContext(SettingContext)
 
   const themeStyle = {
     color: themeColor
@@ -85,11 +85,11 @@ export default function FriendRequestScreen({ navigation }){
     
     await firestore().collection('profiles').doc(s_email).collection("friends").doc(r_email)
       .set({
-        lastMessage: null
+        lastMessage: {}
       })
     await firestore().collection('profiles').doc(r_email).collection("friends").doc(s_email)
       .set({
-        lastMessage: null
+        lastMessage: {}
       })
     Alert.alert("Success", s_email + " is now your friend!")
   }

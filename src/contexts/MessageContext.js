@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useContext, useState, createContext } from 'react'
 import firestore from '@react-native-firebase/firestore';
 
-import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { LoadingContext } from '../contexts/LoadingContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { AccountAuthContext } from './AccountAuthContext'
+import { LoadingContext } from './LoadingContext'
+import { SettingContext } from './SettingContext'
 
 export const MessageContext = createContext();
 
@@ -14,7 +14,7 @@ const MessageContextProvider = ({ children }) => {
 
   const { user } = useContext(AccountAuthContext)
   const { setLoading } = useContext(LoadingContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useContext(SettingContext)
 
 
   const fetchUID = async (email) =>{
@@ -59,8 +59,8 @@ const MessageContextProvider = ({ children }) => {
               uid: friend_uid,
               email: friend_email,
               displayName: friend_name || "",
-              photoURL : friend_photoURL,
-              lastMessage: doc.data().lastMessage
+              photoURL : friend_photoURL || "",
+              lastMessage: doc.data().lastMessage || {}
             }
             if (theme.pin && friend_uid == theme.pin.uid) {
               firestore()

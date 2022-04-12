@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Pressable, Alert } from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 import { LoadingContext } from '../contexts/LoadingContext'
 
 import Loading from '../components/Loading'
@@ -16,7 +16,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
   const [ randNum, setRandNum ] = useState('')
 
   const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
-  const { theme, getSecondaryColor } = useContext(ThemeContext)
+  const { theme, getSecondaryColor } = useContext(SettingContext)
   const { loading, setLoading } = useContext(LoadingContext)
 
   useEffect(() => {

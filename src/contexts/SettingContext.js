@@ -1,12 +1,38 @@
 import React, { useEffect, useLayoutEffect, useContext, useState, createContext } from 'react'
+import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
-import { AccountAuthContext } from '../contexts/AccountAuthContext'
-export const ThemeContext = createContext();
+import { AccountAuthContext } from './AccountAuthContext'
+export const SettingContext = createContext();
 
-const ThemeContextProvider = ({ children }) => {
+const SettingContextProvider = ({ children }) => {
   const [theme, setTheme] = useState([])
   const { user } = useContext(AccountAuthContext)
+
+  const changePinUser = async (chatter)  => {
+    console.log(chatter)
+    await firestore()
+      .collection('profiles')
+      .doc(user.email)
+      .update({
+        pin: chatter,
+      })
+    Alert.alert("", `You have pinned ${chatter.displayName}`, [
+      { text: "OK"}
+    ])
+  }
+
+  const clearPinUser = async ()  => {
+    await firestore()
+      .collection('profiles')
+      .doc(user.email)
+      .update({
+        pin: firestore.FieldValue.delete(),
+      })
+      Alert.alert("", "Cleared Pinned User!", [
+        { text: "OK"}
+      ])
+  }
 
   const colorPairs = [
     { primary: "#D32F2F", secondary: "#EF9A9A"}, // 1 "red" 
@@ -71,14 +97,15 @@ const ThemeContextProvider = ({ children }) => {
   }, [user])
 
     return (
-        <ThemeContext.Provider
-            value={{
-              theme, setTheme,
-              colorPairs, getSecondaryColor
-            }}>
-            {children}
-        </ThemeContext.Provider>
+      <SettingContext.Provider
+          value={{
+            theme, setTheme,
+            colorPairs, 
+            getSecondaryColor, changePinUser, clearPinUser
+          }}>
+          {children}
+      </SettingContext.Provider>
     )
     }
 
-export default ThemeContextProvider
+export default SettingContextProvider

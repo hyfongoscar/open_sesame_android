@@ -19,7 +19,7 @@ var locked = false
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 
 export default function ChatScreen({ navigation, route }) {
@@ -28,7 +28,7 @@ export default function ChatScreen({ navigation, route }) {
   const { verified } = useContext(VoiceAuthContext)
   const { user } = useContext(AccountAuthContext)
   const { messages, setMessages } = useContext(MessageContext)
-  const { theme, getSecondaryColor } = useContext(ThemeContext)
+  const { theme, getSecondaryColor } = useContext(SettingContext)
 
   const { chatter } = route.params
 

@@ -15,10 +15,8 @@ import ChangeProfilePicScreen from '../screens/ChangeProfilePicScreen';
 import ChangeBackgroundPictureScreen from '../screens/ChangeBackgroundPictureScreen';
 import ChangeColorScreen from '../screens/ChangeColorScreen';
 
-
-import firestore from '@react-native-firebase/firestore';
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 import { MessageContext } from '../contexts/MessageContext'
 
 import { AntD, MaterialCommunityIcons } from '../components/Icons';
@@ -27,7 +25,7 @@ const Stack = createNativeStackNavigator();
 
 export default function AuthStack() {
   const { user } = useContext(AccountAuthContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme, changePinUser, clearPinUser } = useContext(SettingContext)
   const { chatter } = useContext(MessageContext)
 
   const globalScreenOptions = {
@@ -35,30 +33,6 @@ export default function AuthStack() {
     headerTitleStyle: {color: "white"},
     headerTintColor:"white",
   }
-
-  const changePinUser = async ()  => {
-    await firestore()
-      .collection('profiles')
-      .doc(user.email)
-      .update({
-        pin: chatter,
-      })
-    Alert.alert("", "Pinned User changed!", [
-      { text: "OK"}
-    ])
-  }
-
-  const clearPinUser = async ()  => {
-    await firestore()
-      .collection('profiles')
-      .doc(user.email)
-      .update({
-        pin: firestore.FieldValue.delete(),
-      })
-      Alert.alert("", "Cleared Pinned User!", [
-        { text: "OK"}
-      ])
-    }
 
   return (
     <Stack.Navigator screenOptions={globalScreenOptions}>
@@ -106,7 +80,7 @@ export default function AuthStack() {
                     <Text
                       style={{ fontSize: 20, color: "white", marginRight: 10 }}
                     > {chatter.displayName} </Text>
-                    <Pressable onPress={() => changePinUser()}>
+                    <Pressable onPress={() => changePinUser(chatter)}>
                       <MaterialCommunityIcons name="pin" size={25} color="white" />
                     </Pressable>
                   </View>

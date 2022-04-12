@@ -4,11 +4,11 @@ import { Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 export default function ChangeColorScreen({ navigation }) {
     const { user } = useContext(AccountAuthContext)
-    const { theme, colorPairs } = useContext(ThemeContext)
+    const { theme, colorPairs } = useContext(SettingContext)
   
     const changeColor = async (color) => {
         await firestore()

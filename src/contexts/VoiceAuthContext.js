@@ -3,8 +3,8 @@ import { Alert, PermissionsAndroid, Platform } from 'react-native';
 import AudioRecord from 'react-native-audio-record'
 import storage from '@react-native-firebase/storage'
 
-import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { AccountAuthContext } from './AccountAuthContext'
+import { SettingContext } from './SettingContext'
 
 export const VoiceAuthContext = createContext();
 const SVTHRESHOLD = -2.83208
@@ -12,7 +12,7 @@ const SRTHRESHOLD = 50
  
 const VoiceAuthContextProvider = ({ children }) => {
   const { user } = useContext(AccountAuthContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useContext(SettingContext)
 
   const [recording, setRecording] = useState(false)
   const [verified, setVerified] = useState(false)

@@ -7,11 +7,11 @@ import { SvgUri } from 'react-native-svg';
 import { EvilIcons, FontAwesome5, Fontisto, Ionicons, MaterialIcons } from '../components/Icons';
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 export default function SettingScreen({ navigation }) {
   const { user, logout } = useContext(AccountAuthContext)
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useContext(SettingContext)
 
   const changeUsername = () => {
     prompt("Edit username", "",

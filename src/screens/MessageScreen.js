@@ -6,7 +6,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 import { Fontisto } from '../components/Icons';
 
@@ -14,7 +14,7 @@ export default function MessageScreen({ navigation }) {
   const { friends, setChatter } = useContext(MessageContext)
   const { user } = useContext(AccountAuthContext)
   const { verified } = useContext(VoiceAuthContext)
-  const { theme, getSecondaryColor } = useContext(ThemeContext)
+  const { theme, getSecondaryColor, changePinUser, clearPinUser } = useContext(SettingContext)
   const [search, setSearch] = useState("")
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function MessageScreen({ navigation }) {
   }, [])
 
   const LastMessage = ({ message }) => {
-    if (message) {
+    if (message && Object.keys(message).length != 0) {
       var date = message.createdAt.toDate().toLocaleString().slice(4,16)
       date = date.slice(0,3) + date.slice(4,12)
       if (message.locked && !verified && message._rid == user.uid)
@@ -66,6 +66,7 @@ export default function MessageScreen({ navigation }) {
                 setChatter(theme.pin)
                 navigation.navigate('Chat', { chatter: theme.pin })
               }}
+              onLongPress={() => clearPinUser()}
             >
               <View style={styles.pinnedFriend}>
                 <View style={styles.friendInfo(theme)}>
@@ -97,6 +98,9 @@ export default function MessageScreen({ navigation }) {
                   onPress={() => {
                     setChatter(item)
                     navigation.navigate('Chat', { chatter: item })
+                  }}
+                  onLongPress={() => {
+                    changePinUser(item)
                   }}
                 >
                   <View style={styles.friend(index == friends.length - 1)}>

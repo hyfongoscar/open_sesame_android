@@ -3,12 +3,12 @@ import { Alert, StyleSheet, View, Text } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
-import { ThemeContext } from '../contexts/ThemeContext'
+import { SettingContext } from '../contexts/SettingContext'
 
 export default function VoiceEnrollScreen({ navigation }) {
 
   const { user } = useContext(AccountAuthContext)
-  const { theme, getSecondaryColor } = useContext(ThemeContext)
+  const { theme, getSecondaryColor } = useContext(SettingContext)
 
   useEffect(() => {
     if (!user)
