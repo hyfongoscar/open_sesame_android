@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, ScrollView, TouchableOpacity } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View, Image, ImageBackground, ScrollView, Pressable } from 'react-native'
 
 import firestore from '@react-native-firebase/firestore';
 import prompt from 'react-native-prompt-android';
@@ -79,7 +79,7 @@ export default function SettingScreen({ navigation }) {
           style={styles.image}
         >
           <View style={styles.firstRow(theme)}>
-            <TouchableOpacity onPress={() => navigation.navigate('ChangeProfilePic')}>
+            <Pressable onPress={() => navigation.navigate('ChangeProfilePic')}>
               { theme.photoURL.split('.').pop() == 'svg' ? (
                   <SvgUri
                     width={100}
@@ -96,8 +96,8 @@ export default function SettingScreen({ navigation }) {
                   />
                 )
               }
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => changeUsername()}>
+            </Pressable>
+            <Pressable onPress={() => changeUsername()}>
               <View style={styles.username} >
                 <FontAwesome5 name="user-alt" size={theme.font} style={styles.icon(theme)} />
                 <Text
@@ -105,7 +105,7 @@ export default function SettingScreen({ navigation }) {
                 >{ theme.displayName }</Text>
                 <EvilIcons name="pencil" size={theme.font * 1.5} color="#000000"style={styles.icon(theme)} />
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={styles.row(theme)}>
             <MaterialIcons name="email" size={theme.font * 1.5} style={styles.icon(theme)} />

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, Pressable, View } from 'react-native';
 import { Title, TextInput } from 'react-native-paper';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -61,7 +61,7 @@ export default function MessageScreen({ navigation }) {
         style={styles.image}
       >
         { (theme.pin) ? (
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 setChatter(theme.pin)
                 navigation.navigate('Chat', { chatter: theme.pin })
@@ -79,7 +79,7 @@ export default function MessageScreen({ navigation }) {
                 </View>
                 <LastMessage message={theme.pin.lastMessage}/>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           ) : (<></>)
         }
         <TextInput
@@ -93,7 +93,7 @@ export default function MessageScreen({ navigation }) {
           renderItem={({ item, index }) => {
             if (search === ""){
               return (
-                <TouchableOpacity
+                <Pressable
                   onPress={() => {
                     setChatter(item)
                     navigation.navigate('Chat', { chatter: item })
@@ -111,12 +111,12 @@ export default function MessageScreen({ navigation }) {
                     </View>
                     <LastMessage message={item.lastMessage}/>
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               )
             }
             if (item.displayName.toUpperCase().includes(search.toUpperCase().trim().replace(/\s/g, ""))){
               return (
-                <TouchableOpacity
+                <Pressable
                   style = {styles.profile}
                   onPress={() => {
                     setChatter(item)
@@ -135,7 +135,7 @@ export default function MessageScreen({ navigation }) {
                     </View>
                     <LastMessage message = {item.lastMessage}/>
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               )
             }
           }}

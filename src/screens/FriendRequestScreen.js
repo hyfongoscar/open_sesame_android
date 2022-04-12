@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
-import { Alert, StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native'
+import { Alert, StyleSheet, View, Text, Pressable, FlatList } from 'react-native'
 import { Button, Title, TextInput } from 'react-native-paper';
 
 import auth from '@react-native-firebase/auth';
@@ -110,7 +110,7 @@ export default function FriendRequestScreen({ navigation }){
         data ={requestList}
         keyExtractor={request => request.s_email}
         renderItem={({item}) => (
-          <TouchableOpacity 
+          <Pressable 
             style = {styles.profile}
           >
             <View style={styles.userInfo}>
@@ -119,7 +119,7 @@ export default function FriendRequestScreen({ navigation }){
                 <Button onPress={() => {acceptFriendRequest(item.s_email, item.r_email)}}>Accept</Button>
               </View>
             </View>
-          </TouchableOpacity>
+          </Pressable>
         )}
       >
       </FlatList>

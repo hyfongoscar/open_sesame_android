@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useContext } from 'react'
-import { TouchableOpacity, Image, Text, View, Alert } from 'react-native';
+import { Pressable, Image, Text, View, Alert } from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen'
 import SignupScreen from '../screens/SignupScreen'
@@ -79,15 +79,15 @@ export default function AuthStack() {
                     <Text
                       style={{ fontSize: 20, color: "white", marginRight: 10 }}
                     >Open Sesame</Text>
-                    <TouchableOpacity onPress={() => clearPinUser()}>
+                    <Pressable onPress={() => clearPinUser()}>
                       <MaterialCommunityIcons name="pin-off" size={25} color="white" />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 ),
                 headerRight: () => (
-                  <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                  <Pressable onPress={() => navigation.navigate('Settings')}>
                     <AntD name="setting" size={30} color="white" />
-                  </TouchableOpacity>
+                  </Pressable>
                 ),
               })}
             />
@@ -106,15 +106,15 @@ export default function AuthStack() {
                     <Text
                       style={{ fontSize: 20, color: "white", marginRight: 10 }}
                     > {chatter.displayName} </Text>
-                    <TouchableOpacity onPress={() => changePinUser()}>
+                    <Pressable onPress={() => changePinUser()}>
                       <MaterialCommunityIcons name="pin" size={25} color="white" />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 ),
                 headerRight: () => (
-                  <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                  <Pressable onPress={() => navigation.navigate('Settings')}>
                     <AntD name="setting" size={30} color="white" />
-                  </TouchableOpacity>
+                  </Pressable>
                 ),
               })}
             />

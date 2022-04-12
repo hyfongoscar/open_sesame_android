@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Alert, FlatList, StyleSheet, View,  ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, FlatList, StyleSheet, View,  ScrollView, Pressable } from 'react-native';
 import { Text } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 
@@ -30,11 +30,11 @@ export default function ChangeColorScreen({ navigation }) {
             keyExtractor={(_, index) => index}
             numColumns={5}
             renderItem={({item}) => (
-              <TouchableOpacity onPress={() => changeColor(item.primary)}>
+              <Pressable onPress={() => changeColor(item.primary)}>
                 <View style = {styles.primaryColorView(item.primary)}>
                   <View style = {styles.secondaryColorView(item.secondary)}></View>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             )}
           />
         </View>

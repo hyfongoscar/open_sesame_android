@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native'
+import { StyleSheet, View, Text, Pressable, Alert } from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
 
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
@@ -42,7 +42,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.instructions}>Record yourself saying the following numbers:</Text>
         <Text style={styles.titleText(theme)}> { randNum } </Text>
-        <TouchableOpacity
+        <Pressable
           style={styles.recordOverlay(getSecondaryColor(theme.color))} 
           onPress={ async () => {
             if (!recording){
@@ -96,7 +96,7 @@ export default function VoiceEnrollScreen({ route, navigation }) {
         >
           {recording ? <MaterialCommunityIcons name="microphone-settings" size={30} color="black" /> 
             : <MaterialCommunityIcons name="microphone" size={30} color="black" />}
-        </TouchableOpacity>
+        </Pressable>
         <Text
           style={styles.recordText(theme)}
         >{ recordText }</Text>

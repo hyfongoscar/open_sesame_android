@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react'
-import { Alert, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native'
+import { Alert, Image, PermissionsAndroid, StyleSheet, Text, Pressable, View, ImageBackground } from 'react-native'
 import { Checkbox } from 'react-native-paper'
 import NetInfo from "@react-native-community/netinfo";
 
@@ -236,7 +236,7 @@ export default function ChatScreen({ navigation, route }) {
         renderMessageText={() => {
           if (currentMessage._rid == user.uid && currentMessage.locked && !verified) {
             return (
-              <TouchableOpacity 
+              <Pressable 
                 style={{ padding: 10}}
                 onPress={ () => {
                   Alert.alert("Locked!", "Unlock this message with your voiceprint", [
@@ -246,12 +246,12 @@ export default function ChatScreen({ navigation, route }) {
                 }}
               >
                 <Fontisto name="locked" size={theme.font * 2} color="black" />
-              </TouchableOpacity>
+              </Pressable>
             )
           }
           else if (currentMessage.is_file) {
             return (
-              <TouchableOpacity 
+              <Pressable 
                 style={{ padding: 5}}
                 onPress={ async () => { 
                   Alert.alert("", `Do you wish to download ${currentMessage.text}?`, [
@@ -267,7 +267,7 @@ export default function ChatScreen({ navigation, route }) {
                   />
                   <Text style={styles.fileText(theme, currentMessage._rid == user.uid)}>{currentMessage.text}</Text>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             )
           }
           else if (currentMessage && currentMessage.text) {

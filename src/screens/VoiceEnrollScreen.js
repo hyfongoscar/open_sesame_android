@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { Alert, StyleSheet, View, Text } from 'react-native'
 import { Button, Title } from 'react-native-paper'
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
