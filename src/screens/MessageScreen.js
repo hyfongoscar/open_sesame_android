@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, Pressable, View } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, Platform, Pressable, View } from 'react-native';
 import { Title, TextInput } from 'react-native-paper';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -31,8 +31,12 @@ export default function MessageScreen({ navigation }) {
 
   const LastMessage = ({ message }) => {
     if (message && Object.keys(message).length != 0) {
-      var date = message.createdAt.toDate().toLocaleString().slice(4,16)
-      date = date.slice(0,3) + date.slice(4,12)
+      var date = message.createdAt.toDate().toLocaleString()
+      if (Platform.OS === 'android')
+        date = date.slice(4,7) + " " + date.slice(8,16)
+      else {
+
+      }
       if (message.locked && !verified && message._rid == user.uid)
         return (
           <View style={styles.messageContainer}>
