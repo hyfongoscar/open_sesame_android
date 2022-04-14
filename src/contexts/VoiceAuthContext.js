@@ -16,6 +16,7 @@ const VoiceAuthContextProvider = ({ children }) => {
 
   const [recording, setRecording] = useState(false)
   const [verified, setVerified] = useState(false)
+  const [recordText, setRecordText] = useState('')
 
   const options = {
     sampleRate: 16000,
@@ -82,6 +83,8 @@ const VoiceAuthContextProvider = ({ children }) => {
     setRecording(false)
     const downloadUrl = await uploadToFirebase(audioFile, `voicedata/${user.uid}/verify.wav`)
 
+    setRecordText("Audio uploaded! Verifying...")
+
     var returnObj = {
       networkSuccess: false,
       thresholdPassed: false,
@@ -126,9 +129,8 @@ const VoiceAuthContextProvider = ({ children }) => {
           value={{
             recording,
             verified,
-            onStartRecord,
-            onStopEnroll,
-            onStopVerify
+            recordText, setRecordText,
+            onStartRecord, onStopEnroll, onStopVerify
           }}
       >
         {children}

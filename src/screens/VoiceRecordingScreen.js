@@ -12,10 +12,9 @@ import { MaterialCommunityIcons } from '../components/Icons'
 export default function VoiceEnrollScreen({ route, navigation }) {
   const { option } = route.params
   
-  const [ recordText, setRecordText ] = useState('')
   const [ randNum, setRandNum ] = useState('')
 
-  const { recording, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
+  const { recording, recordText, setRecordText, onStartRecord, onStopEnroll, onStopVerify } = useContext(VoiceAuthContext)
   const { theme, getSecondaryColor } = useContext(SettingContext)
   const { loading, setLoading } = useContext(LoadingContext)
 
@@ -49,7 +48,8 @@ export default function VoiceEnrollScreen({ route, navigation }) {
               onStartRecord()
               setRecordText("Recording...")
             } else {
-              setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
+              // setRecordText((option === 'enroll') ? "Enrollment in process..." : "Verification in process...")
+              setRecordText("Uploading...")
               setLoading(true)
               if (option === "enroll") {
                 const result = await onStopEnroll().catch((err) => {
@@ -79,15 +79,15 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                     { text: "OK", onPress: () => setRecordText("") } 
                   ]) 
                 }
-                else if (!results.speechPassed) {
-                  Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
-                    { text: "OK", onPress: () => setRecordText("") } 
-                    // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
+                else if (!results.thresholdPassed) {
+                  Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
+                    { text: "OK", onPress: () => navigation.goBack() } 
                   ]) 
                 }
                 else {
-                  Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
-                    { text: "OK", onPress: () => navigation.goBack() } 
+                  Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
+                    { text: "OK", onPress: () => setRecordText("") } 
+                    // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
                   ]) 
                 }
               }
