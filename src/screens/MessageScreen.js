@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
-import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, Platform, Pressable, View } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Image, ImageBackground, StyleSheet, Text, Pressable, View } from 'react-native';
 import { Title, TextInput } from 'react-native-paper';
 import NetInfo from "@react-native-community/netinfo";
 
