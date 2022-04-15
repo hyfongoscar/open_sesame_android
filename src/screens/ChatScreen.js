@@ -7,7 +7,7 @@ import DocumentPicker  from 'react-native-document-picker';
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from 'rn-fetch-blob';
 import uuid from 'react-native-uuid';
-import { Fontisto } from '../components/Icons';
+import { Fontisto, FontAwesome } from '../components/Icons';
 import * as Progress from 'react-native-progress';
 
 import firestore from '@react-native-firebase/firestore';
@@ -15,16 +15,16 @@ import storage from '@react-native-firebase/storage';
 import NetInfo from "@react-native-community/netinfo";
 
 var RNFS = require('react-native-fs');
-var locked = false
 
 import { AccountAuthContext } from '../contexts/AccountAuthContext'
 import { VoiceAuthContext } from '../contexts/VoiceAuthContext'
 import { MessageContext } from '../contexts/MessageContext';
 import { SettingContext } from '../contexts/SettingContext'
 
+var locked = false
 
 export default function ChatScreen({ navigation, route }) {
-  const [checked, setChecked] = useState(false)
+  const [UILock, setUILock] = useState(false)
   const [progress, setProgress] = useState(0)
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -294,20 +294,21 @@ export default function ChatScreen({ navigation, route }) {
   // Custom Send bar at the bottom
   const renderSend = (props) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', height: 45 }}>
-      <View style={styles.checkboxContainer}>
-        <View style={{ flex: 1, }}>
-            <Checkbox
-                status={checked ? 'checked' : 'unchecked'}
-                onPress={() => {
-                    setChecked(!checked)
-                    locked = !locked
-                }}
-            />
-        </View>
+      <Pressable 
+        style={styles.checkboxContainer}
+        onPress={() => {
+          setUILock(!UILock)
+          locked = !locked
+        }}
+      >
+        { UILock ? 
+          <FontAwesome name="lock" size={20} color="black" style={{ flex: 1 }}/> : 
+          <FontAwesome name="unlock-alt" size={20} color="black" style={{ flex: 1 }}/>
+        }
         <View style={{ flex: 1 }}>
-            <Text style={styles.checkboxLabel}>{locked ? "Unlock" : "Lock"}</Text>
+          <Text style={styles.checkboxLabel}>{UILock ? "Unlock" : "Lock"}</Text>
         </View>
-      </View>
+      </Pressable>
       <Send {...props}></Send>
     </View>
   )
@@ -375,6 +376,7 @@ const styles = StyleSheet.create({
   }),
   checkboxContainer: {
     flexDirection: "column",
+    alignItems: "center"
   },
   fileBubble: (theme) => ({
     flexDirection:'row',
