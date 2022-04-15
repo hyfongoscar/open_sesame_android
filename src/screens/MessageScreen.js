@@ -73,6 +73,7 @@ export default function MessageScreen({ navigation }) {
                 navigation.navigate('Chat', { chatter: theme.pin })
               }}
               onLongPress={() => clearPinUser()}
+              style={styles.friendContainer}
             >
               <View style={styles.pinnedFriend}>
                 <View style={styles.friendInfo(theme)}>
@@ -108,6 +109,7 @@ export default function MessageScreen({ navigation }) {
                   onLongPress={() => {
                     changePinUser(item)
                   }}
+                  style={styles.friendContainer}
                 >
                   <View style={styles.friend(index == friends.length - 1)}>
                     <View style={styles.friendInfo(theme)}>
@@ -127,7 +129,7 @@ export default function MessageScreen({ navigation }) {
             if (item.displayName.toUpperCase().includes(search.toUpperCase().trim().replace(/\s/g, ""))){
               return (
                 <Pressable
-                  style = {styles.profile}
+                  style={styles.friendContainer}
                   onPress={() => {
                     setChatter(item)
                     navigation.navigate('Chat', { chatter: item })
@@ -163,8 +165,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingLeft: 20,
-    paddingRight: 20,
   },
   friend: (last) => ({
     paddingTop: 20,
@@ -173,8 +173,11 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderBottomWidth: last ? 0 : 1,
     borderColor: "lightgrey",
-    width: width - 40,
   }),
+  friendContainer: {
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
   pinnedFriend: {
     marginTop: 10,
     marginBottom: 10,
@@ -184,12 +187,11 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderWidth: 2,
     borderColor: "lightgrey",
-    width: width - 40,
   },
   friendInfo: (theme) => ({
     flexDirection:'row',
     flexWrap:'wrap',
-    paddingBottom: theme.font / 2
+    paddingBottom: theme.font
   }),
   messageContainer: {
     flex: 1,
