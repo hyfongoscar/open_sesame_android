@@ -231,7 +231,7 @@ export default function ChatScreen({ navigation, route }) {
           if (currentMessage._rid == user.uid && currentMessage.locked && !verified) {
             return (
               <Pressable 
-                style={{ padding: 10}}
+                style={{ padding: 10, alignItems: "center" }}
                 onPress={ () => {
                   Alert.alert("Locked!", "Unlock this message with your voiceprint", [
                     { text: "Unlock", onPress: () => navigation.navigate("VoiceRecording", {option: "verify"}) },
