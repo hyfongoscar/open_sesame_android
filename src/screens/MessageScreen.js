@@ -31,12 +31,14 @@ export default function MessageScreen({ navigation }) {
 
   const LastMessage = ({ message }) => {
     if (message && Object.keys(message).length != 0) {
-      var date = message.createdAt.toDate().toLocaleString()
-      if (Platform.OS === 'android')
-        date = date.slice(4,7) + " " + date.slice(8,16)
-      else {
-
-      }
+      var date = message.createdAt.toDate()
+      var months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      ]
+      const hour = (date.getHours() < 10 ? '0' : '') + date.getHours() 
+      const minute = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() 
+      date = months[date.getMonth()] + " " + date.getDay() + " " + hour + ":" + minute
       if (message.locked && !verified && message._rid == user.uid)
         return (
           <View style={styles.messageContainer}>
