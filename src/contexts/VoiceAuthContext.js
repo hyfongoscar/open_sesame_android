@@ -110,6 +110,7 @@ const VoiceAuthContextProvider = ({ children }) => {
       console.log(returnResults.svScore)
       console.log(returnResults.srError)
       console.log(returnResults.decodedDigits)
+      Alert.alert("", returnResults.svScore + " " + returnResults.srError + " " + returnResults.decodedDigits)
     })
 
     if (Object.values(returnObj).every(item => item == true)) {

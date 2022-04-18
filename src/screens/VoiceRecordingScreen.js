@@ -69,27 +69,27 @@ export default function VoiceEnrollScreen({ route, navigation }) {
                 })
                 setRecordText("")
                 setLoading(false)
-                if (Object.values(results).every(item => item == true)) {
-                  Alert.alert("Verification success", `You can now view the message. Verification will expire after ${theme.verificationTime} minutes.`, [
-                    { text: "OK", onPress: () => navigation.popToTop() } 
-                  ])
-                }
-                else if (!results.networkSuccess) {
-                  Alert.alert("Verification failed", "This is probably a problem on our side. Please try again.", [
-                    { text: "OK", onPress: () => setRecordText("") } 
-                  ]) 
-                }
-                else if (!results.thresholdPassed) {
-                  Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
-                    { text: "OK", onPress: () => navigation.goBack() } 
-                  ]) 
-                }
-                else {
-                  Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
-                    { text: "OK", onPress: () => setRecordText("") } 
-                    // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
-                  ]) 
-                }
+                // if (Object.values(results).every(item => item == true)) {
+                //   Alert.alert("Verification success", `You can now view the message. Verification will expire after ${theme.verificationTime} minutes.`, [
+                //     { text: "OK", onPress: () => navigation.popToTop() } 
+                //   ])
+                // }
+                // else if (!results.networkSuccess) {
+                //   Alert.alert("Verification failed", "This is probably a problem on our side. Please try again.", [
+                //     { text: "OK", onPress: () => setRecordText("") } 
+                //   ]) 
+                // }
+                // else if (!results.thresholdPassed) {
+                //   Alert.alert("Verification failed", "Your voice data does not match our voice data on the database.", [
+                //     { text: "OK", onPress: () => navigation.goBack() } 
+                //   ]) 
+                // }
+                // else {
+                //   Alert.alert("Verification failed", "The spoken digits are incorrect. Please try again. (Try talking louder and closer to your mic)", [
+                //     { text: "OK", onPress: () => setRecordText("") } 
+                //     // TODO: after binding the verification with locaked message, navigate back to the corresponding chat
+                //   ]) 
+                // }
               }
             }
           }}
