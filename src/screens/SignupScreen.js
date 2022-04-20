@@ -38,7 +38,7 @@ export default function SignupScreen({ navigation }) {
       return false
     register(displayName, email.trim(), password1)
       .then(() => {
-        Alert.alert("Sign up success", "You are now logged in")
+        Alert.alert("Sign up success", "You are now logged in. Please head to the settings page to enroll your voice.")
       })
       .catch(({ code, message }) => {
         switch (code) {
