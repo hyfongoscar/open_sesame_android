@@ -112,7 +112,6 @@ export default function SettingScreen({ navigation }) {
             <Text
                 style={styles.text(theme)}
             >{ user.email }</Text>
-            <EvilIcons name="pencil" size={theme.font * 1.5} style={styles.icon(theme)} />
           </View>
           <View style={styles.row(theme)}>
             <FontAwesome5 name="user-friends" size={theme.font} style={styles.icon(theme)} />
