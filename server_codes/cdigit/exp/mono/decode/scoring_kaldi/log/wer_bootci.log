@@ -1,0 +1,6 @@
+# compute-wer-bootci --mode=present ark:exp/mono/decode/scoring_kaldi/test_filt.txt ark:exp/mono/decode/scoring_kaldi/penalty_0.5/12.txt > exp/mono/decode/scoring_kaldi/wer_details/wer_bootci 
+# Started at Sun Feb  6 09:48:36 HKT 2022
+#
+compute-wer-bootci --mode=present ark:exp/mono/decode/scoring_kaldi/test_filt.txt ark:exp/mono/decode/scoring_kaldi/penalty_0.5/12.txt 
+# Accounting: time=0 threads=1
+# Ended (code 0) at Sun Feb  6 09:48:36 HKT 2022, elapsed time 0 seconds

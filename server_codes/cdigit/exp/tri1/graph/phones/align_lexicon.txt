@@ -1,0 +1,13 @@
+!SIL !SIL sil_S
+0 0 ling4_S
+1 1 jat1_S
+2 2 ji6_S
+3 3 saam1_S
+4 4 sei3_S
+5 5 ng5_S
+6 6 luk6_S
+7 7 cat1_S
+8 8 baat3_S
+9 9 gau2_S
+<UNK> <UNK> spn_S
+<eps> <eps> sil

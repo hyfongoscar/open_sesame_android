@@ -1,0 +1,15 @@
+# compute-mfcc-feats --write-utt2dur=ark,t:/home/oscarmaths9141/xvector-enroll/data/log/make_enrollmfcc/utt2dur.1 --verbose=2 --config=conf/mfcc.conf scp,p:/home/oscarmaths9141/xvector-enroll/data/log/make_enrollmfcc/wav_data.1.scp ark:- | copy-feats --write-num-frames=ark,t:/home/oscarmaths9141/xvector-enroll/data/log/make_enrollmfcc/utt2num_frames.1 --compress=true ark:- ark,scp:/home/oscarmaths9141/xvector-enroll/data/feat/mfcc/raw_mfcc_data.1.ark,/home/oscarmaths9141/xvector-enroll/data/feat/mfcc/raw_mfcc_data.1.scp 
+# Started at Tue Mar  8 14:59:15 UTC 2022
+#
+copy-feats --write-num-frames=ark,t:/home/oscarmaths9141/xvector-enroll/data/log/make_enrollmfcc/utt2num_frames.1 --compress=true ark:- ark,scp:/home/oscarmaths9141/xvector-enroll/data/feat/mfcc/raw_mfcc_data.1.ark,/home/oscarmaths9141/xvector-enroll/data/feat/mfcc/raw_mfcc_data.1.scp 
+compute-mfcc-feats --write-utt2dur=ark,t:/home/oscarmaths9141/xvector-enroll/data/log/make_enrollmfcc/utt2dur.1 --verbose=2 --config=conf/mfcc.conf scp,p:/home/oscarmaths9141/xvector-enroll/data/log/make_enrollmfcc/wav_data.1.scp ark:- 
+VLOG[2] (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:182) Processed features for key 6E5WpzgFsHU8ABIVkmwXQJOcWRI2-enroll
+VLOG[2] (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:182) Processed features for key 6E5WpzgFsHU8ABIVkmwXQJOcWRI2-verify
+VLOG[2] (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:182) Processed features for key Jg1x4dr5YYSEj5o6dJvP67pWqwq2-enroll
+VLOG[2] (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:182) Processed features for key Jg1x4dr5YYSEj5o6dJvP67pWqwq2-verify
+VLOG[2] (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:182) Processed features for key fktrCRuCIXS6iSng7DKii479LtN2-enroll
+VLOG[2] (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:182) Processed features for key fktrCRuCIXS6iSng7DKii479LtN2-verify
+LOG (compute-mfcc-feats[5.5.1002~1-4609e]:main():compute-mfcc-feats.cc:185)  Done 6 out of 6 utterances.
+LOG (copy-feats[5.5.1002~1-4609e]:main():copy-feats.cc:143) Copied 6 feature matrices.
+# Accounting: time=0 threads=1
+# Ended (code 0) at Tue Mar  8 14:59:15 UTC 2022, elapsed time 0 seconds

@@ -1,0 +1,19 @@
+# gunzip -c exp/mono/decode/depth_tmp.*.gz | steps/diagnostic/analyze_lattice_depth_stats.py exp/mono/graph exp/mono/decode/ali_frame_tmp.gz 
+# Started at Sun Feb  6 09:48:29 HKT 2022
+#
+The total amount of data analyzed assuming 100 frames per second is 1.2 hours
+Overall, lattice depth (10,50,90-percentile)=(1,2,6) and mean=3.1
+Nonsilence phones as a group account for 50.4% of frames, with lattice depth (10,50,90-percentile)=(1,3,7) and mean=3.4
+Phone sil accounts for 49.6% of frames, with lattice depth (10,50,90-percentile)=(1,2,6) and mean=2.9
+Phone saam1_S accounts for 6.7% of frames, with lattice depth (10,50,90-percentile)=(1,2,5) and mean=2.6
+Phone sei3_S accounts for 6.4% of frames, with lattice depth (10,50,90-percentile)=(1,2,5) and mean=2.7
+Phone gau2_S accounts for 5.6% of frames, with lattice depth (10,50,90-percentile)=(1,2,6) and mean=2.8
+Phone ling4_S accounts for 5.3% of frames, with lattice depth (10,50,90-percentile)=(1,4,8) and mean=4.6
+Phone ng5_S accounts for 5.1% of frames, with lattice depth (10,50,90-percentile)=(2,4,8) and mean=4.8
+Phone ji6_S accounts for 5.0% of frames, with lattice depth (10,50,90-percentile)=(2,3,7) and mean=3.9
+Phone cat1_S accounts for 4.4% of frames, with lattice depth (10,50,90-percentile)=(1,2,5) and mean=2.8
+Phone baat3_S accounts for 4.4% of frames, with lattice depth (10,50,90-percentile)=(1,2,6) and mean=3.0
+Phone luk6_S accounts for 3.9% of frames, with lattice depth (10,50,90-percentile)=(1,3,6) and mean=3.3
+Phone jat1_S accounts for 3.7% of frames, with lattice depth (10,50,90-percentile)=(1,3,7) and mean=3.5
+# Accounting: time=0 threads=1
+# Ended (code 0) at Sun Feb  6 09:48:29 HKT 2022, elapsed time 0 seconds
